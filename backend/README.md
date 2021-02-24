@@ -82,32 +82,26 @@ public class DataRow{
     ...
 }
 
-//format of upvote a message. No data is send by this update, so we can simply use GET rather than POST.
+//format of upvote a message. 
+// mdata is new up vote count
 {
     type: "PUT",
     // id should be mID of this message
-    url: "/messages/"+ id "/upvote",
+    url: "/messages/upvote/" + id,
     dataType: "json",
     ...
 }
 
-//format of downvote a message. No data is send by this update, so we can simply use GET rather than POST.
+//format of downvote a message. 
+//mdata is new down vote count
 {
     type: "PUT",
     // id should be mID of this message
-    url: "/messages/"+ id "/downvote",
+    url: "/messages/downvote/" + id,
     dataType: "json",
     ...
 }
 
-//format of delete a message
-{
-    type: "DELETE",
-    // id should be mID of this message
-    url: "/messages/" + id,
-    dataType: "json",
-    ...
-}
 
 //format of insert(create) a message
 {
