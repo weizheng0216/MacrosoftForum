@@ -143,7 +143,7 @@ public class Database{
                 res.add(new DataRow(rs.getInt("id"), 
                     rs.getString("title"), rs.getString("content"), 
                     rs.getString("username"), rs.getString("date"), 
-                    rs.getInt("vote_up"), rs.getInt("downVote"), 
+                    rs.getInt("vote_up"), rs.getInt("vote_down"), 
                     rs.getBoolean("pinned")));
             }
             rs.close();
@@ -162,7 +162,7 @@ public class Database{
                 res.add(new DataRow(rs.getInt("id"), 
                     rs.getString("title"), rs.getString("content"), 
                     rs.getString("username"), rs.getString("date"), 
-                    rs.getInt("vote_up"), rs.getInt("downVote"), 
+                    rs.getInt("vote_up"), rs.getInt("vote_down"), 
                     rs.getBoolean("pinned")));
             }
             rs.close();
@@ -176,13 +176,13 @@ public class Database{
     public synchronized DataRow SelectOne(int id){
         try {
             mSelectAMessage.setInt(1, id);
-            ResultSet rs = mSelectUpVoteOfAMessage.executeQuery();
+            ResultSet rs = mSelectAMessage.executeQuery();
             DataRow mdata= null;
             while (rs.next()) {
                 mdata = new DataRow(rs.getInt("id"), 
                     rs.getString("title"), rs.getString("content"), 
                     rs.getString("username"), rs.getString("date"), 
-                    rs.getInt("vote_up"), rs.getInt("downVote"), 
+                    rs.getInt("vote_up"), rs.getInt("vote_down"), 
                     rs.getBoolean("pinned"));
             }
             rs.close();
@@ -194,27 +194,39 @@ public class Database{
     }
     
     public synchronized int voteUpOne(int id) {
-        int res = -1;
+        ResultSet rs; int upVoteValue = -1;
+
         try {
             mUpdateMessageUpVoteByOne.setInt(1, id);
             mUpdateMessageUpVoteByOne.executeUpdate();
-            res = mSelectUpVoteOfAMessage.executeUpdate();
+            mSelectUpVoteOfAMessage.setInt(1, id);
+            rs = mSelectUpVoteOfAMessage.executeQuery();
+            while (rs.next()) {
+                upVoteValue = rs.getInt("vote_up");     
+            }
+            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return res;
+        return upVoteValue;
     }
 
+    
     public synchronized int voteDownOne(int id){
-        int res = -1;
+        ResultSet rs; int downVoteValue = -1;
         try {
             mUpdateMessageDownVoteByOne.setInt(1, id);
             mUpdateMessageDownVoteByOne.executeUpdate();
-            res = mSelectDownVoteOfAMessage.executeUpdate();
+            mSelectDownVoteOfAMessage.setInt(1, id);
+            rs = mSelectDownVoteOfAMessage.executeQuery();
+            while (rs.next()) {
+                downVoteValue = rs.getInt("vote_down");     
+            }
+            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return res;
+        return downVoteValue;
     }
 
     public synchronized int updateOne(int id, String title, String content, String username){

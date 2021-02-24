@@ -81,7 +81,7 @@ public class App {
             }
         });
 
-        Spark.put("/messages/:id/upvote", (request, response) -> {
+        Spark.put("/messages/upvote/:id", (request, response) -> {
             // If we can't get an ID or can't parse the JSON, Spark will send
             // a status 500
             int idx = Integer.parseInt(request.params("id"));
@@ -96,7 +96,7 @@ public class App {
             }
         });
 
-        Spark.put("/messages/:id/downvote", (request, response) -> {
+        Spark.put("/messages/downvote/:id", (request, response) -> {
             // If we can't get an ID or can't parse the JSON, Spark will send
             // a status 500
             int idx = Integer.parseInt(request.params("id"));
