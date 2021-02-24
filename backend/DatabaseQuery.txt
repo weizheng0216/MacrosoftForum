@@ -1,0 +1,55 @@
+create table:
+
+    create table message (id serial primary key, 
+        title varchar(100), content varchar(500), 
+        date timestamp default current_timestamp, 
+        vote_up integer, vote_down integer, 
+        pinned boolean, username varchar(50));
+
+insert one message (example):
+
+    insert into message values (default, 'this is title', 'this is content 123', default, 0, 0, FALSE, 'this is username');
+
+select one message (example):
+
+    select * from message where id=1;
+
+delete one message (example):
+
+    delete from message where id=2;
+
+add up vote by 1:
+
+    update message set vote_up=vote_up+1 where id = 1;
+
+add down vote by 1:
+
+    update message set vote_down=vote_down+1 where id = 1;
+
+select all message by up vote, pin at the beginning:
+
+    select * from message order by pinned DESC, vote_up DESC;
+
+select all message by date, pin at the beginning:
+
+    select * from message order by pinned DESC, date DESC;
+
+pin a message:
+
+    update message set pinned=true where id = 1;
+
+unpin a message:
+
+    update message set pinned=false where id = 1;
+
+select up vote of a message:
+
+    select vote_up from message where id = 1;
+
+select down vote of a message:
+
+    select vote_down from message where id = 1;
+
+update a message:
+
+    update message set title='title', content='content', username='silly' where id = 1;
