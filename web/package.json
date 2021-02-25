@@ -1,0 +1,11 @@
+{
+    "name": "web",
+    "version": "1.0.0",
+    "description": "Web Front-End",
+    "dependencies": {
+        "bootstrap": "^4.0.0",
+        "handlebars": "^4.7.7",
+        "jquery": "^3.5.1",
+        "typescript": "^4.2.2"
+    }
+}
