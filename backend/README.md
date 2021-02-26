@@ -43,6 +43,7 @@ public class DataRow{
 
 ```java 
 //format of getting all data base on votes
+
 /*
 * return type: structResponse 
 * access data through "mData"
