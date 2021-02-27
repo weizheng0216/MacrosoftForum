@@ -239,7 +239,7 @@ public class Database{
      * @param id    the id of the message user want to search
      * @return a DataRow that has this id. null if this id is not found.
      */
-    public synchronized DataRow SelectOne(int id){
+    public synchronized DataRow selectOne(int id){
         try {
             mSelectAMessage.setInt(1, id);
             ResultSet rs = mSelectAMessage.executeQuery();
