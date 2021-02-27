@@ -67,7 +67,7 @@ public class Database{
      * @param db_url    this contains the information of database including user infotmation, host, port, and path.
      * @return a database that is ready to use.
      */
-    static Database getDatabase(String db_url) {
+    public static Database getDatabase(String db_url) {
         // Create an un-configured Database object
         Database db = new Database();
         // Give the Database object a connection, fail if we cannot get one
