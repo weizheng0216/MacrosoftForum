@@ -33,7 +33,7 @@ public class App {
         if (db == null)
             return;
 
-        db.createTable();
+        //db.createTable(); // we will not create the table in backend
         String static_location_override = System.getenv("STATIC_LOCATION");
         if (static_location_override == null) {
             Spark.staticFileLocation("/web");
@@ -41,6 +41,9 @@ public class App {
             Spark.staticFiles.externalLocation(static_location_override);
         }
 
+        /**
+         * this function will send the index.html to front-end when a user connects.
+         */
         Spark.get("/", (req, res) -> {
             res.redirect("/index.html");
             return "";
@@ -49,31 +52,66 @@ public class App {
         /**
          * send all data sort by votes(up votes only), pinned message is at the beginning with attribute 
          * mPinned = true. 
+         * 
+         * return type: structResponse 
+         * access data through "mData"
+         * mData is a arrayList of DataRow
+         * example: mData[i].mContent
+         * 
+         * {
+         *  type: "GET",
+         *  url: "/messages/sortbyvotes",
+         *  dataType: "json",
+         *  ...
+         * }
          */
         Spark.get("/messages/sortbyvotes", (request, response) -> {
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-            return gson.toJson(new StructuredResponse("ok", null, db.SelectAllSortByVotes()));
+            return gson.toJson(new StructuredResponse("ok", null, db.selectAllSortByVotes()));
         });
 
         /**
          * send all data sort by date, pinned message is at the beginning with attribute 
          * mPinned = true. 
+         * {
+         *   type: "GET",
+         *   url: "/messages/sortbydate",
+         *   dataType: "json",
+         *   ...
+         * }
+         * 
          */
         Spark.get("/messages/sortbydate", (request, response) -> {
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-            return gson.toJson(new StructuredResponse("ok", null, db.SelectAllSortByDate()));
+            return gson.toJson(new StructuredResponse("ok", null, db.selectAllSortByDate()));
         });
 
+        /**
+         * send the information of a data of target id 
+         * format of getting one data（maybe use after update votes）
+         *
+         * return type: structResponse 
+         * access data through "mData"
+         * mData is a class of DataRow
+         * example: mData.mContent
+         * {
+         *  type: "GET",
+         *  // id should be mID of this message
+         *  url: "/messages/"+id,
+         *  dataType: "json",
+         *  ...
+         * }
+         */
         Spark.get("/messages/:id", (request, response) -> {
             int idx = Integer.parseInt(request.params("id"));
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-            DataRow data = db.SelectOne(idx);
+            DataRow data = db.selectOne(idx);
             if (data == null) {
                 return gson.toJson(new StructuredResponse("error", idx + " not found", null));
             } else {
@@ -81,6 +119,17 @@ public class App {
             }
         });
 
+        /**
+         * update up vote by one of the target id
+         * {
+         *  type: "PUT",
+         *  // id should be mID of this message
+         *  url: "/messages/upvote/" + id,
+         *  dataType: "json",
+         *  ...
+         * }
+         * 
+         */
         Spark.put("/messages/upvote/:id", (request, response) -> {
             // If we can't get an ID or can't parse the JSON, Spark will send
             // a status 500
@@ -96,6 +145,18 @@ public class App {
             }
         });
 
+        /**
+         * down up vote by one of the target id
+         * 
+         * {
+         *  type: "PUT",
+         *  // id should be mID of this message
+         *  url: "/messages/downvote/" + id,
+         *  dataType: "json",
+         *  ...
+         * }
+         * 
+         */
         Spark.put("/messages/downvote/:id", (request, response) -> {
             // If we can't get an ID or can't parse the JSON, Spark will send
             // a status 500
@@ -111,6 +172,19 @@ public class App {
             }
         });
 
+        /**
+         * insert a new message to the database
+         * 
+         * {
+         *   type: "POST",
+         *   url: "/messages",
+         *   dataType: "json",
+         *   // upvote and downvote are 0 when message is created
+         *   data: JSON.stringify({ mTitle: title, mContent: content, mUserName: username}),
+         *   ...
+         * }
+         * 
+         */
         Spark.post("/messages", (request, response) -> {
             // NB: if gson.Json fails, Spark will reply with status 500 Internal
             // Server Error
