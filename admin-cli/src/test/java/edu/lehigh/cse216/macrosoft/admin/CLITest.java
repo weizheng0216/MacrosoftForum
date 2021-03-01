@@ -14,4 +14,8 @@ public class CLITest extends TestCase {
         return new TestSuite(CLITest.class);
     }
 
+    public void testConstructor() {
+        CLI cli = new CLI();
+    }
+
 }
