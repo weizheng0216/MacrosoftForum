@@ -18,13 +18,11 @@
         
         [heroku link](https://cse216-macrosoft.herokuapp.com/)
         
-        After loading the website, the users will see the interface like this:
-           ![Alt text](https://ibb.co/fF3zgm4)
-        - From the image, we can see that there is a button "Make a Post." 
-        ![Alt text](http://www.addictedtoibiza.com/wp-content/uploads/2012/12/example.png)
+        After loading the website, the users will see the interface.
+        - From there, we can see that there is a button "Make a Post." 
         When users want to share some ideas, you can click that.
         
-        Then a new window will be opened. From there, we can see three text boxes, 
+        - Then a new window will be opened. From there, we can see three text boxes, 
         "Title," "Username/Anonymous," and "Message." 
         So users can write down the message title, their userid or choose to stay anonymous, 
         and then type the message.
