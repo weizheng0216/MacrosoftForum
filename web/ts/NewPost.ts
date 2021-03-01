@@ -22,17 +22,17 @@ class NewPost {
      * Check if the input fields are both valid, and if so, do an AJAX call.
      */
     submitForm() {
-        // get the values of the two fields, force them to be strings, and check 
+        // get the values of fields, force them to be strings, and check 
         // that neither is empty
         let title = "" + $("#newTitle").val();
         let content = "" + $("#newMessage").val();
         let username = "" + $("#newUser").val();
-        let date: Date = new Date();  
-
-        if (title === "" || content === "") {
-            window.alert("Error: title or message is not valid");
+        let date = new Date();
+        if (title === "" || content === "" || username === "") {
+            window.alert("Error: title, messafe, or username is not valid");
             return;
         }
+
         // set up an AJAX post.  When the server replies, the result will go to
         // onSubmitResponse
         $.ajax({

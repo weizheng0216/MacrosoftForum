@@ -1,41 +1,4 @@
-/* switch the default font for the body, and remove top/bottom/left/right margin */
-body {
-    font-family: 'Fresca', sans-serif;
-    margin: 0;
-    background-color: #d0e8f2
-}
-
-
-/* Make the button for adding a message hover in the top right */
-#showFormButton {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-}
-
-/* make the form elements wide, and force a line break after each */
-input, label, textarea {
-    display: block;
-    width: 200px;
-}
-
-/* put some space between textareas and the buttons that follow them */
-textarea {
-    margin-bottom: 5px;
-}
-
-/* put some left space before form elements */
-label, input, textarea, #addButton, #editButton {
-    margin-left: 15px;
-}
-
-/* custom formatting for the span where we put the creation date */
-#editCreated {
-    display: block;
-    margin-bottom: 5px;
-    margin-left: 15px;
-}
-
+/* responsive according to the size of the device, use to decide number of col */
 @media (min-width: 576px) {
     .card-columns {
         column-count: 2;
@@ -60,7 +23,112 @@ label, input, textarea, #addButton, #editButton {
     }
 }
 
+/* bg image */
+body {
+    background-image: url("https://i.ibb.co/YcRWPtv/asoggetti-cf-KC0-UOZHJo-unsplash.jpg");
+}
+
 .textbox {
     background-color: #456268;
     color: #fcf8ec;
+}
+
+/* style for upvote btn */
+.upbtn {
+  background-color:#D14233;
+  color: white;
+}
+
+/* style for downvote btn */
+.downbtn {
+  background-color:#6C7A89;
+  color: white;
+}
+
+
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+/* Button used to open the chat form - fixed at the bottom of the page */
+.open-button {
+  background-color: #555;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  position: fixed;
+  bottom: 23px;
+  right: 28px;
+  width: 280px;
+  border-radius: 5px;
+  z-index: 8;
+}
+
+/* The popup chat - hidden by default */
+.chat-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+
+/* Add styles to the form container */
+.form-container {
+  max-width: 300px;
+  padding: 10px;
+  background-color: white;
+}
+
+/* Full-width textarea */
+.form-container textarea {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+  resize: none;
+  /* min-height: 200px; */
+  border-radius: 5px;
+}
+
+/* When the textarea gets focus, do something */
+.form-container textarea:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for the submit/send button */
+.form-container .btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+  border-radius: 5px;
+}
+
+/* Add a red background color to the clear button */
+.form-container .clear {
+  background-color: red;
+}
+
+/* Add a red background color to the clear button */
+.form-container .hide {
+  background-color: #a1cae2
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+  opacity: 1;
+}
+
+/* create top margin for the card column */
+#list {
+    margin-top: 3em;
 }
