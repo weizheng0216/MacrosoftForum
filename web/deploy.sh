@@ -22,18 +22,12 @@ cp index.html $TARGETFOLDER/$WEBFOLDERNAME
 # step 2: update our npm dependencies
 npm update
 
-
-# # step 3: copy javascript files and handlebars files
-# cp node_modules/jquery/dist/jquery.min.js $TARGETFOLDER/$WEBFOLDERNAME
-# cp node_modules/handlebars/dist/handlebars.min.js $TARGETFOLDER/$WEBFOLDERNAME
-
 # step 3: copy jQuery, Handlebars, and Bootstrap files
 cp node_modules/jquery/dist/jquery.min.js $TARGETFOLDER/$WEBFOLDERNAME
 cp node_modules/handlebars/dist/handlebars.min.js $TARGETFOLDER/$WEBFOLDERNAME
 cp node_modules/bootstrap/dist/js/bootstrap.min.js $TARGETFOLDER/$WEBFOLDERNAME
 cp node_modules/bootstrap/dist/css/bootstrap.min.css $TARGETFOLDER/$WEBFOLDERNAME
-# cp -R node_modules/bootstrap/dist/fonts $TARGETFOLDER/$WEBFOLDERNAME
-
+cp -R node_modules/bootstrap/dist/fonts $TARGETFOLDER/$WEBFOLDERNAME
 
 # step 4: compile TypeScript files
 node_modules/typescript/bin/tsc app.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/app.js
@@ -43,6 +37,13 @@ cat app.css css/ElementList.css css/NewPost.css css/Navbar.css > $TARGETFOLDER/$
 
 # step 6: compile handlebars templates to the deploy folder
 node_modules/handlebars/bin/handlebars hb/ElementList.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
-node_modules/handlebars/bin/handlebars hb/NewPost.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+# node_modules/handlebars/bin/handlebars hb/NewPost.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
 node_modules/handlebars/bin/handlebars hb/Navbar.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
 
+# set up Jasmine
+node_modules/typescript/bin/tsc apptest.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/apptest.js
+cp spec_runner.html $TARGETFOLDER/$WEBFOLDERNAME
+cp node_modules/jasmine-core/lib/jasmine-core/jasmine.css $TARGETFOLDER/$WEBFOLDERNAME
+cp node_modules/jasmine-core/lib/jasmine-core/jasmine.js $TARGETFOLDER/$WEBFOLDERNAME
+cp node_modules/jasmine-core/lib/jasmine-core/boot.js $TARGETFOLDER/$WEBFOLDERNAME
+cp node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js $TARGETFOLDER/$WEBFOLDERNAME

@@ -19,7 +19,7 @@ var $: any;
 var newPost: NewPost;
 var option = "Date Posted";
 
-const backendUrl = "https://immense-ravine-11051.herokuapp.com";
+const backendUrl = "https://cse216-macrosoft.herokuapp.com";
 /**
  * NewEntryForm encapsulates all of the code for the form for adding an entry
  */
@@ -34,10 +34,10 @@ $(document).ready(function () {
     mainList.refresh(option);
     Navbar.refresh();
     // window.alert("hello");
-    $('#sortBy a').on('click', function(){
-        let option = $(this).text();
+    $('#sortBy a').on('click', function(this:any){
+        option = $(this).text();
         mainList.refresh(option);
-        
     });
+
 });
 

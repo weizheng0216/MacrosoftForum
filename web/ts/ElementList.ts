@@ -7,19 +7,16 @@ var mainList: ElementList;
 
 /**
  * ElementList provides a way of seeing all of the data stored on the server.
+ * @param option: string telling how to sort (either by latest or votes)
  */
 class ElementList {
     /**
      * refresh is the public method for updating messageList
      */
     refresh(option:string) {
-        
         // Issue a GET, and then pass the result to update()
-        // TODO: refresh the list once the option was selected
-        // let option = (<HTMLSelectElement>document.getElementById('sortby')).value;
-        // window.alert(option);
+        // If option is 'Date Posted', ask the list in sortbydate, else in sortbyvotes
         if (option === "Date Posted") {
-            
             $.ajax({
                 type: "GET",
                 url: backendUrl + "/messages/sortbydate",
@@ -43,66 +40,77 @@ class ElementList {
     private update(data: any) {
         // Use a template to generate a table from the provided data, and put 
         // the table into our messageList element.
-        // $("#ElementList").remove();
+
+        // remove the previous card-col if exist
         $(".card-columns").remove();
+        // populate the body with data and format from hb
         $("body").append(Handlebars.templates["ElementList.hb"](data));
-        // $("#messageList").html(Handlebars.templates["ElementList.hb"](data));
-        // Find all of the delete buttons, and set their behavior
+
+        // Find all of the buttons, and set their behavior
         $(".upbtn").click(mainList.upvote);
-        // Find all of the Edit buttons, and set their behavior
         $(".downbtn").click(mainList.downvote);
     }
 
- 
-    /**
-     * clickDelete is the code we run in response to a click of a delete button
-     */
-    private upvote() {
-        // for now, just print the ID that goes along with the data in the row
-        // whose "delete" button was clicked
+    upvote() {
 
+        // gets the ID that goes along with the data in the row
         let id = $(this).data("value");
+        
+        // replace the data by using doUp function
         $.ajax({
             type: "PUT",
             url: backendUrl + "/messages/upvote/" + id,
             dataType: "json",
             // TODO: we should really have a function that looks at the return
             //       value and possibly prints an error message.
-            success: mainList.refresh,
+            success: mainList.doUp,
             error : function(){
                 window.alert("/messages/upvote/" + id);
               }
         })
-        
-        
+    }
+
+    private doUp(data: any) {
+        // If we get an "ok" message, refresh the form so the count goes up by one
+        if (data.mStatus === "ok") {
+            mainList.refresh(option);
+        }
+        // Handle explicit errors with a detailed popup message
+        else if (data.mStatus === "error") {
+            window.alert("The server replied with an error:\n" + data.mMessage);
+        }
+        // Handle other errors with a less-detailed popup message
+        else {
+            window.alert("Unspecified error");
+        }
     }
 
     private downvote() {
-        // for now, just print the ID that goes along with the data in the row
-        // whose "delete" button was clicked
-
+        // similar to upvote function
         let id = $(this).data("value");
         $.ajax({
             type: "PUT",
             url: backendUrl + "/messages/downvote/" + id,
             dataType: "json",
-            // TODO: we should really have a function that looks at the return
-            //       value and possibly prints an error message.
-            success: mainList.refresh,
+            success: mainList.doDown,
             error : function(){
                 window.alert("/messages/downvote/" + id);
               }
         })
     }
-    
-    // private upButtons(id: string): string {
-    //     return "<td><button class='upbtn' data-value='" + id
-    //         + "'>Upvote</button></td>";
-    // }
 
-    // private downButtons(id: string): string {
-    //     return "<td><button class='downbtn' data-value='" + id
-    //         + "'>Downvote</button></td>";
-    // }
-
+    private doDown(data: any) {
+        // similar to doUp
+        if (data.mStatus === "ok") {
+            mainList.refresh(option);
+        }
+        // Handle explicit errors with a detailed popup message
+        else if (data.mStatus === "error") {
+            window.alert("The server replied with an error:\n" + data.mMessage);
+        }
+        // Handle other errors with a less-detailed popup message
+        else {
+            window.alert("Unspecified error");
+        }
+    }
 } // end class ElementList

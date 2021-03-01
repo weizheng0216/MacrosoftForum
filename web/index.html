@@ -1,33 +1,22 @@
 <html>
-
-<!-- <head>
-    <script src="jquery.min.js"></script>
-    <title>Hello World</title>
-    <script src="handlebars.min.js"></script>
-    <script src="templates.js"></script>
-    <script src="app.js"></script>
-    <link rel="icon" href="data:;base64,=">
-    <link rel="stylesheet" href="app.css" />
-    <link href="https://fonts.googleapis.com/css?family=Fresca" rel="stylesheet">
-</head> -->
-
 <head>
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <meta name="description" content="Front-End for Bootstrap Tutorial" />
+    <meta name="description" content="Buzzfeed" />
     <meta name="author" content="Macrosoft" />
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-
     <title>Macrosoft Buzz</title>
 
+    <!-- glyphicon -->
+    <script src="https://kit.fontawesome.com/8e527c6a38.js" crossorigin="anonymous"></script>
+    <!-- bs/jquery/handlebars -->
     <script src="jquery.min.js"></script>
     <script src="handlebars.min.js"></script>
     <script src="bootstrap.min.js"></script>
     <script src="templates.js"></script>
     <script src="app.js"></script>
-
-
+    <!-- google font -->
     <link href="https://fonts.googleapis.com/css?family=Fresca" rel="stylesheet">
     <link rel="stylesheet" href="app.css" />
     <link href="bootstrap.min.css" rel="stylesheet">
@@ -35,29 +24,50 @@
 </head>
 
 <body role = "document">
-    <form>
-        <div class="fixed-bottom textbox">
-            <div class=" form-row">
-                <div class="col-md-3 my-3">
-                    <input type="text" class="form-control" id="newTitle" placeholder="Title" required>
+
+    <!-- button that triggers pop up form -->
+    <button class="open-button" onclick="openForm()">Make a Post</button>
+
+    <!-- the actual form itself -->
+    <div class="chat-popup" id="myForm">
+        <form class="form-container">
+            <h5><i class="far fa-comment-dots"></i></h5>
+            <!-- user inputs -->
+            <textarea required placeholder="Title" id="newTitle"></textarea>
+            <textarea required placeholder="Username/Anonymous" id="newUser"></textarea>
+            <textarea required placeholder="Type message.." id="newMessage"></textarea>
+
+            <!-- hide/clear/send functionality -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm">
+                        <button type="button" class="btn hide" onclick="closeForm()">Hide</button>
+                    </div>
+                    <div class="col-sm">
+                        <button type="button" class="btn clear" id="addCancel">Clear</button>
+                    </div>
                 </div>
-                <div class="col-md-3 my-3">
-                    <input type="text" class="form-control" id="newUser" placeholder="Username" required>
-                </div>
-                <div class="col-md-6 my-3">
-                    <input type="text" class="form-control" id="newMessage" placeholder="Message" required>
+                <div class="row">
+                    <div class="col-sm">
+                        <button type="button" class="btn" id="addButton" onclick="closeForm()">Send</button>
+                    </div>
                 </div>
             </div>
-            <div class="form-row mb-3">
-                <div class="col-md-6">
-                    <button class="btn btn-primary" type="submit" id="addButton">Post</button>
-                </div>
-                <div class="col-md-6">
-                    <button class="btn btn-primary" type="submit" id="addCancel">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
+
+    <script>
+        function openForm() {
+          document.getElementById("myForm").style.display = "block";
+        }
+        
+        function closeForm() {
+          document.getElementById("myForm").style.display = "none";
+        }
+    </script>
+
 </body>
+
+
 
 </html>

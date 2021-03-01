@@ -1,0 +1,63 @@
+<html>
+
+<head>
+    <title>Tests</title>
+    <script src="jquery.min.js"></script>
+
+    <script src="jasmine.js"></script>
+    <script src="jasmine-html.js"></script>
+    <script src="boot.js"></script>
+
+    <script src="app.js"></script>
+
+    <script src="apptest.js"></script>
+    <!-- <script src="handlebars.min.js"></script> -->
+    <script src="handlebars.min.js"></script>
+    <script src="templates.js"></script>
+
+    <link rel="stylesheet" href="jasmine.css">
+    <link rel="stylesheet" href="app.css" />
+    <link href="https://fonts.googleapis.com/css?family=Fresca" rel="stylesheet">
+</head>
+
+<body>
+    <button class="open-button" onclick="openForm()">Make a Post</button>
+    <div class="chat-popup" id="myForm">
+    <form class="form-container">
+        <h5><i class="far fa-comment-dots"></i></h5>
+        <textarea placeholder="Title" id="newTitle" ></textarea>
+        <textarea placeholder="Username/Anonymous" id="newUser" ></textarea>
+        <textarea placeholder="Type message.." id="newMessage" ></textarea>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">
+                    <button type="button" class="btn hide" onclick="closeForm()">Hide</button>
+                </div>
+                <div class="col-sm">
+                    <button type="button" class="btn clear" id="addCancel">Clear</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    <button type="button" class="btn" id="addButton" onclick="closeForm()">Send</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+
+    
+
+    <script>
+        function openForm() {
+          document.getElementById("myForm").style.display = "block";
+        }
+        
+        function closeForm() {
+          document.getElementById("myForm").style.display = "none";
+        }
+    </script>
+</body>
+
+</html>
