@@ -283,10 +283,10 @@ public class Database{
     }
 
     /**
-     * this function will add vote up by one of the target message.
+     * this function will add vote down by one of the target message.
      * 
      * @param id    the id of the message need to vote up one
-     * @return  new vote_up of this message, -1 if input id is not found
+     * @return  new vote_down of this message, -1 if input id is not found
      */
     public synchronized int voteDownOne(int id){
         ResultSet rs; int downVoteValue = -1;
@@ -498,6 +498,12 @@ public class Database{
 
     /**
      * this function will create the table message.
+     * <p>
+     * The attributes of the table are: title, content, username, vote_up, vote_down
+     * date, pinned.
+     * <p>
+     * Note: createTable is not called in getDatabase(); make sure the table is created
+     * before calling following method, or there must be an error
      */
     public synchronized void createTable() {
         try {
