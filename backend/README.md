@@ -1,7 +1,7 @@
 # Backend
 ## Functions
 
-**App.java(server) provides several APIs for front-end**
+## **App.java(server) provides several APIs for front-end**
  ---
 ```java
     Spark.get("/", (req, res) -> {
@@ -180,3 +180,6 @@ This function will pin a message. Return true if the message is pinned successfu
 ```
 This function will unpin a message. Return true if the message is unpinned successfully, false otherwise.
 
+## **Tests**
+Unit tests are written in *cse216_macrosoft/backend/src/test/java/edu/lehigh/cse216/macrosoft/backend*. To test backend-end can communicate successfully with 
+front end and since we do not have front end yet, we use console in browser to create HTTP requests and display results. The javascript codes are in *backend/backendTest.txt*
