@@ -434,4 +434,3 @@ indicates whether this message is pinned).
 ## **Tests**
 Unit tests are written in *cse216_macrosoft/web/apptest.ts*. The tests are mainly for the UI, especially the event triggered by clicking. Jasmine is used for the test, [click here](https://cse216-macrosoft.herokuapp.com/spec_runner.html) for more details.
 
-    
