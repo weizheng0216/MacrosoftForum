@@ -1,6 +1,9 @@
 # The Buzz
 ---
 
+## Project Manager
+- Phase 1: Siyu(Coco) Chen
+
 
 ## Introduction
 ---

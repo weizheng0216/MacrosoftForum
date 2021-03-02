@@ -1,4 +1,8 @@
 # Backend
+
+## Backend Role
+- Phase 1: Weihang Guo
+
 ## Functions
 
 ## **App.java(server) provides several APIs for front-end**

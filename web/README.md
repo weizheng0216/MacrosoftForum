@@ -1,4 +1,8 @@
 # Web
+
+## Front-end Role
+- Phase 1: Wei Zheng
+
 ## Functions
 
 ## **HTTP GET/POST/PUT for backend-end**
