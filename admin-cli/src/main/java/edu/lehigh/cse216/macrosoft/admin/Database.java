@@ -92,7 +92,7 @@ public class Database {
                 "pinned=?, "    + // 5
                 "username=? "   + // 6
                 "WHERE id=?";     // 7
-        String selectAllMessages = "SELECT * FROM message ORDER BY pinned DESC, date DESC";
+        String selectAllMessages = "SELECT * FROM message ORDER BY pinned ASC, date ASC";
         String selectMessageById = "SELECT * FROM message WHERE id=?";
         String deleteMessageById = "DELETE FROM message WHERE id=?";
         String dropTable  = "DROP TABLE message";
@@ -140,7 +140,7 @@ public class Database {
     }
 
     /**
-     * Get all messages. The messages will be in descending order based on
+     * Get all messages. The messages will be in ascending order based on
      * the timestamp.
      * @return the list of messages.
      */
@@ -239,45 +239,4 @@ public class Database {
             mUsername = rs.getString("username");
         }
     }
-
-
-
-
-
-
-
-
-
-    // ==============================================================================
-    // ==============================================================================
-    // ==============================================================================
-    // ==============================================================================
-    // ==============================================================================
-    public static Database getLocalDatabase(String ip, String port,
-                                            String user, String pass)
-            throws SQLException
-    {
-        Database db = new Database();
-        try {
-            Connection conn = DriverManager.getConnection("jdbc:postgresql://" + ip + ":" + port + "/", user, pass);
-            if (conn == null) {
-                System.err.println("Error: DriverManager.getConnection() returned a null object");
-                return null;
-            }
-            db.mConnection = conn;
-        } catch (SQLException e) {
-            System.err.println("Error: DriverManager.getConnection() threw a SQLException");
-            e.printStackTrace();
-            return null;
-        }
-
-        try {
-            db.initPreparedStmt();
-        } catch (SQLException exp) {
-            db.disconnect();
-            throw exp;
-        }
-        return db;
-    }
-
 }

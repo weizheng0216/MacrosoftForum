@@ -286,6 +286,39 @@ public class CLI {
     }
 
     /**
+     * Non-private function that checks if a command is registered.
+     * @param cmdStr command name to be tested
+     * @return {@code true} if the command exists, {@code false} otherwise.
+     */
+    boolean containsCommand(String cmdStr) {
+        return commandSet.containsKey(cmdStr);
+    }
+
+    /**
+     * Non-private function that gets the syntax hint of a command.
+     * @param cmdStr command name
+     * @return the syntax hint. Or {@code null} if command does not exist.
+     */
+    String getSyntaxHint(String cmdStr) {
+        if (containsCommand(cmdStr)) {
+            return commandSet.get(cmdStr).syntax;
+        }
+        return null;
+    }
+
+    /**
+     * Non-private function that gets the description of a command.
+     * @param cmdStr command name
+     * @return the description. Or {@code null} if command does not exist.
+     */
+    String getDescription(String cmdStr) {
+        if (containsCommand(cmdStr)) {
+            return commandSet.get(cmdStr).description;
+        }
+        return null;
+    }
+
+    /**
      * Initiate the CLI and start interacting with user. This method will
      * block the execution of the program and keeps waiting for user inputs,
      * until the user enters "exit".

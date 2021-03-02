@@ -26,35 +26,19 @@ public class App {
      */
     private static Database database;
 
-    private static void test() {
-        String ip = "127.0.0.1";
-        String port = "5432";
-        String user = "hag223";
-        String pass = "abc123";
-        try {
-            database = Database.getLocalDatabase(ip, port, user, pass);
-        } catch (SQLException exp) {
-            exp.printStackTrace();
-            return;
-        }
-        CLI c = new CLI();
-        registerCommands(c);
-        c.run();
-    }
-
     public static void main(String[] args) {
-        test();
-        System.exit(0);
+        String dbURL = "postgres://vdtksuqjtzvetb:b7ccb5e707b07d8c8bfdf7" +
+                "badbae2048282884d6b2e8ad336a71ff5833b2abc3@ec2-52-22-16" +
+                "1-59.compute-1.amazonaws.com:5432/d9m8d6ulhh2bbk";
 
         // Get URL from command line
-        if (args.length < 1) {
-            System.out.println("Please provide DATABASE_URL as the 1st arg.");
-            System.exit(-1);
+        if (args.length >= 1) {
+            dbURL = args[0];
         }
 
         // Create & connect to the database
         try {
-            database = Database.getInstance(args[0]);
+            database = Database.getInstance(dbURL);
         } catch (SQLException |
                  ClassNotFoundException |
                  URISyntaxException exp) {
@@ -192,8 +176,8 @@ public class App {
                         System.out.printf("Username: %s\n", msg.mUsername);
                     if (requiredFields.contains("content"))
                         System.out.printf("Content: %s\n", msg.mContent);
+                    System.out.println();
                 }
-                System.out.println();
             }
             return r;
         });
