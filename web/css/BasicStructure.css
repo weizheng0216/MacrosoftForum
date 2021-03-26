@@ -1,0 +1,99 @@
+div{
+    /* border: 1px solid; */
+    font-family: sans-serif;
+    color: #260101;
+}
+
+#banner{
+    position: absolute;
+    top:5px;
+    bottom:92%;
+    left:5px;
+    right:7px;
+    overflow: hidden;
+    text-align: left;
+
+    background-color: #8C0303;
+    box-shadow:15px 15px 0px #a12424;
+}
+
+#banner:hover{
+    transform:translate(calc(4px), calc(4px));
+    box-shadow:10px 10px 0px #ac4545;
+}
+
+.banner-title{
+    position: relative;
+    left: 15%;
+    position: auto;
+    font-family: sans-serif;
+    font-size: 3.5em;
+    font-weight: bolder;
+    color: aliceblue;
+}
+
+#main-block{
+    position: absolute;
+    top: 10%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-top:5px;
+}
+
+#left-part{
+    position: absolute;
+    right: 70%;
+    left:0;
+    top:0;
+    bottom: 0;
+    overflow-y: scroll;
+}
+
+#right-part{
+    position:absolute;
+    left:30%;
+    right:0;
+    top:0;
+    bottom:0;
+}
+
+.new-post-button{
+    position: relative;
+    width: 45%;
+    height: 40px;
+    left: 3%;
+  
+    margin-top: 5px;
+    margin-bottom: 2px;
+    font-size: 20px;
+
+    border: 3px solid #8C0303;
+    border-radius: 15px;
+    box-shadow:8px 8px 0px #590202;
+}
+
+.new-post-button:hover{
+    background-color: #F2AA80;
+    transform:translate(calc(3px), calc(3px));
+    box-shadow:5px 5px 0px #a12424;
+}
+
+.my-profile-button{
+    width: 45%;
+    height: 40px;
+    margin-left:5%;
+    margin-top: 5px;
+    margin-bottom: 2px;
+    font-size: 20px;
+
+    border: 3px solid #8C0303;
+    border-radius: 15px;
+    box-shadow:8px 8px 0px #590202;
+}
+
+.my-profile-button:hover{
+    background-color: #F2AA80;
+    transform:translate(calc(3px), calc(3px));
+    box-shadow:5px 5px 0px #a12424;
+}

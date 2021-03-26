@@ -11,10 +11,8 @@
 // methods, without the compiler producing an error.
 let Handlebars: any;
 let $: any;
-
 const backendUrl = "http://localhost:8000";
-
-const testing = false;
+const testing = true;
 /**
  * NewEntryForm encapsulates all of the code for the form for adding an entry
  */
@@ -22,12 +20,7 @@ const testing = false;
 // Run some configuration code when the web page loads
 $(document).ready(function () {
     console.log("ready");
-    if(sessionStorage.getItem("sessionKey")){
-        BasicStructure.sessionKey = sessionStorage.getItem("sessionKey");
-    }else{
-        BasicStructure.sessionKey = "";
-    }
-    console.log(BasicStructure.sessionKey);
+ 
     BasicStructure.init();
     
 });

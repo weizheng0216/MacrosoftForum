@@ -1,63 +1,264 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <title>Tests</title>
-    <script src="jquery.min.js"></script>
+    <meta charset="UTF-8">
+
 
     <script src="jasmine.js"></script>
     <script src="jasmine-html.js"></script>
     <script src="boot.js"></script>
 
-    <script src="app.js"></script>
-
-    <script src="apptest.js"></script>
-    <!-- <script src="handlebars.min.js"></script> -->
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="handlebars.min.js"></script>
     <script src="templates.js"></script>
+    <link rel="stylesheet" href="app.css">
+    <script src="appForTest.js"></script>
 
-    <link rel="stylesheet" href="jasmine.css">
-    <link rel="stylesheet" href="app.css" />
-    <link href="https://fonts.googleapis.com/css?family=Fresca" rel="stylesheet">
+    <script src="apptest.js"></script>
+
+    <title>Document</title>
 </head>
 
 <body>
-    <button class="open-button" onclick="openForm()">Make a Post</button>
-    <div class="chat-popup" id="myForm">
-    <form class="form-container">
-        <h5><i class="far fa-comment-dots"></i></h5>
-        <textarea placeholder="Title" id="newTitle" ></textarea>
-        <textarea placeholder="Username/Anonymous" id="newUser" ></textarea>
-        <textarea placeholder="Type message.." id="newMessage" ></textarea>
-
-        <div class="container">
-            <div class="row">
-                <div class="col-sm">
-                    <button type="button" class="btn hide" onclick="closeForm()">Hide</button>
-                </div>
-                <div class="col-sm">
-                    <button type="button" class="btn clear" id="addCancel">Clear</button>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm">
-                    <button type="button" class="btn" id="addButton" onclick="closeForm()">Send</button>
-                </div>
-            </div>
+    <div style="position: relative">
+        <div id="banner">
+            <h1 class="banner-title">BUZZ</h1>
         </div>
-    </form>
+        <div id="main-block">
+            <div id="left-part">
+                <button class="new-post-button">
+                    <span class="glyphicon glyphicon-comment"></span>
+                    New Post
+                </button>
+
+                <button class="my-profile-button">
+                    <span class="glyphicon glyphicon-user"></span>
+                    My profile
+                </button>
+
+                <div class="post-brief-block" data-value="{{this.mPostID}}">
+                    <div class="upper-information">
+
+                        <div class="title">
+                            <!-- leave post title here -->
+                            {{this.mTitle}}
+                        </div>
+
+                        <div class="date">
+                            <!-- leave post date here -->
+                            {{this.mDate}}
+                        </div>
+                        {{#if this.mPinned}}
+                        <span class="glyphicon glyphicon-pushpin pin-icon"></span>
+                        {{/if}}
+                    </div>
+
+                    <div class="content">
+                        <!-- leave post content here -->
+                        {{this.mContent}}
+                    </div>
+
+                </div>
+
+            </div>
+            <div id="right-part">
+
+                <div class="my-user-profile-block">
+                    <h4 style="margin-top: 30px;">First Name:</h4>
+                    <p>{{this.mFirstName}}</p>
+                    <h4>Last Name:</h4>
+                    <p>{{this.mLastName}}</p>
+                    <h4>E-mail:</h4>
+                    <p>{{this.mEmail}}</p>
+
+
+                    <h4>Post: </h4>
+                    <h5>title: </h5>
+                    <textarea name="" id="post-title{{this.mPostID}}" cols="30" rows="3"
+                        class="edit-place">{{this.mTitle}}</textarea>
+                    <h5>content: </h5>
+                    <textarea name="" id="post-content{{this.mPostID}}" cols="30" rows="5"
+                        class="edit-place">{{this.mContent}}</textarea>
+                    <button class="post-update-button edit-button" data-value="{{this.mPostID}}">
+                        <span class="glyphicon glyphicon-upload"></span>
+                        update
+                    </button>
+
+                    <button class="post-delete-button edit-button" data-value="{{this.mPostID}}">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        delete
+                    </button>
+
+
+
+                    <h4>Comment: </h4>
+                    <h5>content: </h5>
+                    <textarea name="" id="comment-content{{this.mCommentID}}" cols="30" rows="5"
+                        class="edit-place">{{this.mContent}}</textarea>
+                    <button class="comment-update-button edit-button" data-value="{{this.mCommentID}}"
+                        data-postid="{{this.mPostID}}">
+                        <span class="glyphicon glyphicon-upload"></span>
+                        update
+                    </button>
+                    <button class="comment-delete-button edit-button" data-value="{{this.mCommentID}}"
+                        data-postid="{{this.mPostID}}">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        delete
+                    </button>
+
+                </div>
+
+
+                <div class="new-post-block" id="my-new-post-block">
+                    <div class="title">
+                        title
+                        <textarea class="input-title" id="input-title" placeholder="write your title here"></textarea>
+                    </div>
+
+                    <div class="content">
+                        content
+                        <textarea class="input-content" id="input-content"
+                            placeholder="write your content here"></textarea>
+                    </div>
+
+                    <button class="send-post" id="my-send-new-post-button">
+                        <span class="glyphicon glyphicon-send"></span>
+                        send
+                    </button>
+                </div>
+
+
+
+                
+
+                <div class="post-comment-view" data-value="{{this.mPostID}}">
+                    <div class="post-comment-block">
+                        <div class="post-detail-block" value-postid="">
+                            <div class="title">
+                                <!-- leave comment's title here -->
+                                {{this.mTitle}}
+                            </div>
+                            <div class="content">
+                                <!-- leave comment's content here -->
+                                {{this.mContent}}
+                            </div>
+
+                            <div class="lower-information">
+
+                                <button id="my-down-vote-button1"
+                                    class="dislike-button little-button my-down-vote-button my-vote-false"
+                                    data-postid="1" data-downvotestate="false">
+                                    <!-- leave down vote count of this post here -->
+                                    <span id="my-down-vote-count1" class="glyphicon glyphicon-thumbs-down">0
+
+
+                                    </span>
+                                </button>
+
+                                <button id="my-up-vote-button1"
+                                    class="like-button little-button my-up-vote-button my-vote-false" data-postid="1"
+                                    data-upvotestate="false">
+                                    <!-- leave up vote count of this post here -->
+                                    <span id="my-up-vote-count1" class="glyphicon glyphicon-thumbs-up">0
+
+                                    </span>
+
+                                </button>
+
+                                <button class="user-button little-button" data-value="1">
+                                    <span class="glyphicon glyphicon-user"></span>
+                                    <!-- leave post's user here -->
+                                    {{this.mUserFirstName}} {{this.mUserLastName}}
+                                </button>
+
+                                <button class="date-button little-button">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                    <!-- leave post's date here -->
+                                    {{this.mDate}}
+                                </button>
+
+
+
+                            </div>
+                        </div>
+
+
+                        <div class="comment-block" data-value="{{this.mCommentID}}">
+                            <div class="content">
+                                <!-- leave comment's content here -->
+                                {{this.mContent}}
+                            </div>
+
+                            <div class="lower-information">
+
+                                <button class="user-button little-button" data-value="{{this.mUserID}}">
+                                    <span class="glyphicon glyphicon-user"></span>
+                                    <!-- leave comment's user here -->
+                                    {{this.mUserID}}
+                                </button>
+
+                                <button class="date-button little-button">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                    <!-- leave commnet's post date here -->
+                                    {{this.mDate}}
+                                </button>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="add-comment-block">
+                        <textarea id="my-new-comment-content{{this.mPostID}}" class="comment-input"
+                            placeholder="add a comment"></textarea>
+                        <button class="send-comment" data-value="{{this.mPostID}}">
+                            <span class="glyphicon glyphicon-send"></span>
+                            Send!
+                        </button>
+                    </div>
+                </div>
+
+
+                <div class="other-user-profile-block">
+                    <span class="glyphicon glyphicon-remove close-button"></span>
+
+                    <div class="user-information">
+                        <h4>First Name:</h3>
+                            <p>{{this.mFirstName}}</p>
+                            <h4>Last Name:</h3>
+                                <p>{{this.mLastName}}</p>
+                                <h4>E-mail:</h3>
+                                    <p>{{this.mEmail}}</p>
+
+                                    {{#each this.mPosts}}
+                                    <h4>Post: </h4>
+
+                                    <h5>Title: </h5>
+                                    <p>{{this.mTitle}}</p>
+
+                                    <h5>Content: </h5>
+                                    <p>{{this.mContent}}</p>
+                                    {{/each}}
+
+                                    {{#each this.mContent}}
+                                    <h5>Comment: </h5>
+                                    <p>{{this.mContent}}</p>
+                                    {{/each}}
+
+                    </div>
+                </div>
+
+
+
+            </div>
+
+        </div>
     </div>
 
-    
-
-    <script>
-        function openForm() {
-          document.getElementById("myForm").style.display = "block";
-        }
-        
-        function closeForm() {
-          document.getElementById("myForm").style.display = "none";
-        }
-    </script>
 </body>
 
 </html>

@@ -18,6 +18,7 @@ mkdir $TARGETFOLDER/$WEBFOLDERNAME
 
 # there are many more steps to be done.  For now, we will just copy an HTML file
 cp index.html $TARGETFOLDER/$WEBFOLDERNAME
+cp login.html $TARGETFOLDER/$WEBFOLDERNAME
 
 # step 2: update our npm dependencies
 npm update
@@ -33,14 +34,22 @@ cp node_modules/bootstrap/dist/css/bootstrap.min.css $TARGETFOLDER/$WEBFOLDERNAM
 node_modules/typescript/bin/tsc app.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/app.js
 
 # step 5: copy css files
-cat app.css css/ElementList.css css/NewPost.css css/Navbar.css > $TARGETFOLDER/$WEBFOLDERNAME/app.css
+cat css/BasicStructure.css css/postBrief.css css/PostCommentBlock.css css/NewPostBlock.css css/MyprofileBlock.css css/OtherProfileBlock.css> $TARGETFOLDER/$WEBFOLDERNAME/app.css
+cp login.css $TARGETFOLDER/$WEBFOLDERNAME
+
 
 # step 6: compile handlebars templates to the deploy folder
-node_modules/handlebars/bin/handlebars hb/ElementList.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
-# node_modules/handlebars/bin/handlebars hb/NewPost.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
-node_modules/handlebars/bin/handlebars hb/Navbar.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+node_modules/handlebars/bin/handlebars hb/NewPostBlock.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+node_modules/handlebars/bin/handlebars hb/BriefPostsList.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+node_modules/handlebars/bin/handlebars hb/PostCommentBlock.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+node_modules/handlebars/bin/handlebars hb/BasicStructure.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+node_modules/handlebars/bin/handlebars hb/MyProfileBlock.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+node_modules/handlebars/bin/handlebars hb/OtherProfileBlock.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+
 
 # set up Jasmine
+
+node_modules/typescript/bin/tsc appForTest.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/appForTest.js
 node_modules/typescript/bin/tsc apptest.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/apptest.js
 cp spec_runner.html $TARGETFOLDER/$WEBFOLDERNAME
 cp node_modules/jasmine-core/lib/jasmine-core/jasmine.css $TARGETFOLDER/$WEBFOLDERNAME

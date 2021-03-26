@@ -1,204 +1,267 @@
 # Web
+
+## Introduction 
+
+User can login using google account in login.html. After login, the user will be redirected to index.html.
+
+In general, the front end's UI have two parts: left part and right part. Left part include 1) new post button 2) user information button 3) a list of brief posts. The right part will show corresponding interface when different operation is done on the left part. For example, when the user click the new post button, new post interface will be showed on the right. 
+
+## Dependencies
+
+Bootstrap, Handlebars and JQuery are used to ensure the web is functionally work. Specifically, icons in Boostrap are used. Handlebars process the responses from the backend and add the element in html, JQuery enable us to find a element efficiently.  
+
 ## Functions
 
-## **HTTP GET/POST/PUT for backend-end**
- ---
-```ts
-    refresh(option:string) {
-        if (option === "Date Posted") {
-            $.ajax({
-                type: "GET",
-                url: backendUrl + "/messages/sortbydate",
-                dataType: "json",
-                success: mainList.update
-            });
-        } else if (option === "Vote Counts"){
-            $.ajax({
-                type: "GET",
-                url: backendUrl + "/messages/sortbyvotes",
-                dataType: "json",
-                success: mainList.update
-            });
-        }
-    }
-```
-This function will get the data from backend according to different `option` paramter. `Date Posted` will sort the page so that latest post goes on the top, and `Vote Count` will sort the page so that most upvotes goes on the top
+To avoid mess up, all functions are writtern in 6 ts files. 5 of them are in the ts fold and one is app.ts. When deploying functions, `node_modules/typescript/bin/tsc app.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/app.js` in deploy.sh will combine all ts file into one app.js file. Hence in index.html, only app.js is loaded. 
 
----
-```ts
-    upvote() {
-        let id = $(this).data("value");
-        $.ajax({
-            type: "PUT",
-            url: backendUrl + "/messages/upvote/" + id,
-            dataType: "json",
-            // TODO: we should really have a function that looks at the return
-            //       value and possibly prints an error message.
-            success: mainList.doUp,
-            error : function(){
-                window.alert("/messages/upvote/" + id);
-              }
-        })
-    }
-```
-This function will change the `upvote count` data in backend to a specific button by adding one to it for each click.
+All the function in ts files are static. To call a function, use `ClassName.functionName()`
 
----
-```ts
-    private downvote() {
-        let id = $(this).data("value");
-        $.ajax({
-            type: "PUT",
-            url: backendUrl + "/messages/downvote/" + id,
-            dataType: "json",
-            success: mainList.doDown,
-            error : function(){
-                window.alert("/messages/downvote/" + id);
-              }
-        })
+For the same reason, we seperate CSS file into 6 files under fold css. `cat css/BasicStructure.css css/postBrief.css css/PostCommentBlock.css css/NewPostBlock.css css/MyprofileBlock.css css/OtherProfileBlock.css> $TARGETFOLDER/$WEBFOLDERNAME/app.css` will merge all css file into app.css. index.html only load app.css.
+
+## Communicate with Server
+`$ajax` is used to send request and process response in the web.
+```javascript
+ $.ajax({
+    type: "GET",
+    url: backendUrl + "/api/auth",
+    dataType: "json",
+    data: JSON.stringify({ "idToken": id_token }),
+    success: function (result:any) {
+        alert("login successfully.");
+        window.location.replace(backendUrl+"/index.html");
+        sessionStorage.setItem('sessionKey', result.sessionKey);
     }
+});
 ```
-Similar to upvote function, except it change the number count on the downvote button.
----
-```ts
-submitForm() {
-        let title = "" + $("#newTitle").val();
-        let content = "" + $("#newMessage").val();
-        let username = "" + $("#newUser").val();
-        let date = new Date();
-        if (title === "" || content === "" || username === "") {
-            window.alert("Error: title, messafe, or username is not valid");
-            return;
+This function is called in login.html, which is send the id_token to backend. If the id token is valid, the server will return a session key, and then we will jump to index.html. To store the session key, session storage is used. 
+```javascript
+BasicStructure.sessionKey = sessionStorage.getItem("sessionKey");
+```
+In the index.html, session is stored in BasicStructure.sessionKey. Each time the front end send request to server, seesion key will be included. 
+
+**The following functions are in BriefPostsList.ts**
+```javascript
+$.ajax({
+    type: "GET",
+    url: backendUrl + "/api/posts",
+    dataType: "json",
+    data: JSON.stringify({"sessionKey": BasicStructure.sessionKey}),
+    success: function(result:any){
+        BriefPostsList.update(result);
+        PostCommentBlock.update(result);
+    }
+});
+
+...
+
+class BriefPostsList {
+    private static update(data:any){
+
+        ...
+
+        $("#left-part").append(Handlebars.templates['BriefPostsList.hb'](data));
+
+        ...
+
+    }
+}
+
+...
+
+class PostCommentBlock {
+    public static update(data:any){
+
+        ...
+
+        $("#right-part").append(Handlebars.templates['PostCommentBlock.hb'](data));
+
+        ...
+
+    }
+}
+```
+This function will get all posts, all comments, and whether the user like/dislike each posts. In and ONLY in this function, the value of sessionKey will be checked. If the session key is "", which means the user may visit the index.html directly without login, the application will redirect the user to login.html. If the user has login, two update functions are called. In the update function, handlebars will help us to load the information to screen. 
+
+**The following functions are from MyProfileBlock.ts**
+```javascript
+ $.ajax({
+    type: "GET",
+    url: backendUrl + "/api/users/my",
+    dataType: "json",
+    data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
+    success: function (result: any) {
+        console.log(result);
+        MyProfileBlock.update(result);
+    }
+
+    ...
+    private static update(data: any){
+    
+        ...
+
+        $("#right-part").append(Handlebars.templates['MyProfileBlock.hb'](data));
+
+        ...
+
+    }
+});
+```
+This function will get "my" own information including my first name, last name, email, all posts and comment I sent. If success, the response will be processed by handlebars and posted to screen. 
+
+```javascript
+private static updatePost() {
+        
+    ...
+
+    $.ajax({
+        type: "PUT",
+        url: backendUrl + "/api/posts/" + mID,
+        dataType: "json",
+        data: JSON.stringify({
+            "sessionKey": BasicStructure.sessionKey,
+            "title": newTitle, "content": newContent
+        }),
+        success: function (result: any) {
+            console.log(result);
+            // refresh all posts and comments
+            MyProfileBlock.refresh();
         }
+    });
+}
+
+private static deletePost(){
+    
+    ...
+
+    $.ajax({
+        type: "DELETE",
+        url: backendUrl + "/api/posts/" + mID,
+        dataType: "json",
+        data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
+        success: function (result: any) {
+            console.log(result);
+            MyProfileBlock.refresh();
+        }
+    });
+}
+
+private static updateComment() {
+
+    ...
+
+    $.ajax({
+        type: "PUT",
+        url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID,
+        dataType: "json",
+        data: JSON.stringify({
+            "sessionKey": BasicStructure.sessionKey,
+            "content": newContent
+        }),
+        success: function (result: any) {
+            console.log(result);
+            MyProfileBlock.refresh();
+        }
+    });
+}
+
+private static deleteComment() {
+        
+        ...
+
         $.ajax({
-            type: "POST",
-            url: backendUrl + "/messages",
+            type: "DELETE",
+            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID,
             dataType: "json",
-            data: JSON.stringify({ mTitle: title, mContent: content, mUserName: username, mDate: date}),
-            success: newPost.onSubmitResponse
+            data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
+            success: function (result: any) {
+                console.log(result);
+                MyProfileBlock.refresh();
+            }
         });
     }
 ```
-This function is used that so user is able to add new data into the database. This function first validate the input, then sends the corresponding data to the backend using AJAX POSt.
+Those functions are 1) edit a post 2) delete a post 3) edit a comment 4) delete a comment. If success, `MyProfileBlock.refresh();` is called to ensure all posts and comments are up to date.
+
+**The following functions are from NewPostBlock.ts**
+```javascript
+private static sendPost(){
+        
+    ...
+    
+    $.ajax({
+        type: "POST",
+        url: backendUrl + "/api/posts",
+        dataType: "json",
+        data: JSON.stringify({"sessionKey": BasicStructure.sessionKey, 
+            "title": newTitle, "content": newContent}),
+        success: function(result:any){
+            console.log(result);
+            BriefPostsList.refresh();
+
+            ...
+
+        }
+    });
+}
+```
+This function will send a new post to backend. If success, `MyProfileBlock.refresh();` is called to ensure all posts and comments are up to date.
+
+**The following functions are from PostCommentBlock.ts**
+```javascript
+$.ajax({
+    type: "PUT",
+    url: backendUrl + "/api/posts/" + postID + "/vote",
+    dataType: "json",
+    data: JSON.stringify({
+        "sessionKey": BasicStructure.sessionKey,
+        "upvote": 0, "downovte": 0
+    }),
+    success: function (result: any) {
+        
+        ...
+
+    }
+});
+```
+This function will send user's attitude to a post: up vote/ down vote/ neutral.
+
+**Note that state check is performed in front end**
+|               | user click | like    | dislike |
+|---------------|------------|---------|---------|
+| current state |            |         |         |
+| neutral       |            | like    | dislike |
+| like          |            | neutral | dislike |
+| dislike       |            | like    | neutral |
+
+```javascript
+private static getOtherProfile() {
  
-## **Handlebars**
+    ...
 
- ---
-```html
-    <div class="container " id= "list">
-    <div class="card-columns justify-content-sm-center" id="ElementList">
-        {{#each mData}}
-        {{#if this.mPinned}}
-            <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">   
-                <div class="card-header">
-                    <i class="fas fa-thumbtack"></i> {{this.mDate}}
-                </div>         
-                <div class="card-body">
-                    <h5 class="card-title">
-                        {{this.mTitle}}
-                    </h5>
-                    <p class="card-text">{{this.mContent}}</p>
-                    <p class="card-text"><small class="text-white">By {{this.mUserName}}</small></p>
-                    <div class="container">
-                        <div class = "row justify-content-sm-center">
-                            <div class=".col-sm-3">
-                                <button class="upbtn" data-value="{{this.mID}}">
-                                    <i class="far fa-heart"></i>  {{this.mUpVote}} 
-                                </button>
-                            </div>
-                            <div class = "offset-md-2 .col-sm-3">
-                                <button class="downbtn" data-value="{{this.mID}}">
-                                    <i class="far fa-thumbs-down"></i> {{this.mDownVote}} 
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {{else}}
-            <div class="card bg-light mb-3" style="max-width: 18rem;">   
-                <div class="card-header">
-                    {{this.mDate}}
-                </div>         
-                <div class="card-body">
-                    <h5 class="card-title">
-                        {{this.mTitle}}
-                    </h5>
-                    <p class="card-text">{{this.mContent}}</p>
-                    <p class="card-text"><small class="text-muted">By {{this.mUserName}}</small></p>
-                    <div class="container">
-                        <div class = "row justify-content-sm-center">
-                            <div class=".col-sm-3">
-                                <button class="upbtn" data-value="{{this.mID}}">
-                                    <i class="far fa-heart"></i>  {{this.mUpVote}} 
-                                </button>
-                            </div>
-                            <div class = "offset-md-2 .col-sm-3">
-                                <button class="downbtn" data-value="{{this.mID}}">
-                                    <i class="far fa-thumbs-down"></i> {{this.mDownVote}} 
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {{/if}}
-        {{/each}}
-    </div>
-</div>
+    $.ajax({
+        type: "GET",
+        url: backendUrl + "/api/users/" + userID,
+        dataType: "json",
+        data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
+        success: function (result: any) {
+           
+            PostCommentBlock.showOtherProfile(result);
+
+        }
+    });
+    
+}
+
+private static showOtherProfile(data: any) {
+
+    ...
+
+    $("#right-part").append(Handlebars.templates['OtherProfileBlock.hb'](data));
+
+    ...
+}
 ```
-This handlebar is use to populated the body using the data from the backend. It used the card-column from the bootstrap for better looking. It first check if the data is pinned, if it is the case, it will use the yellow post box for that specific data, else, it will just use the regular box. It also contains upvote and downvote button that change whenever users click them.
+This function will request other user's information including first name, last name, email, all posts, and all comments. 
 
- ---
-```java
-    public synchronized void createTable()
-```
-This function will create the table message.The attributes of the table are: **title, content, username, vote_up, vote_down, date, pinned.**
+**more documentations are in ts files**
 
-**Note:** createTable() is not called in getDatabase(); make sure the table is created before calling following method, or there must be an error
-
- ---
-```java
-    public synchronized void dropTable()
-```
-This function will drop the table **message**
-
- ---
-```java
-    public synchronized Arraylist<DataRow> selectAllSortByVotes() 
-```
-this function will return all messages sorted by votes
-
-This function wil return an array list of DataRow. The array list contains 
-all messages in table message **sorted by up votes**. Each message contains attributes 
-title, content, username, date, vote_up(that indicates number of up vote 
-of this message), vote_down(that indicates number of down vote of this message), and pinned(that indicates whether this message is pinned).
-
-**NOTE:** messages that are pinned are in front of the array list. 
-
-**NOTE:** messages are sort only by up votes, not up votes minus down votes.
- 
- ---
-```java
-    public synchronized Arraylist<DataRow> selectAllSortByDate() 
-```
-This function wil return an array list of DataRow. This array list contain 
-all message in table message sortin by date. Each message contains attributes 
-title, content, username, date, vote_up(that indicates number of up vote 
-of this message), vote_down(that indicates number of down vote of this message), and pinned(that indicates whether this message is pinned).
-
-**NOTE:** messages that are pinned are in front of the array list. 
-
- ---
-```java
-    public synchronized DataRow selectOne(int id) 
-```
-This function wil return a seached message in form of DataRow. This message contains attributes: title, content, username, date(when the 
-message is added), vote_up(that indicates number of up vote of this message), 
-vote_down(that indicates number of down vote of this message), and pinned(that 
-indicates whether this message is pinned).
-
- ---
-
-## **Tests**
-Unit tests are written in *cse216_macrosoft/web/apptest.ts*. The tests are mainly for the UI, especially the event triggered by clicking. Jasmine is used for the test, [click here](https://cse216-macrosoft.herokuapp.com/spec_runner.html) for more details.
