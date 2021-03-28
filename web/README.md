@@ -500,3 +500,20 @@ This handlebars will show other user's information including first name, last na
 </div>
 ```
 under this interface, user can make a new post. 
+
+## Debug and Tests
+
+Seven tests are performed. 
+
+1. test close/open other user interface
+    - test show other user interface
+    - test show other user interface
+2. test like and dislike
+    - test like
+    - test dislike
+3. basic structure
+    - show new post block
+    - show user profile interface
+    - show post detail
+
+Since front then will always connect to backend, to avoid this action in front end test, `testing` flag is set. When this flag is on, all resquest to backend will be blocked. Additionally, `debug` flag is set that is whenever backend send a response to front end, the response information will be print in console. Normally, both `testing` and `debug` flag is `false`. 
