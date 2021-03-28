@@ -3,12 +3,10 @@ package edu.lehigh.cse216.macrosoft.admin;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.*;
-import java.util.ArrayList;
+
 
 /**
  * Encapsulate a fully configured database.
- *
- * @author Haocheng Gao
  */
 public class Database {
 
@@ -17,7 +15,16 @@ public class Database {
      */
     private Connection mConnection;
 
+    /**
+     * This class follows singleton design.
+     */
     private Database() {}
+
+    /**
+     * There should only be one {@code Database} gets instantiated during
+     * the lifetime of the application.
+     */
+    private static Database database;
 
     /**
      * Create a instance of database with url.
@@ -27,21 +34,24 @@ public class Database {
      */
     static Database getInstance(String url)
             throws SQLException, ClassNotFoundException, URISyntaxException {
-        Database db = new Database();
-        db.getConnection(url);
-        try {
-            db.initPreparedStmt();
-        } catch (SQLException exp) {
-            db.disconnect();
-            throw exp;
+        if (database == null) {
+            Database db = new Database();
+            db.getConnection(url);
+            try {
+                db.initPreparedStatements();
+            } catch (SQLException exp) {
+                db.disconnect();
+                throw exp;
+            }
+            database = db;
         }
-        return db;
+        return database;
     }
 
     /**
-     * Illustrative function that make the database connection based on the
-     * url provided. It sets the {@code mConnection} directly upon success,
-     * and leaves it as {@code null} upon errors.
+     * Make the database connection based on the url provided.  It sets the
+     * {@code mConnection} directly upon success, and leaves it as {@code null}
+     * upon errors.
      */
     private void getConnection(String url)
             throws SQLException, ClassNotFoundException, URISyntaxException {
@@ -61,142 +71,6 @@ public class Database {
     }
 
     /**
-     * Illustrative function that initialize the prepared statements. The
-     * prepared statements will be used to execute SQL instructions.
-     */
-    private void initPreparedStmt() throws SQLException {
-        // SQL Statements
-        String createTable = "CREATE TABLE message (" +
-                "id         SERIAL PRIMARY KEY, " +
-                "title      VARCHAR(100), " +
-                "content    VARCHAR(500), " +
-                "date       TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
-                "vote_up    INTEGER, " +
-                "vote_down  INTEGER, " +
-                "pinned     BOOLEAN," +
-                "username   VARCHAR(50))";
-        String insertMessage = "INSERT INTO message VALUES (" +
-                "default, " + // id
-                "?, "       + // title      1
-                "?, "       + // content    2
-                "default, " + // date
-                "?, "       + // vote_up    3
-                "?, "       + // vote_down  4
-                "?, "       + // pinned     5
-                "?)";         // username   6
-        String updateMessageById = "UPDATE message SET " +
-                "title=?, "     + // 1
-                "content=?, "   + // 2
-                "vote_up=?, "   + // 3
-                "vote_down=?, " + // 4
-                "pinned=?, "    + // 5
-                "username=? "   + // 6
-                "WHERE id=?";     // 7
-        String selectAllMessages = "SELECT * FROM message ORDER BY pinned ASC, date ASC";
-        String selectMessageById = "SELECT * FROM message WHERE id=?";
-        String deleteMessageById = "DELETE FROM message WHERE id=?";
-        String dropTable  = "DROP TABLE message";
-
-        // Create prepared statements
-        mCreateTable = mConnection.prepareStatement(createTable);
-        mInsertMessage = mConnection.prepareStatement(insertMessage);
-        mUpdateMessageById = mConnection.prepareStatement(updateMessageById);
-        mSelectAllMessages = mConnection.prepareStatement(selectAllMessages);
-        mSelectMessageById = mConnection.prepareStatement(selectMessageById);
-        mDeleteById = mConnection.prepareStatement(deleteMessageById);
-        mDropTable = mConnection.prepareStatement(dropTable);
-    }
-
-    // The prepared statements
-    private PreparedStatement mCreateTable;
-    private PreparedStatement mInsertMessage;
-    private PreparedStatement mUpdateMessageById;
-    private PreparedStatement mSelectAllMessages;
-    private PreparedStatement mSelectMessageById;
-    private PreparedStatement mDeleteById;
-    private PreparedStatement mDropTable;
-
-    /**
-     * Create the message table.
-     */
-    void createTable() throws SQLException {
-        mCreateTable.execute();
-    }
-
-    /**
-     * Insert a new message to the database.
-     */
-    void insertMessage(String title, String content,
-                       int upVotes, int downVotes,
-                       boolean pinned, String username)
-            throws SQLException {
-        mInsertMessage.setString(1, title);
-        mInsertMessage.setString(2, content);
-        mInsertMessage.setInt(3, upVotes);
-        mInsertMessage.setInt(4, downVotes);
-        mInsertMessage.setBoolean(5, pinned);
-        mInsertMessage.setString(6, username);
-        mInsertMessage.executeUpdate();
-    }
-
-    /**
-     * Get all messages. The messages will be in ascending order based on
-     * the timestamp.
-     * @return the list of messages.
-     */
-    ArrayList<Message> selectAllMessages() throws SQLException {
-        ArrayList<Message> ls = new ArrayList<>();
-        ResultSet rs = mSelectAllMessages.executeQuery();
-        while (rs.next()) {
-            ls.add(new Message(rs));
-        }
-        rs.close();
-        return ls;
-    }
-
-    /**
-     * Get a single message by its id.
-     * @param id ID of the message
-     * @return message with given ID
-     */
-    Message selectMessageById(int id) throws SQLException {
-        mSelectMessageById.setInt(1, id);
-        ResultSet rs = mSelectMessageById.executeQuery();
-        return rs.next() ? new Message(rs) : null;
-    }
-
-    /**
-     * Update an existing message with a {@code Message} instance. You can
-     * only get such instances though methods like {@code selectMessageById}.
-     * @param msg the Message that will override the existing one.
-     */
-    void updateMessage(Message msg) throws SQLException {
-        mUpdateMessageById.setString(1, msg.mTitle);
-        mUpdateMessageById.setString(2, msg.mContent);
-        mUpdateMessageById.setInt(3, msg.mUpVotes);
-        mUpdateMessageById.setInt(4, msg.mDownVotes);
-        mUpdateMessageById.setBoolean(5, msg.mPinned);
-        mUpdateMessageById.setString(6, msg.mUsername);
-        mUpdateMessageById.setInt(7, msg.mID);
-        mUpdateMessageById.executeUpdate();
-    }
-
-    /**
-     * Delete the message with given ID from the database.
-     */
-    void deleteMessageById(int id) throws SQLException {
-        mDeleteById.setInt(1, id);
-        mDeleteById.executeUpdate();
-    }
-
-    /**
-     * Drop the message table. All data will be gone.
-     */
-    void dropTable() throws SQLException {
-        mDropTable.execute();
-    }
-
-    /**
      * Disconnect from the database.
      */
     void disconnect() throws SQLException {
@@ -208,35 +82,256 @@ public class Database {
         }
     }
 
-    /**
-     * A {@code Message} represents a row in the message table. It include
-     * all fields of the row, with the ones that shouldn't be modified by
-     * anyone being final. The only way to obtain a {@code Message} instance
-     * is by calling {@code Database} methods and pull a message from the
-     * database.
+    /*
+     * Prepared statements of this Database.  Generated by the script.
      */
-    static class Message {
-        final int mID;
-        String mTitle;
-        String mContent;
-        final String mDate;
-        int    mUpVotes;
-        int    mDownVotes;
-        String mUsername;
-        boolean mPinned;
+    private PreparedStatement mCreateUserTable;
+    private PreparedStatement mDropUserTable;
+    private PreparedStatement mInsertUser;
+    private PreparedStatement mSelectUserById;
+    private PreparedStatement mSelectUserByEmail;
+    private PreparedStatement mDeleteUserById;
+    //private PreparedStatement mUpdateUserById;
 
-        /**
-         * Private constructor, convert the SQL query result into Message.
-         */
-        private Message(ResultSet rs) throws SQLException {
-            mID = rs.getInt("id");
-            mTitle = rs.getString("title");
-            mContent = rs.getString("content");
-            mDate = rs.getString("date");
-            mUpVotes = rs.getInt("vote_up");
-            mDownVotes = rs.getInt("vote_down");
-            mPinned = rs.getBoolean("pinned");
-            mUsername = rs.getString("username");
-        }
+    private PreparedStatement mCreatePostTable;
+    private PreparedStatement mDropPostTable;
+    private PreparedStatement mInsertPost;
+    private PreparedStatement mSelectAllPosts;
+    private PreparedStatement mSelectAllPostsJoinUsers;
+    private PreparedStatement mSelectPostById;
+    private PreparedStatement mUpdatePostById;
+    private PreparedStatement mDeletePostById;
+
+    private PreparedStatement mSelectAll;
+
+    private PreparedStatement mCreateCommentTable;
+    private PreparedStatement mDropCommentTable;
+    private PreparedStatement mInsertComment;
+    private PreparedStatement mSelectAllCommentsJoinUsers;
+    private PreparedStatement mSelectCommentsByUserId;
+    private PreparedStatement mSelectCommentsByPostId;
+    private PreparedStatement mUpdateCommentById;
+    private PreparedStatement mDeleteCommentById;
+
+    private PreparedStatement mCreateVoteTable;
+    private PreparedStatement mDropVoteTable;
+    private PreparedStatement mInsertVote;
+    private PreparedStatement mSelectVotesByUserId;
+    private PreparedStatement mSelectVoteByIds;
+    private PreparedStatement mUpdateVoteByIds;
+    private PreparedStatement mDeleteVoteByIds;
+
+    /**
+     * Initialize the tables of this Database.  The primary job is to create
+     * the {@code PreparedStatement}s for Database operations.  This function
+     * is to be generated by the script.
+     */
+    private void initPreparedStatements() throws SQLException {
+        mCreateUserTable = mConnection.prepareStatement("CREATE TABLE users ( user_id SERIAL PRIMARY KEY, email VARCHAR(50), first_name VARCHAR(50), last_name VARCHAR(50) )");
+        mDropUserTable = mConnection.prepareStatement("DROP TABLE users");
+        mInsertUser = mConnection.prepareStatement("INSERT INTO users VALUES (default, ?, ?, ?)");
+        mSelectUserById = mConnection.prepareStatement("SELECT * FROM users WHERE user_id=?");
+        mSelectUserByEmail = mConnection.prepareStatement("SELECT * FROM users WHERE email=?");
+        mDeleteUserById = mConnection.prepareStatement("DELETE * FROM users WHERE user_id=?");
+        //mUpdateUserById = mConnection.prepareStatement("UPDATE users SET email=?, first_name=?, last_name=? WHERE user_id=?");
+
+
+
+        mSelectAll = mConnection.prepareStatement("SELECT * from posts");
+        mCreatePostTable = mConnection.prepareStatement("CREATE TABLE posts ( post_id SERIAL PRIMARY KEY, title VARCHAR(100), content VARCHAR(500), date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, vote_up INTEGER, vote_down INTEGER, user_id INTEGER REFERENCES users (user_id), pinned BOOLEAN )");
+        mDropPostTable = mConnection.prepareStatement("Drop TABLE posts");
+        mInsertPost = mConnection.prepareStatement("INSERT INTO posts VALUES (default, ?, ?, default, ?, ?, ?, ?)");
+        mSelectAllPostsJoinUsers = mConnection.prepareStatement("SELECT post_id, title, content, date, vote_up, vote_down, pinned, users.last_name, users.first_name FROM posts JOIN users ON posts.user_id=users.user_id");
+        mSelectAllPosts = mConnection.prepareStatement("SELECT posts.post_id, posts.title, posts.content, posts.date, posts.vote_up, posts.vote_down, posts.pinned, users.last_name, users.first_name, users.email FROM posts LEFT JOIN users ON posts.user_id=users.user_id");
+        
+        
+        mSelectPostById = mConnection.prepareStatement("SELECT * FROM posts WHERE post_id=?");
+        mUpdatePostById = mConnection.prepareStatement("UPDATE posts SET title=?, content=?, vote_up=?, vote_down=?, pinned=? WHERE post_id=?");
+        mDeletePostById = mConnection.prepareStatement("DELETE * FROM posts WHERE post_id=?");
+        
+        mCreateCommentTable = mConnection.prepareStatement("CREATE TABLE comments ( comment_id SERIAL PRIMARY KEY, content VARCHAR(500), date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, user_id INTEGER REFERENCES users (user_id), post_id INTEGER REFERENCES posts (post_id) )");
+        mDropCommentTable = mConnection.prepareStatement("DROP TABLE comments");
+        mInsertComment = mConnection.prepareStatement("INSERT INTO comments VALUES (default, ?, default, ?, ?)");
+        mSelectAllCommentsJoinUsers = mConnection.prepareStatement("SELECT comment_id, content, date, users.last_name, users.first_name FROM comments JOIN users ON comments.user_id=users.user_id");
+        mSelectCommentsByUserId = mConnection.prepareStatement("SELECT * FROM comments WHERE user_id=?");
+        mSelectCommentsByPostId = mConnection.prepareStatement("SELECT * FROM comments WHERE post_id=?");
+        mUpdateCommentById = mConnection.prepareStatement("UPDATE comments SET content=? WHERE comment_id=?");
+        mDeleteCommentById = mConnection.prepareStatement("DELETE * FROM comments WHERE commentId=?");
+        
+        mCreateVoteTable = mConnection.prepareStatement("CREATE TABLE votes ( user_id INTEGER, post_id INTEGER, vote_up BOOLEAN, vote_down BOOLEAN )");
+        mDropVoteTable = mConnection.prepareStatement("DROP TABLE votes");
+        mInsertVote = mConnection.prepareStatement("INSERT INTO votes VALUES (?, ?, ?, ?)");
+        mSelectVotesByUserId = mConnection.prepareStatement("SELECT * FROM votes WHERE user_id=?");
+        mSelectVoteByIds = mConnection.prepareStatement("SELECT * FROM votes WHERE user_id=? AND post_id=?");
+        mUpdateVoteByIds = mConnection.prepareStatement("UPDATE votes SET vote_up=?, vote_down=?");
+        mDeleteVoteByIds = mConnection.prepareStatement("DELETE * FROM votes WHERE user_id=? AND post_id=?");
     }
+
+    // **********************************************************************
+    // *                database operations (generated)
+    // **********************************************************************
+
+    void createUserTable() throws SQLException {
+        mCreateUserTable.execute();
+    }
+
+    void dropUserTable() throws SQLException {
+        mDropUserTable.execute();
+    }
+
+    void insertUser(String email, String first, String last) throws SQLException {
+        mInsertUser.setString(1, email);
+        mInsertUser.setString(2, first);
+        mInsertUser.setString(3, last);
+        mInsertUser.executeUpdate();
+    }
+
+    ResultSet selectUserById(int userId) throws SQLException {
+        mSelectUserById.setInt(1, userId);
+        return mSelectUserById.executeQuery();
+    }
+
+    ResultSet selectUserByEmail(String email) throws SQLException {
+        mSelectUserByEmail.setString(1, email);
+        return mSelectUserByEmail.executeQuery();
+    }
+
+    void deleteUserById(int userId) throws SQLException {
+        mDeleteUserById.setInt(1, userId);
+        mDeleteUserById.executeUpdate();
+    }
+
+    // ***************
+    // Post Table Part
+    // ***************
+    void createPostTable() throws SQLException {
+        mCreatePostTable.execute();
+    }
+
+    void dropPostTable() throws SQLException {
+        mDropPostTable.execute();
+    }
+
+    ResultSet selectPostAll() throws SQLException{
+        return mSelectAll.executeQuery();
+
+    }
+
+    void insertPost(String title, String content, int upVote, int downVote, int userId, boolean pinned) throws SQLException {
+        mInsertPost.setString(1, title);
+        mInsertPost.setString(2, content);
+        mInsertPost.setInt(3, upVote);
+        mInsertPost.setInt(4, downVote);
+        mInsertPost.setInt(5, userId);
+        mInsertPost.setBoolean(6, pinned);
+        mInsertPost.executeUpdate();
+    }
+
+    ResultSet selectAllPostsJoinUsers() throws SQLException {
+        return mSelectAllPostsJoinUsers.executeQuery();
+    }
+
+    ResultSet selectPostById(int postId) throws SQLException {
+        mSelectPostById.setInt(1, postId);
+        return mSelectPostById.executeQuery();
+    }
+
+    void updatePostById(String title, String content, int upVote, int downVote, boolean pinned, int userId) throws SQLException {
+        mUpdatePostById.setString(1, title);
+        mUpdatePostById.setString(2, content);
+        mUpdatePostById.setInt(3, upVote);
+        mUpdatePostById.setInt(4, downVote);
+        mUpdatePostById.setBoolean(5, pinned);
+        mUpdatePostById.setInt(6, userId);
+        mUpdatePostById.executeUpdate();
+    }
+
+    void deletePostById(int postId) throws SQLException {
+        mDeletePostById.setInt(1, postId);
+        mDeletePostById.executeUpdate();
+    }
+
+    void createCommentTable() throws SQLException {
+        mCreateCommentTable.execute();
+    }
+
+    void dropCommentTable() throws SQLException {
+        mDropCommentTable.execute();
+    }
+
+    void insertComment(String content, int userId, int postId) throws SQLException {
+        mInsertComment.setString(1, content);
+        mInsertComment.setInt(2, userId);
+        mInsertComment.setInt(3, postId);
+        mInsertComment.executeUpdate();
+    }
+
+    ResultSet selectAllCommentsJoinUsers() throws SQLException {
+        return mSelectAllCommentsJoinUsers.executeQuery();
+    }
+
+    ResultSet selectCommentsByUserId(int userId) throws SQLException {
+        mSelectCommentsByUserId.setInt(1, userId);
+        return mSelectCommentsByUserId.executeQuery();
+    }
+
+    ResultSet selectCommentsByPostId(int postId) throws SQLException {
+        mSelectCommentsByPostId.setInt(1, postId);
+        return mSelectCommentsByPostId.executeQuery();
+    }
+
+    void updateCommentById(String content, int commentId) throws SQLException {
+        mUpdateCommentById.setString(1, content);
+        mUpdateCommentById.setInt(2, commentId);
+        mUpdateCommentById.executeUpdate();
+    }
+
+    void deleteCommentById(int commentId) throws SQLException {
+        mDeleteCommentById.setInt(1, commentId);
+        mDeleteCommentById.executeUpdate();
+    }
+
+
+
+    void createVoteTable() throws SQLException {
+        mCreateVoteTable.execute();
+    }
+
+    void dropVoteTable() throws SQLException {
+        mDropVoteTable.execute();
+    }
+
+    void insertVote(int userId, int postId, boolean upVote, boolean downVote) throws SQLException {
+        mInsertVote.setInt(1, userId);
+        mInsertVote.setInt(2, postId);
+        mInsertVote.setBoolean(3, upVote);
+        mInsertVote.setBoolean(4, downVote);
+        mInsertVote.executeUpdate(); // post vote increment
+    }
+
+    ResultSet selectVotesByUserId(int userId) throws SQLException {
+        mSelectVotesByUserId.setInt(1, userId);
+        return mSelectVotesByUserId.executeQuery();
+    }
+
+    ResultSet selectVoteByIds(int userId, int postId) throws SQLException {
+        mSelectVoteByIds.setInt(1, userId);
+        mSelectVoteByIds.setInt(2, postId);
+        return mSelectVoteByIds.executeQuery();
+    }
+
+    void updateVoteByIds(boolean upVote, boolean downVote, int userId, int postId) throws SQLException {
+        mUpdateVoteByIds.setBoolean(1, upVote);
+        mUpdateVoteByIds.setBoolean(2, downVote);
+        mUpdateVoteByIds.setInt(3, userId);
+        mUpdateVoteByIds.setInt(4, postId);
+        mUpdateVoteByIds.executeUpdate();
+    }
+
+    void deleteVoteByIds(int userId, int postId) throws SQLException {
+        mDeleteVoteByIds.setInt(1, userId);
+        mDeleteVoteByIds.setInt(2, postId);
+        mDeleteVoteByIds.executeUpdate();
+    }
+
 }
