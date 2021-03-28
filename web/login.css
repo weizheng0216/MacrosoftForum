@@ -1,0 +1,44 @@
+.containor{
+    position: absolute;
+    text-align: center;
+
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    background-color: #a12424;
+    color: white;
+}
+
+.banner{
+    position: relative;
+    top: 40%;
+    font-size: 40px;
+    font-family: sans-serif;
+    font-weight: 700;
+}
+
+.login-button{
+    position: relative;
+    top: 42%;
+    width: 150px;
+    margin-left: 45%;
+    margin-right: 45%;
+
+    overflow: hidden;
+
+    background-color: white;
+    border: 3px solid #8C0303;
+    border-radius: 15px;
+    box-shadow:10px 10px 0px #590202;
+}
+
+.login-button:hover{
+    cursor:pointer;
+    transform:translate(calc(3px), calc(3px));
+    box-shadow:5px 5px 0px #a12424;
+}
+
+.google-button{
+    margin: 5px;
+}

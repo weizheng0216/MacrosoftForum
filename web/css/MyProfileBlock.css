@@ -1,0 +1,57 @@
+.my-user-profile-block{
+
+    position: relative;
+    left:2%;
+    right: 2%;
+    width: 96%;
+    height: 90%;
+
+    overflow: hidden;
+    border: 3px solid #8C0303;
+    border-radius: 15px;
+    box-shadow:8px 8px 0px #a12424;
+
+    overflow-y: scroll;
+}
+
+.my-user-profile-block h4{
+    font-size: 20px;
+    font-weight: 700;
+    text-indent: 30px;
+}
+
+.my-user-profile-block h5{
+    font-size: 20px;
+    font-weight: 700;
+    text-indent: 60px;
+}
+
+.my-user-profile-block p{
+    text-indent: 50px;
+}
+
+.my-user-profile-block .edit-place{
+    position: relative;
+    overflow-y:scroll;
+    width: 90%;
+    left: 50px;
+    resize: none;
+    text-indent: 20px;
+    border: 3px solid #8C0303;
+    border-radius: 15px;
+
+}
+
+.my-user-profile-block .edit-button{
+    margin-top: 10px;
+    position: relative;
+    right: -50%;
+    width: 20%;
+    border: 3px solid #8C0303;
+    border-radius: 15px;
+    margin-left: 10px;
+}
+
+.my-user-profile-block .edit-button:hover{
+    background-color: #F2AA80;
+}

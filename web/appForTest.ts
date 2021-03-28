@@ -11,11 +11,8 @@
 // methods, without the compiler producing an error.
 let Handlebars: any;
 let $: any;
-
-const backendUrl = "https://cse216-macrosoft.herokuapp.com";
-
-const testing = false;
-
+const backendUrl = "http://localhost:8000";
+const testing = true;
 const debug = false;
 /**
  * NewEntryForm encapsulates all of the code for the form for adding an entry
@@ -23,16 +20,9 @@ const debug = false;
 
 // Run some configuration code when the web page loads
 $(document).ready(function () {
-    if (debug)
-        console.log("ready");
-    if (sessionStorage.getItem("sessionKey")) {
-        BasicStructure.sessionKey = sessionStorage.getItem("sessionKey");
-    } else {
-        BasicStructure.sessionKey = "";
-    }
-    if (debug)
-        console.log(BasicStructure.sessionKey);
+    console.log("ready");
+ 
     BasicStructure.init();
-
+    
 });
 

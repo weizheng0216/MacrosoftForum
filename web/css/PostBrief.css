@@ -1,0 +1,80 @@
+.post-brief-block{
+    position: relative;
+    width: 94%;
+    height: 85px;
+    left: 4%;
+    right: 2%;
+    margin-top: 10px;
+    margin-bottom: 2px;
+    
+    border: 3px solid #8C0303;
+    border-radius: 15px;
+    box-shadow:8px 8px 0px #590202;
+    /* background-color: #D9AB9A; */
+}
+
+.post-brief-block:hover{
+    cursor:pointer;
+    transform:translate(calc(3px), calc(3px));
+    box-shadow: 3px 3px 0px #a12424;
+}
+
+.post-brief-block .upper-information{
+    position: relative;
+    width: 100%;
+    height:30px;
+    margin-top: 5px;
+    font-size: 15px;
+
+    overflow: hidden;
+}
+
+.upper-information .title{
+    position: relative;
+    width: 70%;
+    height: 30px;
+    float: left;
+
+    text-indent: 25px;
+    line-height: 30px;
+    font-weight: 700;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.upper-information .date{
+    position: relative;
+    line-height: 30px;
+    width: 20%;
+    height: 30px;
+    float: left;
+
+    text-indent: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.upper-information .pin-icon{
+    height: 30px;
+    width: 10%;
+    text-align: center;
+
+}
+
+.post-brief-block .content{
+    position: relative;
+    width: 90%;
+    margin-top:5px;
+    margin-bottom: 5px;
+    margin-left: 5%;
+    margin-right:5%;
+    max-height: 40px;
+    line-height: 20px;
+
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
