@@ -218,7 +218,7 @@ class PostCommentBlock {
         } else {
             $(".other-user-profile-block").show();
             $(".close-button").click(function () {
-                $(".other-user-profile-block").remove();
+                $(".other-user-profile-block").hide();
             })
         }
 
