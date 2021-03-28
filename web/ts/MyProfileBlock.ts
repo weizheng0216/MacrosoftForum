@@ -12,9 +12,9 @@ class MyProfileBlock {
             console.log("\tsession key: " + BasicStructure.sessionKey);
             $.ajax({
                 type: "GET",
-                url: backendUrl + "/api/users/my",
+                url: backendUrl + "/api/users/my/" + BasicStructure.sessionKey,
                 dataType: "json",
-                data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
+                // data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
                 success: function (result: any) {
                     console.log(result);
                     MyProfileBlock.update(result);
@@ -67,16 +67,16 @@ class MyProfileBlock {
         }
         $.ajax({
             type: "PUT",
-            url: backendUrl + "/api/posts/" + mID,
+            url: backendUrl + "/api/posts/" + mID+"/"+BasicStructure.sessionKey,
             dataType: "json",
             data: JSON.stringify({
-                "sessionKey": BasicStructure.sessionKey,
                 "title": newTitle, "content": newContent
             }),
             success: function (result: any) {
                 console.log(result);
 
                 // refresh all posts and comments
+                BriefPostsList.refresh();
                 MyProfileBlock.refresh();
             }
         });
@@ -90,11 +90,11 @@ class MyProfileBlock {
         console.log("delete post: " + mID);
         $.ajax({
             type: "DELETE",
-            url: backendUrl + "/api/posts/" + mID,
+            url: backendUrl + "/api/posts/" + mID+"/"+BasicStructure.sessionKey,
             dataType: "json",
-            data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
             success: function (result: any) {
                 console.log(result);
+                BriefPostsList.refresh();
                 MyProfileBlock.refresh();
             }
         });
@@ -115,14 +115,15 @@ class MyProfileBlock {
         }
         $.ajax({
             type: "PUT",
-            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID,
+            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID +"/"+BasicStructure.sessionKey,
             dataType: "json",
             data: JSON.stringify({
-                "sessionKey": BasicStructure.sessionKey,
+                "postID" : mPID,
                 "content": newContent
             }),
             success: function (result: any) {
                 console.log(result);
+                BriefPostsList.refresh();
                 MyProfileBlock.refresh();
             }
         });
@@ -137,11 +138,11 @@ class MyProfileBlock {
         console.log("delete comment: " + mCID + " under post: " + mPID);
         $.ajax({
             type: "DELETE",
-            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID,
+            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID+"/"+BasicStructure.sessionKey,
             dataType: "json",
-            data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
             success: function (result: any) {
                 console.log(result);
+                BriefPostsList.refresh();
                 MyProfileBlock.refresh();
             }
         });

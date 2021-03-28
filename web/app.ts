@@ -12,7 +12,7 @@
 let Handlebars: any;
 let $: any;
 
-const backendUrl = "http://localhost:8000";
+const backendUrl = "https://cse216-macrosoft.herokuapp.com";
 
 const testing = false;
 /**

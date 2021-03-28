@@ -4,9 +4,9 @@
     left:2%;
     right: 2%;
     width: 96%;
-    height: 70%;
+    min-height: 70%;
 
-    overflow: hidden;
+    overflow: scroll;
     border: 3px solid #8C0303;
     border-radius: 15px;
     box-shadow:8px 8px 0px #a12424;

@@ -42,10 +42,9 @@ class NewPostBlock {
         }else{
             $.ajax({
                 type: "POST",
-                url: backendUrl + "/api/posts",
+                url: backendUrl + "/api/posts/"+BasicStructure.sessionKey,
                 dataType: "json",
-                data: JSON.stringify({"sessionKey": BasicStructure.sessionKey, 
-                    "title": newTitle, "content": newContent}),
+                data: JSON.stringify({"title": newTitle, "content": newContent}),
                 success: function(result:any){
                     console.log(result);
                     BriefPostsList.refresh();

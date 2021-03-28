@@ -26,9 +26,9 @@ class BriefPostsList {
                 console.log("BriefPostsList.refresh() called")
                 $.ajax({
                     type: "GET",
-                    url: backendUrl + "/api/posts",
+                    url: backendUrl + "/api/posts/"+ BasicStructure.sessionKey,
                     dataType: "json",
-                    data: JSON.stringify({"sessionKey": BasicStructure.sessionKey}),
+                    // data: JSON.stringify({"sessionKey": BasicStructure.sessionKey}),
                     //success: console.log
                     success: function(result:any){
                         console.log(result);
@@ -83,6 +83,7 @@ class BriefPostsList {
         // hide all post comment block. 
         $(".post-comment-view").hide();
 
+        $(".my-user-profile-block").hide();
         // get the specific post comment block by post id because each post comment block 
             // has a data-value={{postid}} attribute, which is unique. 
         $(".post-comment-view[data-value='"+postID+"']").show();

@@ -30,7 +30,7 @@
 
     <script>
 
-        const backendUrl = "http://localhost:8000";
+        const backendUrl = "https://cse216-macrosoft.herokuapp.com";
 
         function onSignIn(googleUser) {
             var profile = googleUser.getBasicProfile();
@@ -43,14 +43,16 @@
 
             $(document).ready(function () {
                 $.ajax({
-                    type: "GET",
+                    type: "POST",
                     url: backendUrl + "/api/auth",
                     dataType: "json",
-                    data: JSON.stringify({ "idToken": id_token }),
-                    success: function () {
+                    data: JSON.stringify({ idToken: id_token }),
+                    success: function (result) {
+                        console.log(result);
+                        console.log(result.mData);
                         alert("login successfully.");
+                        sessionStorage.setItem('sessionKey', result.mData);
                         window.location.replace(backendUrl+"/index.html");
-                        sessionStorage.setItem('sessionKey', "thisIsSessionKey");
                     }
                 });
             });

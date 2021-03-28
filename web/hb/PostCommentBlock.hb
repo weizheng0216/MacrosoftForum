@@ -60,7 +60,7 @@
                         <button class="user-button little-button" data-value="{{this.mUserID}}">
                             <span class="glyphicon glyphicon-user"></span>
                             <!-- leave comment's user here -->
-                            {{this.mUserID}}
+                            {{this.mFirstName}} {{this.mLastName}}
                         </button>
 
                         <button class="date-button little-button">

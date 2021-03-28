@@ -28,10 +28,9 @@ class PostCommentBlock {
             sessionStorage.setItem("currentPost", postID);
             $.ajax({
                 type: "POST",
-                url: backendUrl + "/api/posts/" + postID + "/comments",
+                url: backendUrl + "/api/posts/" + postID + "/comments/"+BasicStructure.sessionKey,
                 dataType: "json",
                 data: JSON.stringify({
-                    "sessionKey": BasicStructure.sessionKey,
                     "postID": postID, "content": newContent
                 }),
                 success: function (result: any) {
@@ -55,15 +54,15 @@ class PostCommentBlock {
     private static downVotePost() {
         // we need to make a state check 
         let postID = $(this).data("postid");
-        let upVoteState = $("#my-up-vote-button" + postID).data("upvotestate");
-        let downVoteState = $(this).data("downvotestate")
+        let upVoteState = $("#my-up-vote-button" + postID).attr("data-upvotestate");
+        let downVoteState = $(this).attr("data-downvotestate");
         console.log("down vote button is clicked for post: " + postID);
         console.log("up state: " + upVoteState);
         console.log("down state: " + downVoteState);
 
         if (downVoteState == "true") {
             // user want to cancel the dislike 
-            $(this).data("downvotestate", "false");
+            $(this).attr("data-downvotestate", "false");
             let currentDownVote = $("#my-down-vote-count" + postID).text();
             $("#my-down-vote-count" + postID).text(--currentDownVote);
             $(this).removeClass("my-vote-true").addClass("my-vote-false");
@@ -73,10 +72,9 @@ class PostCommentBlock {
             if (!testing) {
                 $.ajax({
                     type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote",
+                    url: backendUrl + "/api/posts/" + postID + "/vote/"+BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
-                        "sessionKey": BasicStructure.sessionKey,
                         "upvote": 0, "downovte": 0
                     }),
                     success: function (result: any) {
@@ -86,14 +84,14 @@ class PostCommentBlock {
             }
         } else {
             // user dislike this post
-            $(this).data("downvotestate", "true");
+            $(this).attr("data-downvotestate", "true");
             $(this).removeClass("my-vote-false").addClass("my-vote-true");
             let currentDownVote = $("#my-down-vote-count" + postID).text();
             $("#my-down-vote-count" + postID).text(++currentDownVote);
-            if ($("#my-up-vote-button" + postID).data("upvotestate") == "true") {
+            if ($("#my-up-vote-button" + postID).attr("data-upvotestate") == "true") {
                 let currentUpVote = $("#my-up-vote-count" + postID).text();
                 $("#my-up-vote-count" + postID).text(--currentUpVote);
-                $("#my-up-vote-button" + postID).data("upvotestate", "false");
+                $("#my-up-vote-button" + postID).attr("data-upvotestate", "false");
                 $("#my-up-vote-button" + postID).removeClass("my-vote-true").addClass("my-vote-false");
             }
 
@@ -101,10 +99,9 @@ class PostCommentBlock {
             if (!testing) {
                 $.ajax({
                     type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote",
+                    url: backendUrl + "/api/posts/" + postID + "/vote/"+BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
-                        "sessionKey": BasicStructure.sessionKey,
                         "upvote": 0, "downovte": 1
                     }),
                     success: function (result: any) {
@@ -118,15 +115,15 @@ class PostCommentBlock {
     private static upVotePost() {
         // we need to make a state check 
         let postID = $(this).data("postid");
-        let downVoteState = $("#my-down-vote-button" + postID).data("downvotestate");
-        let upVoteState = $(this).data("upvotestate");
+        let downVoteState = $("#my-down-vote-button" + postID).attr("data-downvotestate");
+        let upVoteState = $(this).attr("data-upvotestate");
         console.log("up vote button is clicked for post: " + postID);
         console.log("up state: " + upVoteState);
         console.log("down state: " + downVoteState);
 
         if (upVoteState == "true") {
             //user want to cancel the like
-            $(this).data("upvotestate", "false");
+            $(this).attr("data-upvotestate", "false");
             let currentUpVote = $("#my-up-vote-count" + postID).text();
             $("#my-up-vote-count" + postID).text(--currentUpVote);
             $(this).removeClass("my-vote-true").addClass("my-vote-false");
@@ -136,10 +133,9 @@ class PostCommentBlock {
             if (!testing) {
                 $.ajax({
                     type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote",
+                    url: backendUrl + "/api/posts/" + postID + "/vote/"+BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
-                        "sessionKey": BasicStructure.sessionKey,
                         "upvote": 0, "downovte": 0
                     }),
                     success: function (result: any) {
@@ -151,15 +147,15 @@ class PostCommentBlock {
 
         } else {
             //user like this post
-            $(this).data("upvotestate", "true");
+            $(this).attr("data-upvotestate", "true");
             $(this).removeClass("my-vote-false").addClass("my-vote-true");
             let currentUpVote = $("#my-up-vote-count" + postID).text();
             $("#my-up-vote-count" + postID).text(++currentUpVote);
             console.log("after click: " + $("#my-up-vote-count" + postID).text());
-            if ($("#my-down-vote-button" + postID).data("downvotestate") == "true") {
+            if ($("#my-down-vote-button" + postID).attr("data-downvotestate") == "true") {
                 let currentDownVote = $("#my-down-vote-count" + postID).text();
                 $("#my-down-vote-count" + postID).text(--currentDownVote);
-                $("#my-down-vote-button" + postID).data("downvotestate", "false");
+                $("#my-down-vote-button" + postID).attr("data-downvotestate", "false");
                 $("#my-down-vote-button" + postID).removeClass("my-vote-true").addClass("my-vote-false");
             }
 
@@ -167,10 +163,9 @@ class PostCommentBlock {
             if (!testing) {
                 $.ajax({
                     type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote",
+                    url: backendUrl + "/api/posts/" + postID + "/vote/"+BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
-                        "sessionKey": BasicStructure.sessionKey,
                         "upvote": 1, "downovte": 0
                     }),
                     success: function (result: any) {
@@ -189,12 +184,14 @@ class PostCommentBlock {
      */
     private static getOtherProfile() {
         if (!testing) {
+
             var userID = $(this).data("value");
+            console.log("user click user: "+userID+", request for detail");
             $.ajax({
                 type: "GET",
-                url: backendUrl + "/api/users/" + userID,
+                url: backendUrl + "/api/users/" + userID+"/"+ BasicStructure.sessionKey,
                 dataType: "json",
-                data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
+                // data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
                 success: function (result: any) {
                     console.log(result);
                     PostCommentBlock.showOtherProfile(result);
