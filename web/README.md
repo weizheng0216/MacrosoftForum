@@ -214,7 +214,7 @@ $.ajax({
     url: backendUrl + "/api/posts/" + postID + "/vote"+"/"+BasicStructure.sessionKey,
     dataType: "json",
     data: JSON.stringify({
-        "upvote": 0, "downovte": 0
+        "upvote": 0, "downvote": 0
     }),
     success: function (result: any) {
         

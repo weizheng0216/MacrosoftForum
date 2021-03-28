@@ -87,7 +87,7 @@ class PostCommentBlock {
                     url: backendUrl + "/api/posts/" + postID + "/vote/" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
-                        "upvote": 0, "downovte": 0
+                        "upvote": 0, "downvote": 0
                     }),
                     success: function (result: any) {
                         if (debug)
@@ -119,7 +119,7 @@ class PostCommentBlock {
                     url: backendUrl + "/api/posts/" + postID + "/vote/" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
-                        "upvote": 0, "downovte": 1
+                        "upvote": 0, "downvote": 1
                     }),
                     success: function (result: any) {
                         if (debug)
@@ -161,7 +161,7 @@ class PostCommentBlock {
                     url: backendUrl + "/api/posts/" + postID + "/vote/" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
-                        "upvote": 0, "downovte": 0
+                        "upvote": 0, "downvote": 0
                     }),
                     success: function (result: any) {
                         if (debug)
@@ -197,7 +197,7 @@ class PostCommentBlock {
                     url: backendUrl + "/api/posts/" + postID + "/vote/" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
-                        "upvote": 1, "downovte": 0
+                        "upvote": 1, "downvote": 0
                     }),
                     success: function (result: any) {
                         console.log(result);
