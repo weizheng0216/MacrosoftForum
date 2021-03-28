@@ -52,10 +52,6 @@ class NewPostBlock {
                     $("#my-new-post-block").hide();
                     $("#input-title").val("");
                     $("#input-content").val("");
-                },
-                error: function(){
-                    alert("Login timeout, please login again");
-                    window.location.replace(backendUrl+"/login.html");
                 }
             });
         }

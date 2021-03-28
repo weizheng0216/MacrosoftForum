@@ -47,10 +47,6 @@ class PostCommentBlock {
                         console.log("length: " + $(".post-comment-view[data-value='" + postID + "']").length);
                     $(".post-comment-view[data-value='" + postID + "']").show();
 
-                },
-                error: function(){
-                    alert("Login timeout, please login again");
-                    window.location.replace(backendUrl+"/login.html");
                 }
             });
         }
@@ -92,10 +88,6 @@ class PostCommentBlock {
                     success: function (result: any) {
                         if (debug)
                             console.log(result);
-                    },
-                    error: function(){
-                        alert("Login timeout, please login again");
-                        window.location.replace(backendUrl+"/login.html");
                     }
                 });
             }
@@ -124,10 +116,6 @@ class PostCommentBlock {
                     success: function (result: any) {
                         if (debug)
                             console.log(result);
-                    },
-                    error: function(){
-                        alert("Login timeout, please login again");
-                        window.location.replace(backendUrl+"/login.html");
                     }
                 });
             }
@@ -167,10 +155,6 @@ class PostCommentBlock {
                         if (debug)
                             console.log(result);
 
-                    },
-                    error: function(){
-                        alert("Login timeout, please login again");
-                        window.location.replace(backendUrl+"/login.html");
                     }
                 });
             }
@@ -200,12 +184,8 @@ class PostCommentBlock {
                         "upvote": 1, "downvote": 0
                     }),
                     success: function (result: any) {
-                        console.log(result);
-
-                    },
-                    error: function(){
-                        alert("Login timeout, please login again");
-                        window.location.replace(backendUrl+"/login.html");
+                        if (debug)
+                            console.log(result);
                     }
                 });
             }
@@ -232,10 +212,6 @@ class PostCommentBlock {
                     if (debug)
                         console.log(result);
                     PostCommentBlock.showOtherProfile(result);
-                },
-                error: function(){
-                    alert("Login timeout, please login again");
-                    window.location.replace(backendUrl+"/login.html");
                 }
             });
         } else {

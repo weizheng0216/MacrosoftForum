@@ -88,10 +88,6 @@ class MyProfileBlock {
                 // refresh all posts and comments
                 BriefPostsList.refresh();
                 MyProfileBlock.refresh();
-            },
-            error: function(){
-                alert("Login timeout, please login again");
-                window.location.replace(backendUrl+"/login.html");
             }
         });
     }
@@ -144,10 +140,6 @@ class MyProfileBlock {
                     console.log(result);
                 BriefPostsList.refresh();
                 MyProfileBlock.refresh();
-            },
-            error: function(){
-                alert("Login timeout, please login again");
-                window.location.replace(backendUrl+"/login.html");
             }
         });
     }
@@ -169,10 +161,6 @@ class MyProfileBlock {
                     console.log(result);
                 BriefPostsList.refresh();
                 MyProfileBlock.refresh();
-            },
-            error: function(){
-                alert("Login timeout, please login again");
-                window.location.replace(backendUrl+"/login.html");
             }
         });
     }
