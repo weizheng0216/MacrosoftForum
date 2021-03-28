@@ -267,7 +267,7 @@ This function will request other user's information including first name, last n
 ***
 ## UI & Handlebars
 
-![briefPostExample](/readmeSrc/briefPostExample.png)
+![briefPostExample](readmeSrc/briefPostExample.png)
 ```handlebars
 {{#each mData}}
 <div class="post-brief-block" data-value="{{this.mPostID}}">
@@ -301,7 +301,7 @@ This handlebars will load the "api/posts/:sessionKey" information to the left vi
 ***
 ***
 
-![DetailPostExample](/readmeSrc/DetailPostExample.png)
+![DetailPostExample](readmeSrc/DetailPostExample.png)
 ```handlebars
 {{#each mData}}
     <div class="post-comment-view"  data-value="{{this.mPostID}}">
@@ -442,7 +442,7 @@ This handlebars will load the information about user's own infotmation including
 ***
 ***
 
-![OtherProfileExample](/readmeSrc/OtherProfileExample.png)
+![OtherProfileExample](readmeSrc/OtherProfileExample.png)
 ```handlebars
 {{#with mData}}
 <div class="other-user-profile-block">
