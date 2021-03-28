@@ -2,7 +2,7 @@
 
 ## Admin Role
 - Phase 1: Haocheng Gao
-
+- Phase 2: Coco Chen
 ## User Guide
 
 The Admin App is a stand-alone tool from the front-end and the backend of Buzz.
@@ -14,19 +14,31 @@ the first command-line argument. If no command-line argument is provided, the
 App will use the default(current) URL of the database. The default URL may not
 be valid.
 
-Once the Admin App successfully make the connection to the database, a command-
-line interface will be displayed. You can enter `help` to see a full list of
-commands and their syntax, or enter `help <command-name>` to see the detailed
-description of the command.
 
-Here is an example of how to drop the current table, recreate a new table, and
-insert some messages into it.
-```
-```
 
 ## Developer Guide
 
+### Admin App
+
+Once the Admin App successfully make the connection to the database, the main menu
+interface will be displayed. It will show what tables can be changed.
+
+As the admin, you will be asked to enter the action you want to make targeting different tables.
+
+There are four tables in total: 
+  User Table    
+  Post Table
+  Comment Table
+  Votes Table
+The admin can make changes to these four tables. 
+Right now, it only provides the basic functions, 
+  i.e. create, drop, select, insert, delete.
+Due to the functional dependency, the user table can not be dropped if the rest of the tables are dropped. 
+
+
 ### The CLI API
+In this phase, CLI is not used for Database.
+
 The purpose of having the CLI, command-line interface, API is to make it easier
 for command management. You can refer to the Java documentation for more details.
 Generally, it allows you to create commands with a few function calls. It also
@@ -70,10 +82,33 @@ to edit.
 
 ### Front End
 The unit tests primarily done are the UI tests.
-- Open Test: Form will appear after pushing the `open` button
-- Hide Test: Form will be invisible after pushing the `hide` button
-- Clear Test: Form content will be cleared after pushing the `clear` button
-- Add Test: Form will disappear after pushing the `add` button
+Since front end will always connect to backend, to avoid this action in front end test, testing flag is set. When this flag is on, all resquest to backend will be blocked. Additionally, debug flag is set that is whenever backend send a response to front end, the response information will be print in console. Normally, both testing and debug flag is false.
+There are seven tests in total that targets three parts.
+Each part uses `describe()` to separate.
+
+  • basic structure that shows the user interface
+      • `shows post detail` 
+          When the `brief post` button is clicked,
+          check if the post will show up and if the new block will be hidden.
+      • `show new post block`
+          When the `new post` button is clicked,
+          check if the new post block will show up and if the new block will be hidden.
+      • `show user profile interface`
+          When the `profile` button is clicked
+          check if the user interface shows up and the new post block is hidden
+	• examine the likes and dislikes  
+	    • `test like`
+	        When the user click `like` button, 
+	        check if the counts of likes will be incremented
+	    • `test dislike`
+	        When the user click `dislike` button, 
+	        check if the counts of dislikes will be incremented
+	• switch from different user interfaces
+      • `test show other user interface`
+          When the user click user button, check if the user's info shows up
+      • `test show other user interface`
+          When the user click the close button, check if the user interface is closed.
+      
 
 All tests are passed. The tests are self-contained and robust. They ensure
 the basic UI operations does not break when future features are added
@@ -81,26 +116,37 @@ the basic UI operations does not break when future features are added
 
 ### Back End
 The unit tests primarily done are the constructor tests.
-- StructuredResponse Test: `StructuredResponse` are constructed correctly
-using test status and `null` status.
-- DataRow Test: `DataRow` are constructed correctly from raw data values
-and from another `DataRow` instance.
+
+- Response Test: `ResponseTest` are for checking if raw data values are constructed correctly
+  - Inside `Response Test`, the testConstructor contains three parts:
+    • CommentResponse: check if the existing comment is correctly constructed
+    • PostResponse: check if the existing post is correctly constructed
+    • UserResponse: check if the existing user is correctly constructed
 
 The integration tests that includes the front-end HTTP requests are done
 manually. The font-end tests scripts and the database queries are contained
 in the `txt` files under backend folder.
 
-All tests are passed, and the basic functionalities are tested. A future
+All tests are passed, and the basic functions are tested. A future
 recommendation is to make automated integration tests if possible.
 
 
 ### Admin App
 The unit tests primarily done are the command registration tests.
+
 - CLI Constructor Test: `CLI` instance is created with the default commands.
 - Normal Command Registration Test: The command `Test` should be registered
 correctly, and could be queried through the getters.
-- Null Command Registration Test: The test attempts to register `null` as a
-command. `CLI` should not generate error, nor register `null` value.
+- Database Test:
+  Database instance is created and connected for the tests.
+  The tests are divided in couple parts.
+  • Check table attributes
+    Using select___ById to retrieve an entity by `ResultSet` 
+    and then use `ResultSetMetaData.getColumnName()` to check if the table is created correctly.
+    
+  • Check if entity is wholesome 
+    Initiate some variables and use them to compare with an existing entity.
+  
   
 All tests are passed. The basic functionality of command-line interface is
 guaranteed. Integration tests that include database queries could be added
