@@ -8,16 +8,23 @@ class MyProfileBlock {
      */
     static refresh() {
         if (!testing) {
-            console.log("MyProfileBlock.refresh() called");
-            console.log("\tsession key: " + BasicStructure.sessionKey);
+            if (debug)
+                console.log("MyProfileBlock.refresh() called");
+            if (debug)
+                console.log("\tsession key: " + BasicStructure.sessionKey);
             $.ajax({
                 type: "GET",
                 url: backendUrl + "/api/users/my/" + BasicStructure.sessionKey,
                 dataType: "json",
                 // data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
                 success: function (result: any) {
-                    console.log(result);
+                    if (debug)
+                        console.log(result);
                     MyProfileBlock.update(result);
+                },
+                error: function(){
+                    alert("Login timeout, please login again");
+                    window.location.replace(backendUrl+"/login.html");
                 }
             });
         } else {
@@ -53,11 +60,14 @@ class MyProfileBlock {
      */
     private static updatePost() {
         var mID = $(this).data("value");
-        console.log("update post: " + mID);
+        if (debug)
+            console.log("update post: " + mID);
         var newTitle = $("#post-title" + mID).val();
         var newContent = $("#post-content" + mID).val();
-        console.log("\tnew title: " + newTitle);
-        console.log("\tnew content: " + newContent);
+        if (debug)
+            console.log("\tnew title: " + newTitle);
+        if (debug)
+            console.log("\tnew content: " + newContent);
 
         // if either content or title is "", we cannot update. Just alert to 
         // user and return. 
@@ -67,17 +77,21 @@ class MyProfileBlock {
         }
         $.ajax({
             type: "PUT",
-            url: backendUrl + "/api/posts/" + mID+"/"+BasicStructure.sessionKey,
+            url: backendUrl + "/api/posts/" + mID + "/" + BasicStructure.sessionKey,
             dataType: "json",
             data: JSON.stringify({
                 "title": newTitle, "content": newContent
             }),
             success: function (result: any) {
-                console.log(result);
-
+                if (debug)
+                    console.log(result);
                 // refresh all posts and comments
                 BriefPostsList.refresh();
                 MyProfileBlock.refresh();
+            },
+            error: function(){
+                alert("Login timeout, please login again");
+                window.location.replace(backendUrl+"/login.html");
             }
         });
     }
@@ -87,13 +101,15 @@ class MyProfileBlock {
     */
     private static deletePost() {
         var mID = $(this).data("value");
-        console.log("delete post: " + mID);
+        if (debug)
+            console.log("delete post: " + mID);
         $.ajax({
             type: "DELETE",
-            url: backendUrl + "/api/posts/" + mID+"/"+BasicStructure.sessionKey,
+            url: backendUrl + "/api/posts/" + mID + "/" + BasicStructure.sessionKey,
             dataType: "json",
             success: function (result: any) {
-                console.log(result);
+                if (debug)
+                    console.log(result);
                 BriefPostsList.refresh();
                 MyProfileBlock.refresh();
             }
@@ -106,25 +122,32 @@ class MyProfileBlock {
     private static updateComment() {
         var mCID = $(this).data("value");
         var mPID = $(this).data("postid");
-        console.log("update comment: " + mCID + " under post: " + mPID);
+        if (debug)
+            console.log("update comment: " + mCID + " under post: " + mPID);
         var newContent = $("#comment-content" + mCID).val();
-        console.log("\tnew content: " + newContent);
-        if(newContent ===""){
+        if (debug)
+            console.log("\tnew content: " + newContent);
+        if (newContent === "") {
             alert("invlid input");
             return;
         }
         $.ajax({
             type: "PUT",
-            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID +"/"+BasicStructure.sessionKey,
+            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID + "/" + BasicStructure.sessionKey,
             dataType: "json",
             data: JSON.stringify({
-                "postID" : mPID,
+                "postID": mPID,
                 "content": newContent
             }),
             success: function (result: any) {
-                console.log(result);
+                if (debug)
+                    console.log(result);
                 BriefPostsList.refresh();
                 MyProfileBlock.refresh();
+            },
+            error: function(){
+                alert("Login timeout, please login again");
+                window.location.replace(backendUrl+"/login.html");
             }
         });
     }
@@ -135,15 +158,21 @@ class MyProfileBlock {
     private static deleteComment() {
         var mCID = $(this).data("value")
         var mPID = $(this).data("postid");
-        console.log("delete comment: " + mCID + " under post: " + mPID);
+        if (debug)
+            console.log("delete comment: " + mCID + " under post: " + mPID);
         $.ajax({
             type: "DELETE",
-            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID+"/"+BasicStructure.sessionKey,
+            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID + "/" + BasicStructure.sessionKey,
             dataType: "json",
             success: function (result: any) {
-                console.log(result);
+                if (debug)
+                    console.log(result);
                 BriefPostsList.refresh();
                 MyProfileBlock.refresh();
+            },
+            error: function(){
+                alert("Login timeout, please login again");
+                window.location.replace(backendUrl+"/login.html");
             }
         });
     }

@@ -13,6 +13,7 @@ let Handlebars: any;
 let $: any;
 const backendUrl = "http://localhost:8000";
 const testing = true;
+const debug = false;
 /**
  * NewEntryForm encapsulates all of the code for the form for adding an entry
  */

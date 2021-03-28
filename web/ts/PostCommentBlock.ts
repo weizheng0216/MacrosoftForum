@@ -28,7 +28,7 @@ class PostCommentBlock {
             sessionStorage.setItem("currentPost", postID);
             $.ajax({
                 type: "POST",
-                url: backendUrl + "/api/posts/" + postID + "/comments/"+BasicStructure.sessionKey,
+                url: backendUrl + "/api/posts/" + postID + "/comments/" + BasicStructure.sessionKey,
                 dataType: "json",
                 data: JSON.stringify({
                     "postID": postID, "content": newContent
@@ -38,17 +38,26 @@ class PostCommentBlock {
                     BriefPostsList.refresh()
                     let postID = sessionStorage.getItem("currentPost");
                     sessionStorage.removeItem("currentPost");
-                    console.log("this postID: " + postID);
-                    console.log("this postID2: " + postID);
+                    if (debug)
+                        console.log("this postID: " + postID);
+                    if (debug)
+                        console.log("this postID2: " + postID);
                     $("#my-new-comment-content" + postID).val("");
-                    console.log("length: " + $(".post-comment-view[data-value='" + postID + "']").length);
+                    if (debug)
+                        console.log("length: " + $(".post-comment-view[data-value='" + postID + "']").length);
                     $(".post-comment-view[data-value='" + postID + "']").show();
 
+                },
+                error: function(){
+                    alert("Login timeout, please login again");
+                    window.location.replace(backendUrl+"/login.html");
                 }
             });
         }
-        console.log("user add new comment under post: " + postID);
-        console.log("user send new comment: " + newContent);
+        if (debug)
+            console.log("user add new comment under post: " + postID);
+        if (debug)
+            console.log("user send new comment: " + newContent);
     }
 
     private static downVotePost() {
@@ -56,9 +65,12 @@ class PostCommentBlock {
         let postID = $(this).data("postid");
         let upVoteState = $("#my-up-vote-button" + postID).attr("data-upvotestate");
         let downVoteState = $(this).attr("data-downvotestate");
-        console.log("down vote button is clicked for post: " + postID);
-        console.log("up state: " + upVoteState);
-        console.log("down state: " + downVoteState);
+        if (debug)
+            console.log("down vote button is clicked for post: " + postID);
+        if (debug)
+            console.log("up state: " + upVoteState);
+        if (debug)
+            console.log("down state: " + downVoteState);
 
         if (downVoteState == "true") {
             // user want to cancel the dislike 
@@ -72,13 +84,18 @@ class PostCommentBlock {
             if (!testing) {
                 $.ajax({
                     type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote/"+BasicStructure.sessionKey,
+                    url: backendUrl + "/api/posts/" + postID + "/vote/" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
                         "upvote": 0, "downovte": 0
                     }),
                     success: function (result: any) {
-                        console.log(result);
+                        if (debug)
+                            console.log(result);
+                    },
+                    error: function(){
+                        alert("Login timeout, please login again");
+                        window.location.replace(backendUrl+"/login.html");
                     }
                 });
             }
@@ -99,13 +116,18 @@ class PostCommentBlock {
             if (!testing) {
                 $.ajax({
                     type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote/"+BasicStructure.sessionKey,
+                    url: backendUrl + "/api/posts/" + postID + "/vote/" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
                         "upvote": 0, "downovte": 1
                     }),
                     success: function (result: any) {
-                        console.log(result);
+                        if (debug)
+                            console.log(result);
+                    },
+                    error: function(){
+                        alert("Login timeout, please login again");
+                        window.location.replace(backendUrl+"/login.html");
                     }
                 });
             }
@@ -117,9 +139,12 @@ class PostCommentBlock {
         let postID = $(this).data("postid");
         let downVoteState = $("#my-down-vote-button" + postID).attr("data-downvotestate");
         let upVoteState = $(this).attr("data-upvotestate");
-        console.log("up vote button is clicked for post: " + postID);
-        console.log("up state: " + upVoteState);
-        console.log("down state: " + downVoteState);
+        if (debug)
+            console.log("up vote button is clicked for post: " + postID);
+        if (debug)
+            console.log("up state: " + upVoteState);
+        if (debug)
+            console.log("down state: " + downVoteState);
 
         if (upVoteState == "true") {
             //user want to cancel the like
@@ -133,14 +158,19 @@ class PostCommentBlock {
             if (!testing) {
                 $.ajax({
                     type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote/"+BasicStructure.sessionKey,
+                    url: backendUrl + "/api/posts/" + postID + "/vote/" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
                         "upvote": 0, "downovte": 0
                     }),
                     success: function (result: any) {
-                        console.log(result);
+                        if (debug)
+                            console.log(result);
 
+                    },
+                    error: function(){
+                        alert("Login timeout, please login again");
+                        window.location.replace(backendUrl+"/login.html");
                     }
                 });
             }
@@ -151,7 +181,8 @@ class PostCommentBlock {
             $(this).removeClass("my-vote-false").addClass("my-vote-true");
             let currentUpVote = $("#my-up-vote-count" + postID).text();
             $("#my-up-vote-count" + postID).text(++currentUpVote);
-            console.log("after click: " + $("#my-up-vote-count" + postID).text());
+            if (debug)
+                console.log("after click: " + $("#my-up-vote-count" + postID).text());
             if ($("#my-down-vote-button" + postID).attr("data-downvotestate") == "true") {
                 let currentDownVote = $("#my-down-vote-count" + postID).text();
                 $("#my-down-vote-count" + postID).text(--currentDownVote);
@@ -163,7 +194,7 @@ class PostCommentBlock {
             if (!testing) {
                 $.ajax({
                     type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote/"+BasicStructure.sessionKey,
+                    url: backendUrl + "/api/posts/" + postID + "/vote/" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
                         "upvote": 1, "downovte": 0
@@ -171,6 +202,10 @@ class PostCommentBlock {
                     success: function (result: any) {
                         console.log(result);
 
+                    },
+                    error: function(){
+                        alert("Login timeout, please login again");
+                        window.location.replace(backendUrl+"/login.html");
                     }
                 });
             }
@@ -186,15 +221,21 @@ class PostCommentBlock {
         if (!testing) {
 
             var userID = $(this).data("value");
-            console.log("user click user: "+userID+", request for detail");
+            if (debug)
+                console.log("user click user: " + userID + ", request for detail");
             $.ajax({
                 type: "GET",
-                url: backendUrl + "/api/users/" + userID+"/"+ BasicStructure.sessionKey,
+                url: backendUrl + "/api/users/" + userID + "/" + BasicStructure.sessionKey,
                 dataType: "json",
                 // data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
                 success: function (result: any) {
-                    console.log(result);
+                    if (debug)
+                        console.log(result);
                     PostCommentBlock.showOtherProfile(result);
+                },
+                error: function(){
+                    alert("Login timeout, please login again");
+                    window.location.replace(backendUrl+"/login.html");
                 }
             });
         } else {

@@ -30,16 +30,20 @@
 
     <script>
 
+        const debug = false;
         const backendUrl = "https://cse216-macrosoft.herokuapp.com";
 
         function onSignIn(googleUser) {
             var profile = googleUser.getBasicProfile();
             var id_token = googleUser.getAuthResponse().id_token;
-            console.log("ID Token: " + id_token);
-            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-            console.log('Name: ' + profile.getName());
-            console.log('Image URL: ' + profile.getImageUrl());
-            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+            if (debug) {
+                console.log("ID Token: " + id_token);
+                console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+                console.log('Name: ' + profile.getName());
+                console.log('Image URL: ' + profile.getImageUrl());
+                console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+
+            }
 
             $(document).ready(function () {
                 $.ajax({
@@ -48,11 +52,14 @@
                     dataType: "json",
                     data: JSON.stringify({ idToken: id_token }),
                     success: function (result) {
-                        console.log(result);
-                        console.log(result.mData);
+                        if (debug) {
+                            console.log(result);
+                            console.log(result.mData);
+                        }
+
                         alert("login successfully.");
                         sessionStorage.setItem('sessionKey', result.mData);
-                        window.location.replace(backendUrl+"/index.html");
+                        window.location.replace(backendUrl + "/index.html");
                     }
                 });
             });

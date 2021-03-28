@@ -15,20 +15,24 @@ let $: any;
 const backendUrl = "https://cse216-macrosoft.herokuapp.com";
 
 const testing = false;
+
+const debug = false;
 /**
  * NewEntryForm encapsulates all of the code for the form for adding an entry
  */
 
 // Run some configuration code when the web page loads
 $(document).ready(function () {
-    console.log("ready");
-    if(sessionStorage.getItem("sessionKey")){
+    if (debug)
+        console.log("ready");
+    if (sessionStorage.getItem("sessionKey")) {
         BasicStructure.sessionKey = sessionStorage.getItem("sessionKey");
-    }else{
+    } else {
         BasicStructure.sessionKey = "";
     }
-    console.log(BasicStructure.sessionKey);
+    if (debug)
+        console.log(BasicStructure.sessionKey);
     BasicStructure.init();
-    
+
 });
 

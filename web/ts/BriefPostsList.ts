@@ -18,22 +18,31 @@ class BriefPostsList {
         
         if(!testing){
 
-            console.log("current section key: "+BasicStructure.sessionKey);
+            if(debug){
+                console.log("current section key: "+BasicStructure.sessionKey);
+            }
+                
             if(BasicStructure.sessionKey === ""){
                 alert("please login");
                 window.location.replace(backendUrl+"/login.html");
             }else{
-                console.log("BriefPostsList.refresh() called")
+                if(debug){
+                    console.log("BriefPostsList.refresh() called")
+                }
                 $.ajax({
                     type: "GET",
                     url: backendUrl + "/api/posts/"+ BasicStructure.sessionKey,
                     dataType: "json",
-                    // data: JSON.stringify({"sessionKey": BasicStructure.sessionKey}),
-                    //success: console.log
                     success: function(result:any){
-                        console.log(result);
+                        if(debug){
+                            console.log(result);
+                        }
                         BriefPostsList.update(result);
                         PostCommentBlock.update(result);
+                    },
+                    error: function(){
+                        alert("Login timeout, please login again");
+                        window.location.replace(backendUrl+"/login.html");
                     }
                 });
             }
@@ -75,8 +84,9 @@ class BriefPostsList {
     private static showDetail(){
         // get the post id to be showed. The post id is stored in data-value attribute of the button
         let postID = $(this).data("value");
-        console.log("user clicked post "+postID+", show post detail on the right");
-
+        if(debug){
+            console.log("user clicked post "+postID+", show post detail on the right");
+        }  
         // no matter new post interface is showed or not, hide it. 
         $("#my-new-post-block").hide();
 

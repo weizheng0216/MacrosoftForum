@@ -1,5 +1,5 @@
 class NewPostBlock {
-    
+
     private static isInit = false;
 
 
@@ -11,14 +11,14 @@ class NewPostBlock {
      *  already had this structure. 
      */
     private static init() {
-        if(!testing){
+        if (!testing) {
             if (!NewPostBlock.isInit) {
                 $("#right-part").append(Handlebars.templates["NewPostBlock.hb"]());
                 $("#my-send-new-post-button").click(NewPostBlock.sendPost);
                 $("#my-new-post-block").hide();
                 NewPostBlock.isInit = true;
             }
-        }else{
+        } else {
             if (!NewPostBlock.isInit) {
                 $("#my-send-new-post-button").click(NewPostBlock.sendPost);
                 $("#my-new-post-block").hide();
@@ -33,30 +33,35 @@ class NewPostBlock {
      * 
      * NOTE: this function will not be called during test, so no if(testing) statement here
      */
-    private static sendPost(){
+    private static sendPost() {
         var newTitle = $("#input-title").val();
         var newContent = $("#input-content").val();
-        if(newTitle===""||newContent===""){
+        if (newTitle === "" || newContent === "") {
             alert("invalid input");
             return;
-        }else{
+        } else {
             $.ajax({
                 type: "POST",
-                url: backendUrl + "/api/posts/"+BasicStructure.sessionKey,
+                url: backendUrl + "/api/posts/" + BasicStructure.sessionKey,
                 dataType: "json",
-                data: JSON.stringify({"title": newTitle, "content": newContent}),
-                success: function(result:any){
-                    console.log(result);
+                data: JSON.stringify({ "title": newTitle, "content": newContent }),
+                success: function (result: any) {
+                    if (debug)
+                        console.log(result);
                     BriefPostsList.refresh();
                     $("#my-new-post-block").hide();
                     $("#input-title").val("");
                     $("#input-content").val("");
+                },
+                error: function(){
+                    alert("Login timeout, please login again");
+                    window.location.replace(backendUrl+"/login.html");
                 }
             });
         }
     }
 
-    public static refresh(){
+    public static refresh() {
         this.init();
     }
 }
