@@ -52,7 +52,7 @@ import java.sql.ResultSetMetaData;
         System.out.println("    [3] Insert a new User");
         System.out.println("    [4] Select user by User ID");
         System.out.println("    [5] Select user by Email");
-        System.out.println("    [6] Delete a row");
+        System.out.println("    [6] Delete an User");
         System.out.println("    [7] Quit Table Session");
         System.out.println("*******************************");
     }
@@ -63,10 +63,10 @@ import java.sql.ResultSetMetaData;
         System.out.println("    [1] Create Post Table");
         System.out.println("    [2] Drop Post Table");
         System.out.println("    [3] Insert a new Post");
-        System.out.println("    [4] Select all posts");
+        System.out.println("    [4] View all posts");
         System.out.println("    [5] Select a Post by Post Id");
         System.out.println("    [6] Update a Post by Post Id");        
-        System.out.println("    [7] Delete a row");
+        System.out.println("    [7] Delete a Post");
         System.out.println("    [8] Quit Table Session");
         System.out.println("*******************************");
     }
@@ -78,10 +78,11 @@ import java.sql.ResultSetMetaData;
         System.out.println("    [2] Drop Comment Table");
         System.out.println("    [3] Insert a new Comment");
         System.out.println("    [4] Select all comments");
-        System.out.println("    [5] Select a Comment by Comment ID");
-        System.out.println("    [6] Update a Comment");        
-        System.out.println("    [7] Delete a Comment");
-        System.out.println("    [8] Quit Table Session");
+        System.out.println("    [5] View Comment(s) in a Post");
+        System.out.println("    [6] View Comment(s) made by an User");
+        System.out.println("    [7] Update a Comment");        
+        System.out.println("    [8] Delete a Comment");
+        System.out.println("    [9] Quit Table Session");
         System.out.println("*******************************");
     }
     
@@ -224,7 +225,6 @@ import java.sql.ResultSetMetaData;
                     //System.out.println(u_choice);
                     switch(u_choice)
                     {   
-                        
                         case 1:
                             try
                             {   System.out.println();
@@ -273,6 +273,7 @@ import java.sql.ResultSetMetaData;
                             rs = database.selectUserById(user_id);
                             if(!rs.next())
                             {
+                                System.out.println();
                                 System.out.println("Sorry, this user record is not found.");
                                 
                                 break;
@@ -337,7 +338,7 @@ import java.sql.ResultSetMetaData;
                                 }
                                 else{   
                                     database.deleteUserById(user_id);
-                                    System.out.println("User "+ user_id + " has been deleted.");
+                                    System.out.println("\nUser has been deleted.");
                                 }
                                 }
                                 catch (SQLException e) {
@@ -411,7 +412,7 @@ import java.sql.ResultSetMetaData;
                         }
                         try{
                             database.insertPost(title, content, vote_up, vote_down, user_id, pinned);
-                            System.out.println("New post has been added to the data base");
+                            System.out.println("\nNew post has been added to the data base");
                         }
                         catch (SQLException e) {
                             e.printStackTrace();
@@ -544,20 +545,16 @@ import java.sql.ResultSetMetaData;
                                         if(keyboard.hasNextLine()){
                                             keyboard.nextLine();
                                         }
-                                        System.out.println("Is it pinned");
+                                        System.out.println("Is it pinned: true/false ");
                                         pinned = keyboard.nextBoolean();
                                         if(keyboard.hasNextLine()){
                                             keyboard.nextLine();
                                         } 
-                                        System.out.println("Enter the user id");
-                                        user_id = keyboard.nextInt();
-                                        if(keyboard.hasNextLine()){
-                                            keyboard.nextLine();
-                                        }
+                                        System.out.println();
                                         try{
                                         
-                                        database.updatePostById(title, content, vote_up, vote_down, pinned, user_id);
-                                        System.out.println("The post has been reset: ");
+                                        database.updatePostById(title, content, vote_up, vote_down, pinned, post_id);
+                                        System.out.println("The post has been reset:) ");
                                         //System.out.println(post_id + ", " + title + ", " + content + " ," +
                                             //", " + vote_up + " ," + vote_down + " ," + user_id + " ," + pinned);
                                         }catch (SQLException e) {
@@ -584,8 +581,18 @@ import java.sql.ResultSetMetaData;
                                         
                                         break;
                                     }
-                                    else{database.deletePostById(post_id);
-                                    System.out.println("Post "+ post_id + " has been deleted.");
+                                    else{
+                                        //check if it has comments
+                                        rs = database.selectCommentsByPostId(post_id);
+                                        if(rs.next())
+                                        {
+                                        System.out.println("\nSorry, there are comments in this post.");
+                                        System.out.println("You have to delete the comments so that the post can be deleted.");
+                                        break;
+                                        }
+                                       
+                                        database.deletePostById(post_id);
+                                        System.out.println("\nPost "+ post_id + " has been deleted.");
                                     }
                                 }
                                 catch (SQLException e) {
@@ -635,6 +642,7 @@ import java.sql.ResultSetMetaData;
                             }
                             System.out.println();
                             break;
+
                         case 3: // insert comment
                             System.out.println();
                             System.out.println("Enter the content");
@@ -689,11 +697,11 @@ import java.sql.ResultSetMetaData;
                             System.out.println(" ++ Date ++ ");
                             System.out.println(" " + date);
                             System.out.println("++ Last Name ++");
-                            System.out.println(" " + last_name);
+                            System.out.println("    " + last_name);
                             System.out.println("++ First Name ++");
-                            System.out.println("  " + first_name);
+                            System.out.println("    " + first_name);
                             System.out.println("++++++++++++++++");
-                            System.out.println();
+                     
                             //System.out.printf ("%15d%15s%15s%15s%15d%15d%15s%15s%15b\n",post_id, title, content, date, vote_up, vote_down, first_name, pinned);
                             }
                         }
@@ -702,7 +710,8 @@ import java.sql.ResultSetMetaData;
                         }
                         System.out.println();
                         break;
-                        case 5: // select
+
+                        case 5: // select comments by post id
                         System.out.println();
                             try{
                             System.out.println("Enter the post id you want to check:" );
@@ -714,8 +723,52 @@ import java.sql.ResultSetMetaData;
                             System.out.println();
                             if(!rs.next())
                             {
-                                System.out.println("Sorry, we don't have this post.");
-                                        
+                                System.out.println("\nSorry, no one has made any comments under this post.");
+                                break;
+                            }
+                            do
+                            {
+                                comment_id = rs.getInt("comment_id");
+                                content = rs.getString("content");
+                                date = rs.getDate("date");
+                                user_id = rs.getInt("user_id");
+                                post_id = rs.getInt("post_id");
+                                System.out.println("++++++++++++++++");
+                                System.out.println("++ Comment ID ++");
+                                System.out.println("    " + comment_id);
+                                System.out.println(" ++ Content ++ ");
+                                System.out.println("    " + content);
+                                System.out.println(" ++ Date ++ ");
+                                System.out.println(" " + date);
+                                System.out.println("+++ User ID +++");
+                                System.out.println("     " + user_id);
+                                System.out.println("++ Post ID ++");
+                                System.out.println("     " + post_id);
+                                System.out.println("++++++++++++++++");
+                                System.out.println();
+
+                                //System.out.println(comment_id + ", " + content + ", " + date + " ," + user_id + " ," + post_id);
+                            }while(rs.next());
+                            }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println();
+                            break;
+
+                    case 6: // select comments by user id
+                        System.out.println();
+                        try{
+                            System.out.println("Enter the user id you want to check:" );
+                            user_id = keyboard.nextInt(); 
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                        }
+                            rs = database.selectCommentsByUserId(user_id);
+                            System.out.println();
+                            if(!rs.next())
+                            {
+                                System.out.println("\nSorry, this user hasn't made any comments.");
                                 break;
                             }
                             do
@@ -747,7 +800,10 @@ import java.sql.ResultSetMetaData;
                             }
                             System.out.println();
                             break;
-                        case 6: // update
+
+
+                            
+                        case 7: // update
                             try{
                             System.out.println("Enter the comment id you want to change:" );
                             comment_id = keyboard.nextInt(); 
@@ -766,7 +822,7 @@ import java.sql.ResultSetMetaData;
                         }
                         System.out.println();
                             break;
-                        case 7: // delete
+                        case 8: // delete
                         System.out.println();
                             System.out.println("Enter the comment id you want to delete:" );
                             comment_id = keyboard.nextInt(); 
@@ -782,7 +838,7 @@ import java.sql.ResultSetMetaData;
                             e.printStackTrace();
                         }System.out.println();
                         break;
-                        case 8:    
+                        case 9:    
                             System.out.println("Quit Table Comment. Back to Main Menu ...");
                             break;
                     } // end of switch 
@@ -851,18 +907,16 @@ import java.sql.ResultSetMetaData;
                                 System.out.println("Post doesn't exist");
                                 break;
                             }
-                            System.out.println("Enter if it is upvote" );
+                            System.out.println("Enter if it is upvote: true/false" );
                             up_Vote = keyboard.nextBoolean();
                             if(keyboard.hasNextLine()){
                                 keyboard.nextLine();
                             }
-                            System.out.println("Enter if it is downvote:" );
+                            System.out.println("Enter if it is downvote: true/false" );
                             down_Vote = keyboard.nextBoolean();
                             if(keyboard.hasNextLine()){
                                 keyboard.nextLine();
                             }
-                   
-                            
                                 database.insertVote(user_id, post_id, up_Vote, down_Vote);
                                 System.out.println("The vote has been inserted.");
                             }
@@ -920,32 +974,22 @@ import java.sql.ResultSetMetaData;
                                         System.out.println("This user hasn't voted this post");
                                     }
                                     else{
-                                System.out.printf("%15s%15s%15s%15s\n","user_id", "post_id", "upVote", "down_Vote");
-                                while(rs.next())
-                                {
+                                //
+                                do
+                                {   System.out.printf("%15s%15s%15s%15s\n","user_id", "post_id", "upVote", "down_Vote");
                                     user_id = rs.getInt("user_id");
                                     post_id = rs.getInt("post_id");
                                     up_Vote = rs.getBoolean("vote_up");
                                     down_Vote = rs.getBoolean("vote_down");
                                     System.out.printf("%15d%15d%15b%15b\n",user_id, post_id, up_Vote, down_Vote);
-                                }
+                                }while(rs.next());
                             }}
                                 catch (SQLException e) {
                                     e.printStackTrace();
                                 }
                             break;
                         case 6: // update
-                            
-                            System.out.println("Enter the upVote Status");
-                            up_Vote = keyboard.nextBoolean();
-                            if(keyboard.hasNextLine()){
-                                keyboard.nextLine();
-                            }
-                            System.out.println("Enter the downVote Status");
-                            down_Vote = keyboard.nextBoolean();
-                            if(keyboard.hasNextLine()){
-                                keyboard.nextLine();
-                            }
+                            System.out.println();
                             System.out.println("Enter the user id");
                             user_id = keyboard.nextInt();
                             if(keyboard.hasNextLine()){
@@ -962,12 +1006,23 @@ import java.sql.ResultSetMetaData;
                                 rs = database.selectVoteByIds(user_id, post_id);
                                 if(!rs.next())
                                 {
-                                    System.out.println("This user hasn't voted this post");
+                                    System.out.println("\nThis user hasn't voted this post");
                                 }
-                                else{
-                                database.updateVoteByIds(up_Vote, down_Vote, user_id, post_id);
-                                        System.out.println("The post has been reset: ");
+                                else{   
+                                    System.out.println("Enter the upVote Status: true/false");
+                                    up_Vote = keyboard.nextBoolean();
+                                    if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
+                                    System.out.println("Enter the downVote Status: true/false");
+                                    down_Vote = keyboard.nextBoolean();
+                                    if(keyboard.hasNextLine()){
+                                        keyboard.nextLine();
                                     }
+                                    database.updateVoteByIds(up_Vote, down_Vote, user_id, post_id);
+                                    System.out.println("\nThe vote has been reset: ");
+                                    
+                                }
 
                                 }catch (SQLException e) {
                                         e.printStackTrace();
@@ -975,12 +1030,12 @@ import java.sql.ResultSetMetaData;
                             break;
                         case 7:
                             System.out.println();
-                            System.out.println("Enter the user id you want to delete:" );
+                            System.out.println("To delete the vote, enter the user id: " );
                             user_id = keyboard.nextInt();
                             if(keyboard.hasNextLine()){
                                 keyboard.nextLine();
                             }
-                            System.out.println("Enter the post id you want to delete:" );
+                            System.out.println("To delete the vote, enter the post id: " );
                             post_id = keyboard.nextInt();
                             if(keyboard.hasNextLine()){
                                 keyboard.nextLine();
@@ -989,7 +1044,7 @@ import java.sql.ResultSetMetaData;
                                 rs = database.selectVoteByIds(user_id, post_id);
                                 if(!rs.next())
                                 {
-                                    System.out.println("This user hasn't voted this post");
+                                    System.out.println("This user hasn't voted this post.");
                                 }
                                 else{
                                 database.deleteVoteByIds(user_id, post_id);

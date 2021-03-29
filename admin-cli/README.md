@@ -3,6 +3,7 @@
 ## Admin Role
 - Phase 1: Haocheng Gao
 - Phase 2: Coco Chen
+
 ## User Guide
 
 The Admin App is a stand-alone tool from the front-end and the backend of Buzz.
@@ -151,6 +152,6 @@ correctly, and could be queried through the getters.
   • Check if entity is inserted successfully and deleted successfully   
     
   
-All tests are passed. The basic functionality of command-line interface is
+All tests are passed. The basic functionality of menu interface is
 guaranteed. Integration tests that include database queries could be added
 in the future.
