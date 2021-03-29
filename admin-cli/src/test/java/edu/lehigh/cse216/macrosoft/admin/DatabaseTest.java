@@ -44,6 +44,11 @@ public class DatabaseTest extends TestCase {
     int vote_up;
     int vote_down;
     boolean pinned;
+
+
+    boolean upVote;
+    boolean downVote;
+
     protected Database getDatabase() {
         String dbURL = "postgres://vdtksuqjtzvetb:b7ccb5e707b07d8c8bfdf7" +
         "badbae2048282884d6b2e8ad336a71ff5833b2abc3@ec2-52-22-16" +
@@ -141,7 +146,7 @@ public class DatabaseTest extends TestCase {
         assertTrue(user_email.equals(email));
         assertTrue(user_first_name.equals(first_name));
         assertTrue(user_last_name.equals(last_name));
-     database.selectUserByEmail(user_email);
+        database.selectUserByEmail(user_email);
     }catch (SQLException e) {
         e.printStackTrace();
     }
@@ -270,14 +275,13 @@ public class DatabaseTest extends TestCase {
         assertTrue(comment_user_id == user_id);
     }catch (SQLException e) {
         e.printStackTrace();
-    }
-         
+    }  
     }
     
 
-//     // /**
-//     //  * Test for Votes Table Attributes
-//     //  */
+     // /**
+     //  * Test for Votes Table Attributes
+     //  */
 
     public void testVotes(){
         try{
@@ -291,6 +295,7 @@ public class DatabaseTest extends TestCase {
             e.printStackTrace();
         } 
     }
+
     /**
      * Test for Votes Table Attributes
      * check if an existing vote is correctly constructed
@@ -316,9 +321,35 @@ public class DatabaseTest extends TestCase {
     }
 }
 
-    
-        
-    
+    /**
+     * Test for Votes Table Insertion and Deletion
+     * check if votes can be inserted
+     */
+    public void testVoteInsert(){
+        int user_id_vote = 16;
+        int post_id_vote = 30;
+        boolean up_vote_ts = true;
+        boolean down_vote_ts = false;
+        try{
+            database.insertVote(user_id_vote, post_id_vote, up_vote_ts, down_vote_ts);
+            ResultSet rs = database.selectVoteByIds(user_id_vote, post_id_vote);
+            while(rs.next())
+            {
+            upVote = rs.getBoolean("vote_up");
+            user_id = rs.getInt("user_id");
+            post_id = rs.getInt("post_id");
+            downVote = rs.getBoolean("vote_down");
+            }
+            assertTrue(upVote == up_vote_ts);
+            assertTrue(post_id_vote == post_id);
+            assertTrue(post_id_vote == post_id);
+            assertTrue(downVote == down_vote_ts);
+            database.deleteVoteByIds(16, 30);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
    
 }
 

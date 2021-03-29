@@ -43,8 +43,10 @@ import java.sql.ResultSetMetaData;
         System.out.println("*********************************************************");
     }
 
+     /**
+     * Print the User Menu 
+     */
     public static void UserMenu() {
-
         System.out.println("*******************************");
         System.out.println("    User Table Menu");
         System.out.println("    [1] Create User Table");
@@ -56,7 +58,9 @@ import java.sql.ResultSetMetaData;
         System.out.println("    [7] Quit Table Session");
         System.out.println("*******************************");
     }
-
+     /**
+     * Print Post Menu
+     */
     public static void PostMenu() {
         System.out.println("*******************************");
         System.out.println("    Post Table Menu");
@@ -71,6 +75,9 @@ import java.sql.ResultSetMetaData;
         System.out.println("*******************************");
     }
 
+    /**
+     * Print the Comment Menu 
+     */
     public static void CommentMenu() {
         System.out.println("*******************************");
         System.out.println("    Comment Table Menu");
@@ -86,6 +93,9 @@ import java.sql.ResultSetMetaData;
         System.out.println("*******************************");
     }
     
+    /**
+     * Print the Votes Menu 
+     */
     public static void VotesMenu() {
         System.out.println("*******************************");
         System.out.println("    Votes Table Menu");
@@ -130,7 +140,6 @@ import java.sql.ResultSetMetaData;
         System.exit(-1);
         }    
 
-
         ResultSet rs;
         //      User table attributes
         int user_id;
@@ -167,7 +176,7 @@ import java.sql.ResultSetMetaData;
             if(keyboard.hasNextLine()){
                 keyboard.nextLine();
             }
-            if(operation == 5)
+            if(operation == 5) // quite the program
             {   
                 System.out.println("Thanks for using the database");
                 break; 
@@ -176,10 +185,6 @@ import java.sql.ResultSetMetaData;
             {
                 
                 int u_choice = 0;
-                //BufferedReader u = new BufferedReader(new InputStreamReader(System.in));
-                //BufferedReader uin = new BufferedReader(new InputStreamReader(System.in));
-                //Scanner u = new Scanner(System.in);
-                //Scanner uin = new Scanner(System.in);
                 do {
                     System.out.println();
                     UserMenu();
@@ -188,10 +193,10 @@ import java.sql.ResultSetMetaData;
                     if(keyboard.hasNextLine()){
                         keyboard.nextLine();
                     }
-                    //System.out.println(u_choice);
                     switch(u_choice)
                     {   
-                        case 1:
+                        // create user table
+                        case 1: 
                             try
                             {   System.out.println();
                                 database.createUserTable();
@@ -201,7 +206,9 @@ import java.sql.ResultSetMetaData;
                                 e.printStackTrace();
                             }
                             break;
-                        case 2:
+
+                        // drop user table
+                        case 2: 
                             try{
                                 System.out.println();
                                 database.dropUserTable();
@@ -211,7 +218,9 @@ import java.sql.ResultSetMetaData;
                                 e.printStackTrace();
                             }
                             break;
-                        case 3:
+
+                        // insert user
+                        case 3: 
                             System.out.println();
                             System.out.println("Enter the user email");
                             email = keyboard.nextLine();
@@ -228,8 +237,10 @@ import java.sql.ResultSetMetaData;
                                 e.printStackTrace();
                             }
                             break;
-                        case 4: //selectUserById
-                        System.out.println();
+                        
+                        //selectUserById
+                        case 4: 
+                            System.out.println();
                             try{
                                 System.out.println("Enter the user id: ");
                                 user_id = keyboard.nextInt();
@@ -259,7 +270,9 @@ import java.sql.ResultSetMetaData;
                             }
                             System.out.println();
                             break;
-                        case 5: // select user by email
+                        
+                        // select user by email
+                        case 5: 
                             System.out.println();
                             try{
                                 System.out.println("Enter the user email");
@@ -274,7 +287,6 @@ import java.sql.ResultSetMetaData;
                                 }
                                 do
                                 {
-                                
                                     user_id = rs.getInt("user_id");
                                     email = rs.getString("email");
                                     first_name = rs.getString("first_name");
@@ -286,7 +298,9 @@ import java.sql.ResultSetMetaData;
                             catch (SQLException e) {
                                 e.printStackTrace();
                             }break;
-                        case 6: //deleteUserById()
+
+                        //deleteUserById()
+                        case 6: 
                             System.out.println();
                             System.out.println("Enter the user id you want to delete:" );
                                 user_id = keyboard.nextInt();
@@ -294,12 +308,19 @@ import java.sql.ResultSetMetaData;
                                     keyboard.nextLine();
                                 }
                                 try{
-                                    rs = database.selectUserById(user_id);
+                                    rs = database.selectUserById(user_id); // check if user exists
                                     System.out.println();
                                 if(!rs.next())
                                 {
                                     System.out.println("Sorry, this user record is not found.");
                                 
+                                    break;
+                                }
+                                rs = database.selectCommentsByUserId(user_id);
+                                if(rs.next())
+                                {
+                                    System.out.println("Sorry, this user cannot be deleted because this user has made some comments.");
+                                    System.out.println("You have to delete those comments first.");
                                     break;
                                 }
                                 else{   
@@ -344,12 +365,13 @@ import java.sql.ResultSetMetaData;
                             try{
                                 database.dropPostTable();
                                 System.out.println("Post Table is dropped");
-                         
                             }
                             catch (SQLException e) {
                                 e.printStackTrace();
                             }
                             break;
+
+                        // insert post 
                         case 3:
                         System.out.println();
                         System.out.println("Enter the post title");
@@ -384,6 +406,8 @@ import java.sql.ResultSetMetaData;
                             e.printStackTrace();
                         }
                             break;
+                        
+                        // Select Posts with user names
                         case 4:
                             try{
                                 rs = database.selectAllPostsJoinUsers();
@@ -426,6 +450,8 @@ import java.sql.ResultSetMetaData;
                                 e.printStackTrace();
                             }
                             break;
+
+                        // View the post
                         case 5:
                             System.out.println("Enter the post id you want to check");
                             post_id = keyboard.nextInt();
@@ -436,13 +462,11 @@ import java.sql.ResultSetMetaData;
                                 rs = database.selectPostById(post_id);
                                 if(!rs.next())
                                 {
-                                    System.out.println("Sorry, this post record is not found.");
-                                    
+                                    System.out.println("Sorry, this post record is not found."); 
                                     break;
                                 }
                                 do
                                 {  
-                             
                                 post_id = rs.getInt("post_id");
                                 title = rs.getString("title");
                                 content = rs.getString("content");
@@ -451,7 +475,6 @@ import java.sql.ResultSetMetaData;
                                 vote_down = rs.getInt("vote_down");
                                 user_id = rs.getInt("user_id");
                                 pinned = rs.getBoolean("pinned");
-                                
                                 System.out.println();
                                 System.out.println("+++++++++++++++++++++++++++");
                                 System.out.println("+++++++++ Post ID +++++++++");
@@ -481,7 +504,9 @@ import java.sql.ResultSetMetaData;
                                 e.printStackTrace();
                             }
                             break;
-                        case 6: // update post
+                            
+                        // update post
+                        case 6: 
                             System.out.println();
                             System.out.println("Enter the post id you want to update: ");
                                 post_id = keyboard.nextInt();
@@ -521,8 +546,6 @@ import java.sql.ResultSetMetaData;
                                         
                                         database.updatePostById(title, content, vote_up, vote_down, pinned, post_id);
                                         System.out.println("The post has been reset:) ");
-                                        //System.out.println(post_id + ", " + title + ", " + content + " ," +
-                                            //", " + vote_up + " ," + vote_down + " ," + user_id + " ," + pinned);
                                         }catch (SQLException e) {
                                         e.printStackTrace();
                                     }
@@ -532,7 +555,9 @@ import java.sql.ResultSetMetaData;
                                     }
                                     System.out.println();
                             break;
-                        case 7:  // delete a post
+
+                        // delete a post
+                        case 7:  
                             System.out.println();
                             System.out.println("Enter the post id you want to delete:" );
                                 post_id = keyboard.nextInt();
@@ -573,9 +598,8 @@ import java.sql.ResultSetMetaData;
                 } while(p_choice!=8);
             }   // end of the post table
 
-            else if(operation == 3) // user table
+            else if(operation == 3) // comment table
             {
-                
                 int c_choice = 0;
                 do {
                     System.out.println();
@@ -644,7 +668,7 @@ import java.sql.ResultSetMetaData;
                         System.out.println();
                         break;
 
-                        case 4: // inner join
+                        case 4: // view all comments
                         System.out.println();
                         try{
                             rs = database.selectAllCommentsJoinUsers();
@@ -667,8 +691,6 @@ import java.sql.ResultSetMetaData;
                             System.out.println("++ First Name ++");
                             System.out.println("    " + first_name);
                             System.out.println("++++++++++++++++");
-                     
-                            //System.out.printf ("%15d%15s%15s%15s%15d%15d%15s%15s%15b\n",post_id, title, content, date, vote_up, vote_down, first_name, pinned);
                             }
                         }
                         catch (SQLException e) {
@@ -809,7 +831,7 @@ import java.sql.ResultSetMetaData;
                             break;
                     } // end of switch 
                     System.out.println();
-                } while(c_choice != 8);
+                } while(c_choice != 9);
             }   
             else if(operation == 4) // user table
             {
@@ -894,11 +916,8 @@ import java.sql.ResultSetMetaData;
                                 if(up_Vote == true)
                                 {
                                     database.updatePostVotesUpIncrease(post_id);
-                                    //vote_up_counts+=1;
                                 }
                                 else{
-                                    //database.updatePostVotesUpDecrease(post_id);
-                                    //vote_up_counts -= 1;
                                     continue;
                                 }
                                 if(down_Vote == true)
@@ -927,7 +946,6 @@ import java.sql.ResultSetMetaData;
                                 if(!rs.next())
                                 {
                                     System.out.println("Sorry, we don't have this record.");
-                                        
                                     break;
                                 }
                                 do

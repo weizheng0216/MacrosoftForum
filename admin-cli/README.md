@@ -21,24 +21,71 @@ Before start testing, make sure to `docker pull postgres` everytime because some
 
 ### Admin App
 
-Once the Admin App successfully make the connection to the database, the main menu
-interface will be displayed. It will show what tables can be changed.
+Once the Admin App successfully make the connection to the database, the main menu interface will be displayed. It will show what tables can be changed.
+***
+    [1] User Table
+    [2] Post Table
+    [3] Comment Table
+    [4] Votes Table
+    [5] Quit the session
+***
 
 As the admin, you will be asked to enter the action you want to make targeting different tables.
 
 There are four tables in total: 
   User Table    
+  ***
+    [1] Create User Table
+    [2] Drop User Table
+    [3] Insert a new User
+    [4] Select user by User ID
+    [5] Select user by Email
+    [6] Delete an User
+    [7] Quit Table Session
+***
   Post Table
+***
+    [1] Create Post Table
+    [2] Drop Post Table
+    [3] Insert a new Post
+    [4] View all posts
+    [5] Select a Post by Post Id
+    [6] Update a Post by Post Id        
+    [7] Delete a Post
+    8] Quit Table Session
+***
   Comment Table
+***
+    [1] Create Comment Table
+    [2] Drop Comment Table
+    [3] Insert a new Comment
+    [4] Select all comments
+    [5] View Comment(s) in a Post
+    [6] View Comment(s) made by an User
+    [7] Update a Comment
+    [8] Delete a Comment
+    [9] Quit Table Session
+***
   Votes Table
+***
+    [1] Create Votes Table
+    [2] Drop Votes Table
+    [3] Insert a new Vote
+    [4] Select votes by User ID
+    [5] Select a vote by Post and User IDs
+    [6] Update a Vote        
+    [7] Delete a Vote
+    [8] Quit Table Session
+
 The admin can make changes to these four tables. 
-Right now, it only provides the basic functions, 
+Right now, it provides the basic functions, 
   i.e. create, drop, select, insert, delete.
+Due to the functionalities of tables are different, the methods will be slightly different from each other.
 Due to the functional dependency, the user table can not be dropped if the rest of the tables are dropped. 
 
 
 ### The CLI API
-In this phase, CLI is not used for Database.
+In this phase, CLI is not used for Database. It is a great tool and is recommended to use.
 
 The purpose of having the CLI, command-line interface, API is to make it easier
 for command management. You can refer to the Java documentation for more details.
@@ -73,11 +120,8 @@ The Database API is a tool to allow the commands to perform database communicati
 and operations. Please refer to the Java documentation in `Database.java` or the
 tutorial for more detailed explanation.
 
-Our admin database API is very similar to the backend database API. It is a
-good idea to merge the two into a single one because now it's really not
-inconvenient to add new functionalities to the database - we have two files
-to edit.
-
+We use `Database.java` to include all the preparedstatements that will be used for this phase's database.
+Having a separate file for each new table is dollable, but there might be more tables waited to be created in the future phases. In this case, we probably need more files for each new tables if we follow the later approach which is relatively redundant.
 
 ## Test Reviews
 

@@ -180,28 +180,6 @@ public class Database {
     // *                database operations (generated)
     // **********************************************************************
 
-    void updatePostVotesUpIncrease(int postId) throws SQLException{
-        mUpdatePostVotesUpIncrease.setInt(1, postId);
-        mUpdatePostVotesUpIncrease.executeUpdate();
-    }
-
-    void updatePostVotesUpDecrease(int postId) throws SQLException{
-        mUpdatePostVotesUpDecrease.setInt(1, postId);
-        mUpdatePostVotesUpDecrease.executeUpdate();
-    }
-
-    void updatePostVotesDownIncrease(int postId) throws SQLException{
-        mUpdatePostVotesDownIncrease.setInt(1, postId);
-        mUpdatePostVotesDownIncrease.executeUpdate();
-    }
-
-    void updatePostVotesDownDecrease(int postId) throws SQLException{
-        mUpdatePostVotesDownDecrease.setInt(1, postId);
-        mUpdatePostVotesDownDecrease.executeUpdate();
-    }
-
-
-
     void createUserTable() throws SQLException {
         mCreateUserTable.execute();
     }
@@ -363,6 +341,26 @@ public class Database {
         mDeleteVoteByIds.setInt(1, userId);
         mDeleteVoteByIds.setInt(2, postId);
         mDeleteVoteByIds.executeUpdate();
+    }
+
+    void updatePostVotesUpIncrease(int postId) throws SQLException{
+        mUpdatePostVotesUpIncrease.setInt(1, postId);
+        mUpdatePostVotesUpIncrease.executeUpdate();
+    }
+
+    void updatePostVotesUpDecrease(int postId) throws SQLException{
+        mUpdatePostVotesUpDecrease.setInt(1, postId);
+        mUpdatePostVotesUpDecrease.executeUpdate();
+    }
+
+    void updatePostVotesDownIncrease(int postId) throws SQLException{
+        mUpdatePostVotesDownIncrease.setInt(1, postId);
+        mUpdatePostVotesDownIncrease.executeUpdate();
+    }
+
+    void updatePostVotesDownDecrease(int postId) throws SQLException{
+        mUpdatePostVotesDownDecrease.setInt(1, postId);
+        mUpdatePostVotesDownDecrease.executeUpdate();
     }
 
 }
