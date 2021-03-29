@@ -1,4 +1,5 @@
 # Buzz
+---
 
 ## Project Manager
 - Phase 1: Siyu(Coco) Chen
@@ -57,7 +58,7 @@ anything, click the `delete` button.
 ## Developer Guide
 Please refer to the following sections to view the details of the different
 component of this project.
-* [Front-end](web/README.md) is the web-based user interface that runs in browsers.
-* [Backend](backend/README.md) is the HTTP server running on Heroku.
-* [Admin-cli](admin-cli/README.md) is the app used by the administrator to
+- [Front-end](web/README.md) is the web-based user interface that runs in browsers.
+- [Backend](backend/README.md) is the HTTP server running on Heroku.
+- [Admin-cli](admin-cli/README.md) is the app used by the administrator to
   manage the state of Buzz.
