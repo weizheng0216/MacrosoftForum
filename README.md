@@ -17,7 +17,7 @@ Please note you must login with your Google account to user this app. Everyone
 else on this platform will be able to see your name, your email, as well as
 all the posts and comments you make.  However they cannot view your votes.
 
-Once you logged into the Buzz system, the mage page with a message list on
+Once you logged into the Buzz system, the main page with a message list on
 the left and a viewing area on the right is displayed.  You can click on the
 message list to see the details of different posts.  Other operations are listed
 below.
