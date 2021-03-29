@@ -1,354 +1,1145 @@
+
+
 package edu.lehigh.cse216.macrosoft.admin;
 
-import java.net.URISyntaxException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Map;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.net.URISyntaxException;
+import java.util.Scanner;
+import java.util.Date;
+import java.sql.ResultSetMetaData;
 
 /**
- * The Admin App of Buzz, which allows administrator of Buzz to create table,
- * drop table, and perform other maintenance jobs though command-line interface.
- *
- * This is a stand-alone application that is completely detached with the
- * front-end and the back-end of Buzz.  The only facility it interact with
- * is the Postgres Database.  User would need to provide a URL of the database
- * as a command-line argument of this application.
- *
- * @author Haocheng Gao
+ * App is our basic admin app.  For now, it is a demonstration of the six key 
+ * operations on a database: connect, insert, update, query, delete, disconnect
  */
-public class App {
+ class App {
 
     /**
-     * The instance that will handle all database operations.
+     * Print the menu for our program
      */
+    public static void main_menu()
+    {
+        System.out.println("*********************************************************");
+        System.out.println("---------------------------------------------------------");
+        System.out.println("    Here is the Main Menu");
+        System.out.println("    You can edit the following tables");
+        System.out.println("    By entering the correspond number,");  
+        System.out.println("    you can check what changes can be made to each table.");
+        System.out.println("    [1] User Table");
+        System.out.println("    [2] Post Table");
+        System.out.println("    [3] Comment Table");
+        System.out.println("    [4] Votes Table");
+        System.out.println("    [5] Quit the session.");
+        System.out.println("---------------------------------------------------------");
+        System.out.println("*********************************************************");
+    }
+
+     /**
+     * Print the User Menu 
+     */
+    public static void UserMenu() {
+        System.out.println("*******************************");
+        System.out.println("    User Table Menu");
+        System.out.println("    [1] Create User Table");
+        System.out.println("    [2] Drop User Table");
+        System.out.println("    [3] Insert a new User");
+        System.out.println("    [4] Select user by User ID");
+        System.out.println("    [5] Select user by Email");
+        System.out.println("    [6] Delete an User");
+        System.out.println("    [7] Quit Table Session");
+        System.out.println("*******************************");
+    }
+     /**
+     * Print Post Menu
+     */
+    public static void PostMenu() {
+        System.out.println("*******************************");
+        System.out.println("    Post Table Menu");
+        System.out.println("    [1] Create Post Table");
+        System.out.println("    [2] Drop Post Table");
+        System.out.println("    [3] Insert a new Post");
+        System.out.println("    [4] View all posts");
+        System.out.println("    [5] Select a Post by Post Id");
+        System.out.println("    [6] Update a Post by Post Id");        
+        System.out.println("    [7] Delete a Post");
+        System.out.println("    [8] Quit Table Session");
+        System.out.println("*******************************");
+    }
+
+    /**
+     * Print the Comment Menu 
+     */
+    public static void CommentMenu() {
+        System.out.println("*******************************");
+        System.out.println("    Comment Table Menu");
+        System.out.println("    [1] Create Comment Table");
+        System.out.println("    [2] Drop Comment Table");
+        System.out.println("    [3] Insert a new Comment");
+        System.out.println("    [4] Select all comments");
+        System.out.println("    [5] View Comment(s) in a Post");
+        System.out.println("    [6] View Comment(s) made by an User");
+        System.out.println("    [7] Update a Comment");        
+        System.out.println("    [8] Delete a Comment");
+        System.out.println("    [9] Quit Table Session");
+        System.out.println("*******************************");
+    }
+    
+    /**
+     * Print the Votes Menu 
+     */
+    public static void VotesMenu() {
+        System.out.println("*******************************");
+        System.out.println("    Votes Table Menu");
+        System.out.println("    [1] Create Votes Table");
+        System.out.println("    [2] Drop Votes Table");
+        System.out.println("    [3] Insert a new Vote");
+        System.out.println("    [4] Select votes by User ID");
+        System.out.println("    [5] Select a vote by Post and User IDs");
+        System.out.println("    [6] Update a Vote");        
+        System.out.println("    [7] Delete a Vote");
+        System.out.println("    [8] Quit Table Session");
+        System.out.println("*******************************");
+    }
+
+ 
+    /**
+     * The main routine runs a loop that gets a request from the user and
+     * processes it
+     * 
+     * @param argv Command-line options.  Ignored by this program.
+     */
+    
     private static Database database;
-
-    public static void main(String[] args) {
+    
+    public static void main(String[] argv) {
         String dbURL = "postgres://vdtksuqjtzvetb:b7ccb5e707b07d8c8bfdf7" +
-                "badbae2048282884d6b2e8ad336a71ff5833b2abc3@ec2-52-22-16" +
-                "1-59.compute-1.amazonaws.com:5432/d9m8d6ulhh2bbk";
-
+        "badbae2048282884d6b2e8ad336a71ff5833b2abc3@ec2-52-22-16" +
+        "1-59.compute-1.amazonaws.com:5432/d9m8d6ulhh2bbk";
+    
         // Get URL from command line
-        if (args.length >= 1) {
-            dbURL = args[0];
+       if (argv.length >= 1) {
+            dbURL = argv[0];
         }
-
+ 
         // Create & connect to the database
         try {
             database = Database.getInstance(dbURL);
         } catch (SQLException |
-                 ClassNotFoundException |
-                 URISyntaxException exp) {
-            System.out.println(exp.getMessage());
-            System.exit(-1);
-        }
+            ClassNotFoundException |
+            URISyntaxException exp) {
+        System.out.println(exp.getMessage());
+        System.exit(-1);
+        }    
 
-        // Start the CLI
-        CLI cli = new CLI();
-        registerCommands(cli);
-        cli.run();
+        ResultSet rs;
+        //      User table attributes
+        int user_id;
+        String email;
+        String first_name;
+        String last_name;
+        
 
-        // Always disconnect from the database
-        try {
-            database.disconnect();
-        } catch (SQLException exp) {
-            System.out.println(exp.getMessage());
-        }
-    }
+        //      Post table attributes
+        int post_id;
+        String title;
+        String content;
+        Date date;
+        int vote_up;
+        int vote_down;
+        boolean pinned;
 
-    /**
-     * Register commands to the admin-cli. The purpose of the method is to
-     * preventing the {@code main} method from being too long. If the project
-     * grows very large at some point, it may also be a good idea to move
-     * the command registrations into separate files.
-     * @param cli provided the {@code CLI} instance to register on.
-     */
-    private static void registerCommands(CLI cli) {
-        // *******************************************************************************
-        // *                                createtable
-        // *******************************************************************************
-        String createTableHelp = "Create a new table.";
-        cli.registerCommand("createtable", (args, util) -> {
-            try {
-                database.createTable();
-                System.out.println("Table is created.");
-                return util.OK;
-            } catch (SQLException exp) {
-                System.out.println(exp.getMessage());
-                return util.RUNTIME_ERR;
+        //      Comment Table Attributes
+        int comment_id;
+        String body;
+        String content_comment;
+
+        //      Votes Table Attributes
+        boolean up_Vote = true;
+        boolean down_Vote = true;
+
+        Scanner keyboard = new Scanner(System.in);
+        int operation = 0;
+        while (true) {
+            // User can enter the operation by number and make editions to the database
+            System.out.println();
+            main_menu();  
+            operation = keyboard.nextInt();
+            if(keyboard.hasNextLine()){
+                keyboard.nextLine();
             }
-        });
-        cli.addSyntaxHint("createtable", "createtable");
-        cli.addDescription("createtable", createTableHelp);
-
-
-        // *******************************************************************************
-        // *                                 droptable
-        // *******************************************************************************
-        String dropTableHelp = "Drop the table.";
-        cli.registerCommand("droptable", (args, util) -> {
-            String confirm = "Yes, I am sure";
-            try {
-                // Must enter confirm message first
-                System.out.println("You are going to delete everything, please type:\n" +
-                        util. ansiEscape(confirm, "33"));
-                if (util.readString().trim().equals(confirm)) {
-                    // Confirmed, drop table
-                    database.dropTable();
-                    System.out.println("Table is dropped.");
-                    return util.OK;
-                }
-                // Didn't confirm, abort
-                System.out.println("Input didn't match, operation is canceled.");
-            } catch (SQLException exp) {
-                System.out.println(exp.getMessage());
+            if(operation == 5) // quite the program
+            {   
+                System.out.println("Thanks for using the database");
+                break; 
             }
-            return util.RUNTIME_ERR;
-        });
-        cli.addSyntaxHint("droptable", "droptable");
-        cli.addDescription("droptable", dropTableHelp);
-
-
-        // *******************************************************************************
-        // *                                     list
-        // *******************************************************************************
-        String listHelp = "List messages. Print the entire message table if " +
-                "no arguments are passed. Otherwise only the required fields " +
-                "of the required messages(identified by ID) will be printed.";
-        cli.registerCommand("list", (args, util) -> {
-            List<Integer> requiredIDs = new ArrayList<>();
-            List<String> requiredFields = new ArrayList<>();
-
-            int r = util.OK;  // return code
-            // Parse args
-            int i = 1;
-            for (; i < args.length; i++) {
-                try {
-                    int id = Integer.parseInt(args[i]);
-                    requiredIDs.add(id);
-                } catch (NumberFormatException exp) {
-                    break;
-                }
-            }
-            for (; i < args.length; i++) {
-                String ptn = "id|title|content|date|likes|" +
-                        "dislikes|pinned|username";
-                if (args[i].toLowerCase().matches(ptn)) {
-                    requiredFields.add(args[i].toLowerCase());
-                } else {
-                    System.out.printf("Invalid argument: %s;\n", args[i]);
-                    r = util.INVALID_ARG;
-                }
-            }
-            // Get messages table
-            ArrayList<Database.Message> messages;
-            try {
-                messages = database.selectAllMessages();
-            } catch (SQLException exp) {
-                System.out.printf("Error, %s\n", exp.getMessage());
-                return util.RUNTIME_ERR;
-            }
-            // ===== Print result =====
-            // Prep
-            List<String> allFields = Arrays.asList("title", "date", "likes",
-                    "dislikes", "pinned", "username", "content");
-            if (requiredFields.isEmpty()) {
-                requiredFields = allFields;
-            }
-            // Print content
-            for (Database.Message msg : messages) {
-                if (requiredIDs.isEmpty() || requiredIDs.contains(msg.mID)) {
-                    System.out.printf("ID: %s\n", msg.mID);  // always print ID
-                    if (requiredFields.contains("title"))
-                        System.out.printf("Title: %s\n", msg.mTitle);
-                    if (requiredFields.contains("date"))
-                        System.out.printf("Date: %s\n", msg.mDate);
-                    if (requiredFields.contains("likes"))
-                        System.out.printf("Likes: %d\n", msg.mUpVotes);
-                    if (requiredFields.contains("dislikes"))
-                        System.out.printf("Dislikes: %d\n", msg.mDownVotes);
-                    if (requiredFields.contains("pinned"))
-                        System.out.printf("Pinned: %s\n", msg.mPinned);
-                    if (requiredFields.contains("username"))
-                        System.out.printf("Username: %s\n", msg.mUsername);
-                    if (requiredFields.contains("content"))
-                        System.out.printf("Content: %s\n", msg.mContent);
+            else if(operation == 1) // user table
+            {
+                
+                int u_choice = 0;
+                do {
                     System.out.println();
-                }
-            }
-            return r;
-        });
-        cli.addSyntaxHint("list", "list [ID]... [FIELDS]...");
-        cli.addDescription("list", listHelp);
-
-
-        // *******************************************************************************
-        // *                                   insert
-        // *******************************************************************************
-        String insertHelp = "Create a new message in the database. You can " +
-                "also set the initial values of each field by passing the " +
-                "optional arguments. If you set any value to \"?\", you will " +
-                "be prompted to enter the value later.";
-        cli.registerCommand("insert", (args, util) -> {
-            // Default values of the new message
-            String title = "Just another message";
-            String content = "Content is missing!";
-            int upVotes = 0;
-            int downVotes = 0;
-            boolean pinned = false;
-            String username = "";
-
-            int r = util.OK;  // return code
-
-            try {
-                // Modify initial values
-                for (int i = 1; i < args.length; i++) {
-                    String ptn = "(title|content|likes|" +
-                            "dislikes|pinned|username)=(.+)";
-                    Matcher m = Pattern.compile(ptn).matcher(args[i]);
-                    if (m.matches()) {
-                        String field = m.group(1);
-                        String value = m.group(2);
-                        if (value.equals("?")) {
-                            System.out.printf("Enter %s: ", field);
-                            value = util.readString();
-                        }
-                        switch (field) {
-                            case "title":
-                                title = value;
-                                break;
-                            case "content":
-                                content = value;
-                                break;
-                            case "likes":
-                                upVotes = Integer.parseInt(value);
-                                break;
-                            case "dislikes":
-                                downVotes = Integer.parseInt(value);
-                                break;
-                            case "pinned":
-                                pinned = Boolean.parseBoolean(value);
-                                break;
-                            case "username":
-                                username = value;
-                        }
-                    } else {
-                        System.out.printf("Invalid argument: %s;\n", args[i]);
-                        r = util.INVALID_ARG;
+                    UserMenu();
+                    System.out.println();
+                    u_choice = keyboard.nextInt();
+                    if(keyboard.hasNextLine()){
+                        keyboard.nextLine();
                     }
-                }
-                // Insert message to the database
-                database.insertMessage(title, content, upVotes,
-                        downVotes, pinned, username);
-                System.out.println("Message inserted");
-            } catch (SQLException | NumberFormatException exp) {
-                r = util.RUNTIME_ERR;
-                System.out.printf("Error, %s\n", exp.getMessage());
-            }
-            return r;
-        });
-        cli.addSyntaxHint("insert", "insert [<FIELD>=<VALUE>]...");
-        cli.addDescription("insert", insertHelp);
+                    switch(u_choice)
+                    {   
+                        // create user table
+                        case 1: 
+                            try
+                            {   System.out.println();
+                                database.createUserTable();
+                                System.out.println("User Table is created");
+                            }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            break;
 
+                        // drop user table
+                        case 2: 
+                            try{
+                                System.out.println();
+                                database.dropUserTable();
+                                System.out.println("User Table is DROPPED");
+                            }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            break;
 
-        // *******************************************************************************
-        // *                                   delete
-        // *******************************************************************************
-        String deleteHelp = "Delete the messages identified with given IDs.";
-        cli.registerCommand("delete", (args, util) -> {
-            // Parse args
-            if (args.length < 2) {
-                util.exec("help", "delete");
-                return util.INVALID_ARG;
-            }
-            int r = util.OK;  // return code
-            // Delete each message
-            for (int i = 1; i < args.length; i++) {
-                try {
-                    System.out.printf("%s: ", args[i]);
-                    database.deleteMessageById(Integer.parseInt(args[i]));
-                    System.out.println("deleted;");
-                } catch (SQLException exp) {
-                    r |= util.RUNTIME_ERR;
-                    System.out.printf("Error, %s\n", exp.getMessage());
-                } catch (NumberFormatException exp) {
-                    r |= util.INVALID_ARG;
-                    System.out.println("Error, ID must be integer");
-                }
-            }
-            return r;
-        });
-        cli.addSyntaxHint("delete", "delete <ID>...");
-        cli.addDescription("delete", deleteHelp);
+                        // insert user
+                        case 3: 
+                            System.out.println();
+                            System.out.println("Enter the user email");
+                            email = keyboard.nextLine();
+                            System.out.println("Enter the user first name");
+                            first_name = keyboard.nextLine();
+                            System.out.println("Enter the user last name");
+                            last_name = keyboard.nextLine();
+                            System.out.println();
+                            try{
+                                database.insertUser(email, first_name, last_name);
+                                System.out.println("User has been added to the data base");
+                            }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        
+                        //selectUserById
+                        case 4: 
+                            System.out.println();
+                            try{
+                                System.out.println("Enter the user id: ");
+                                user_id = keyboard.nextInt();
+                                if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
+                            rs = database.selectUserById(user_id);
+                            if(!rs.next())
+                            {
+                                System.out.println();
+                                System.out.println("Sorry, this user record is not found.");
+                                
+                                break;
+                            }
+                            do
+                            {
+                                user_id = rs.getInt("user_id");
+                                email = rs.getString("email");
+                                first_name = rs.getString("first_name");
+                                last_name = rs.getString("last_name");
+                                System.out.println(user_id + ", " + email + ", " + first_name +
+                           ", " + last_name);
+                            }while(rs.next());
+                            }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println();
+                            break;
+                        
+                        // select user by email
+                        case 5: 
+                            System.out.println();
+                            try{
+                                System.out.println("Enter the user email");
+                                email = keyboard.nextLine();
+                                rs = database.selectUserByEmail(email); 
+                                System.out.println();
+                                if(!rs.next())
+                                {
+                                    System.out.println("Sorry, this user record is not found.");
+                                    
+                                    break;
+                                }
+                                do
+                                {
+                                    user_id = rs.getInt("user_id");
+                                    email = rs.getString("email");
+                                    first_name = rs.getString("first_name");
+                                    last_name = rs.getString("last_name");
+                                    System.out.println(user_id + " " + email + " " + first_name +
+                           " " + last_name);
+                            }while(rs.next());
+                            }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }break;
 
+                        //deleteUserById()
+                        case 6: 
+                            System.out.println();
+                            System.out.println("Enter the user id you want to delete:" );
+                                user_id = keyboard.nextInt();
+                                if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
+                                try{
+                                    rs = database.selectUserById(user_id); // check if user exists
+                                    System.out.println();
+                                if(!rs.next())
+                                {
+                                    System.out.println("Sorry, this user record is not found.");
+                                
+                                    break;
+                                }
+                                rs = database.selectCommentsByUserId(user_id);
+                                if(rs.next())
+                                {
+                                    System.out.println("Sorry, this user cannot be deleted because this user has made some comments.");
+                                    System.out.println("You have to delete those comments first.");
+                                    break;
+                                }
+                                else{   
+                                    database.deleteUserById(user_id);
+                                    System.out.println("\nUser has been deleted.");
+                                }
+                                }
+                                catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
 
-        // *******************************************************************************
-        // *                                   update
-        // *******************************************************************************
-        String updateHelp = "Update a message in the database by ID. If you " +
-                "set any value to \"?\", you will be prompted to enter the " +
-                "value later.";
-        cli.registerCommand("update", (args, util) -> {
-            // Parse args
-            if (args.length < 2) {
-                util.exec("help", "update");
-                return util.INVALID_ARG;
+                            break;
+                        case 7:
+                                System.out.println("Quit Table User. Back to Main Menu ...");
+                            break;
+                        } // end of switch 
+
+                }   while(u_choice != 7); // end of user table
             }
-            int r = util.OK;  // return code
-            try {
-                // 1. Get message
-                int id = Integer.parseInt(args[1]);
-                Database.Message msg = database.selectMessageById(id);
-                // 2. Modify message
-                for (int i = 2; i < args.length; i++) {
-                    String ptn = "(title|content|likes|" +
-                            "dislikes|pinned|username)=(.+)";
-                    Matcher m = Pattern.compile(ptn).matcher(args[i]);
-                    if (m.matches()) {
-                        String field = m.group(1);
-                        String value = m.group(2);
-                        if (value.equals("?")) {
-                            System.out.printf("Enter %s: ", field);
-                            value = util.readString();
-                        }
-                        switch (field) {
-                            case "title":
-                                msg.mTitle = value;
-                                break;
-                            case "content":
-                                msg.mContent = value;
-                                break;
-                            case "likes":
-                                msg.mUpVotes = Integer.parseInt(value);
-                                break;
-                            case "dislikes":
-                                msg.mDownVotes = Integer.parseInt(value);
-                                break;
-                            case "pinned":
-                                msg.mPinned = Boolean.parseBoolean(value);
-                                break;
-                            case "username":
-                                msg.mUsername = value;
-                        }
-                    } else {
-                        System.out.printf("Invalid argument: %s;\n", args[i]);
-                        r = util.INVALID_ARG;
+            else if (operation == 2){ // switch to post table 
+                int p_choice = 0;
+               
+                do {
+                    PostMenu();
+                    p_choice = keyboard.nextInt();
+                    if(keyboard.hasNextLine()){
+                        keyboard.nextLine();
                     }
-                }
-                // 3. Post new message to the database
-                database.updateMessage(msg);
-                System.out.println("Message updated");
-            } catch (SQLException | NumberFormatException exp) {
-                r = util.RUNTIME_ERR;
-                System.out.printf("Error, %s\n", exp.getMessage());
-            }
-            return r;
-        });
-        cli.addSyntaxHint("update", "update <ID> [<FIELD>=<VALUE>]...");
-        cli.addDescription("update", updateHelp);
-    }
+                    switch(p_choice)
+                    {   
+                        case 1:
+                            try{
+                                database.createPostTable();
+                                System.out.println("Post Table is created");
 
+                            }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }break;
+                        case 2:
+                          
+                            try{
+                                database.dropPostTable();
+                                System.out.println("Post Table is dropped");
+                            }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            break;
+
+                        // insert post 
+                        case 3:
+                        System.out.println();
+                        System.out.println("Enter the post title");
+                        title = keyboard.nextLine();
+                        System.out.println("Enter the post content");
+                        content = keyboard.nextLine();
+                        System.out.println("Enter the number of upvotes");
+                        vote_up = keyboard.nextInt();
+                        if(keyboard.hasNextLine()){
+                            keyboard.nextLine();
+                        }
+                        System.out.println("Enter the number of downvotes");
+                        vote_down = keyboard.nextInt();
+                        if(keyboard.hasNextLine()){
+                            keyboard.nextLine();
+                        }
+                        System.out.println("Enter the user id");
+                        user_id = keyboard.nextInt();
+                        if(keyboard.hasNextLine()){
+                            keyboard.nextLine();
+                        }
+                        System.out.println("Is it pinned");
+                        pinned = keyboard.nextBoolean();
+                        if(keyboard.hasNextLine()){
+                            keyboard.nextLine();
+                        }
+                        try{
+                            database.insertPost(title, content, vote_up, vote_down, user_id, pinned);
+                            System.out.println("\nNew post has been added to the data base");
+                        }
+                        catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                            break;
+                        
+                        // Select Posts with user names
+                        case 4:
+                            try{
+                                rs = database.selectAllPostsJoinUsers();
+                                while(rs.next())
+                                {
+                                post_id = rs.getInt("post_id");
+                                title = rs.getString("title");
+                                content = rs.getString("content");
+                                date = rs.getDate("date");
+                                vote_up = rs.getInt("vote_up");
+                                vote_down = rs.getInt("vote_down");
+                                last_name = rs.getString("last_name");
+                                first_name = rs.getString("first_name");
+                                pinned = rs.getBoolean("pinned");
+                                System.out.println("+++++++++++++++");
+                                System.out.println("+++ Post ID +++");
+                                System.out.println("    " + post_id);
+                                System.out.println("+++  Title ++++");
+                                System.out.println("    " + title);
+                                System.out.println("+++ Content +++ ");
+                                System.out.println("    " + content);
+                                System.out.println("+++ Date +++ ");
+                                System.out.println("    " + date);
+                                System.out.println("++ Upvote counts ++");
+                                System.out.println("    " + vote_up);
+                                System.out.println("+ Downvote counts +");
+                                System.out.println("    " + vote_down);
+                                System.out.println("++ Last Name ++");
+                                System.out.println("    " + last_name);
+                                System.out.println("++ First Name ++");
+                                System.out.println("    " + first_name);
+                                System.out.println("+++ Pinned +++");
+                                System.out.println("    " + pinned);
+                                System.out.println("++++++++++++++");
+                                System.out.println();
+                                //System.out.printf ("%15d%15s%15s%15s%15d%15d%15s%15s%15b\n",post_id, title, content, date, vote_up, vote_down, first_name, pinned);
+                                }
+                            }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            break;
+
+                        // View the post
+                        case 5:
+                            System.out.println("Enter the post id you want to check");
+                            post_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            try{
+                                rs = database.selectPostById(post_id);
+                                if(!rs.next())
+                                {
+                                    System.out.println("Sorry, this post record is not found."); 
+                                    break;
+                                }
+                                do
+                                {  
+                                post_id = rs.getInt("post_id");
+                                title = rs.getString("title");
+                                content = rs.getString("content");
+                                date = rs.getDate("date");
+                                vote_up = rs.getInt("vote_up");
+                                vote_down = rs.getInt("vote_down");
+                                user_id = rs.getInt("user_id");
+                                pinned = rs.getBoolean("pinned");
+                                System.out.println();
+                                System.out.println("+++++++++++++++++++++++++++");
+                                System.out.println("+++++++++ Post ID +++++++++");
+                                System.out.println("    " + post_id);
+                                System.out.println("+++++++++  Title ++++++++++");
+                                System.out.println("    " + title);
+                                System.out.println("+++++++++ Content +++++++++");
+                                System.out.println("    " + content);
+                                System.out.println("+++++++++ Date ++++++++++++");
+                                System.out.println("    " + date);
+                                System.out.println("++++++ Upvote counts ++++++");
+                                System.out.println("    " + vote_up);
+                                System.out.println("+++++ Downvote counts +++++");
+                                System.out.println("    " + vote_down);
+                                System.out.println("+++++++++ User Id +++++++++");
+                                System.out.println("    " + user_id);
+                                System.out.println("+++++++++ Pinned ++++++++++");
+                                System.out.println("    " + pinned);
+                                System.out.println("++++++++++++++++++++++++++++");
+                                System.out.println();
+
+                                //System.out.println(post_id + ", " + title + ", " + content + " ," + date +
+                           //", " + vote_up + " ," + vote_down + " ," + user_id + " ," + pinned);
+                            }while(rs.next());
+                        }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                            
+                        // update post
+                        case 6: 
+                            System.out.println();
+                            System.out.println("Enter the post id you want to update: ");
+                                post_id = keyboard.nextInt();
+                                if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
+                                try{
+                                    rs = database.selectPostById(post_id);
+                                    System.out.println();
+                              
+                                    if(!rs.next())
+                                    {
+                                    System.out.println("This post Doesn't Exit");
+                                    }
+                                    else{
+                                        System.out.println("Enter the new post title");
+                                        title = keyboard.nextLine();
+                                        System.out.println("Enter the post content");
+                                        content = keyboard.nextLine();
+                                        System.out.println("Enter the number of upvotes");
+                                        vote_up = keyboard.nextInt();
+                                        if(keyboard.hasNextLine()){
+                                            keyboard.nextLine();
+                                        }
+                                        System.out.println("Enter the number of downvotes");
+                                        vote_down = keyboard.nextInt();
+                                        if(keyboard.hasNextLine()){
+                                            keyboard.nextLine();
+                                        }
+                                        System.out.println("Is it pinned: true/false ");
+                                        pinned = keyboard.nextBoolean();
+                                        if(keyboard.hasNextLine()){
+                                            keyboard.nextLine();
+                                        } 
+                                        System.out.println();
+                                        try{
+                                        
+                                        database.updatePostById(title, content, vote_up, vote_down, pinned, post_id);
+                                        System.out.println("The post has been reset:) ");
+                                        }catch (SQLException e) {
+                                        e.printStackTrace();
+                                    }
+                                    }}
+                                    catch (SQLException e) {
+                                        e.printStackTrace();
+                                    }
+                                    System.out.println();
+                            break;
+
+                        // delete a post
+                        case 7:  
+                            System.out.println();
+                            System.out.println("Enter the post id you want to delete:" );
+                                post_id = keyboard.nextInt();
+                                if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
+                                try{
+                                    rs = database.selectPostById(post_id);
+                                    if(!rs.next())
+                                    {
+                                        System.out.println("Sorry, we don't have this post.");
+                                        
+                                        break;
+                                    }
+                                    else{
+                                        //check if it has comments
+                                        rs = database.selectCommentsByPostId(post_id);
+                                        if(rs.next())
+                                        {
+                                        System.out.println("\nSorry, there are comments in this post.");
+                                        System.out.println("You have to delete the comments so that the post can be deleted.");
+                                        break;
+                                        }
+                                       
+                                        database.deletePostById(post_id);
+                                        System.out.println("\nPost "+ post_id + " has been deleted.");
+                                    }
+                                }
+                                catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                                System.out.println();
+                            break;
+                        case 8:    
+                            System.out.println("Quit Table Post. Back to Main Menu ...");
+                            break;
+                    }
+                } while(p_choice!=8);
+            }   // end of the post table
+
+            else if(operation == 3) // comment table
+            {
+                int c_choice = 0;
+                do {
+                    System.out.println();
+                    CommentMenu();
+                    c_choice = keyboard.nextInt();
+                    if(keyboard.hasNextLine()){
+                        keyboard.nextLine();
+                    }
+                    switch(c_choice)
+                    {   
+                        case 1:
+                            System.out.println();
+                            try{
+                                database.createCommentTable();
+                                System.out.println("Comment Table is created");
+                            }
+                                catch (SQLException e) {
+                                    e.printStackTrace();
+                            }
+                            System.out.println();
+                            break;
+                        case 2:
+                            System.out.println();
+                            try{
+                                database.dropCommentTable();
+                                System.out.println("Comment Table is dropped");
+                            }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println();
+                            break;
+
+                        case 3: // insert comment
+                            System.out.println();
+                            System.out.println("Enter the content");
+                            content_comment = keyboard.nextLine();
+                            System.out.println("Enter the user id");
+                            user_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            try{
+                                rs = database.selectUserById(user_id);
+                            
+                            System.out.println("Enter the post id");
+                            post_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            ResultSet rs1 = database.selectPostById(post_id);
+                            if(!rs.next() || !rs1.next())
+                            {
+                                System.out.println("Record doesn't exist");
+                                break;
+                            }
+                            
+                            System.out.println();
+                        
+                            database.insertComment(content_comment, user_id, post_id);
+                            System.out.println("Comment has been added to the data base");
+                        }
+                        catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println();
+                        break;
+
+                        case 4: // view all comments
+                        System.out.println();
+                        try{
+                            rs = database.selectAllCommentsJoinUsers();
+                            while(rs.next())
+                            {
+                            comment_id = rs.getInt("comment_id");
+                            content_comment = rs.getString("content");
+                            date = rs.getDate("date");
+                            last_name = rs.getString("last_name");
+                            first_name = rs.getString("first_name");
+                            System.out.println("++++++++++++++++");
+                            System.out.println("++ Comment ID ++");
+                            System.out.println("    " + comment_id);
+                            System.out.println(" ++ Content ++ ");
+                            System.out.println("    " + content_comment);
+                            System.out.println(" ++ Date ++ ");
+                            System.out.println(" " + date);
+                            System.out.println("++ Last Name ++");
+                            System.out.println("    " + last_name);
+                            System.out.println("++ First Name ++");
+                            System.out.println("    " + first_name);
+                            System.out.println("++++++++++++++++");
+                            }
+                        }
+                        catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println();
+                        break;
+
+                        case 5: // select comments by post id
+                        System.out.println();
+                            try{
+                            System.out.println("Enter the post id you want to check:" );
+                            post_id = keyboard.nextInt(); 
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            rs = database.selectCommentsByPostId(post_id);
+                            System.out.println();
+                            if(!rs.next())
+                            {
+                                System.out.println("\nSorry, no one has made any comments under this post.");
+                                break;
+                            }
+                            do
+                            {
+                                comment_id = rs.getInt("comment_id");
+                                content = rs.getString("content");
+                                date = rs.getDate("date");
+                                user_id = rs.getInt("user_id");
+                                post_id = rs.getInt("post_id");
+                                System.out.println("++++++++++++++++");
+                                System.out.println("++ Comment ID ++");
+                                System.out.println("    " + comment_id);
+                                System.out.println(" ++ Content ++ ");
+                                System.out.println("    " + content);
+                                System.out.println(" ++ Date ++ ");
+                                System.out.println(" " + date);
+                                System.out.println("+++ User ID +++");
+                                System.out.println("     " + user_id);
+                                System.out.println("++ Post ID ++");
+                                System.out.println("     " + post_id);
+                                System.out.println("++++++++++++++++");
+                                System.out.println();
+
+                                //System.out.println(comment_id + ", " + content + ", " + date + " ," + user_id + " ," + post_id);
+                            }while(rs.next());
+                            }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println();
+                            break;
+
+                    case 6: // select comments by user id
+                        System.out.println();
+                        try{
+                            System.out.println("Enter the user id you want to check:" );
+                            user_id = keyboard.nextInt(); 
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                        }
+                            rs = database.selectCommentsByUserId(user_id);
+                            System.out.println();
+                            if(!rs.next())
+                            {
+                                System.out.println("\nSorry, this user hasn't made any comments.");
+                                break;
+                            }
+                            do
+                            {
+                                comment_id = rs.getInt("comment_id");
+                                content = rs.getString("content");
+                                date = rs.getDate("date");
+                                user_id = rs.getInt("user_id");
+                                post_id = rs.getInt("post_id");
+                                System.out.println("++++++++++++++++");
+                                System.out.println("++ Comment ID ++");
+                                System.out.println("    " + comment_id);
+                                System.out.println(" ++ Content ++ ");
+                                System.out.println("    " + content);
+                                System.out.println(" ++ Date ++ ");
+                                System.out.println(" " + date);
+                                System.out.println("+++ User ID +++");
+                                System.out.println(" " + user_id);
+                                System.out.println("++ Post ID ++");
+                                System.out.println("  " + post_id);
+                                System.out.println("++++++++++++++++");
+                                System.out.println();
+
+                                //System.out.println(comment_id + ", " + content + ", " + date + " ," + user_id + " ," + post_id);
+                            }while(rs.next());
+                            }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println();
+                            break;
+
+
+                            
+                        case 7: // update
+                            try{
+                            System.out.println("Enter the comment id you want to change:" );
+                            comment_id = keyboard.nextInt(); 
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            
+                            System.out.println("Enter the new content you want to update:" );
+                            content_comment = keyboard.nextLine(); 
+                            
+                                database.updateCommentById(content_comment, comment_id);
+                                System.out.println("Comment has been updated.");
+                            }
+                        catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println();
+                            break;
+                        case 8: // delete
+                        System.out.println();
+                            System.out.println("Enter the comment id you want to delete:" );
+                            comment_id = keyboard.nextInt(); 
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            try{
+                                database.deleteCommentById(comment_id);
+                                System.out.println("Comment "+ comment_id + " has been deleted.");
+                            }
+                            
+                        catch (SQLException e) {
+                            e.printStackTrace();
+                        }System.out.println();
+                        break;
+                        case 9:    
+                            System.out.println("Quit Table Comment. Back to Main Menu ...");
+                            break;
+                    } // end of switch 
+                    System.out.println();
+                } while(c_choice != 9);
+            }   
+            else if(operation == 4) // user table
+            {
+             
+                int v_choice = 0;
+                // Scanner v = new Scanner(System.in);
+                // Scanner vin = new Scanner(System.in);
+               
+                do {
+                    System.out.println();
+                    VotesMenu();
+                    v_choice = keyboard.nextInt();
+                    if(keyboard.hasNextLine()){
+                        keyboard.nextLine();
+                    }
+                    switch(v_choice)
+                    {   
+                        case 1:
+                            
+                            try{
+                                database.createVoteTable();
+                                System.out.println("Table Vote is created");
+                            }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }System.out.println();
+                            break;
+
+                        case 2:
+                            
+                            try{
+                                database.dropVoteTable();
+                                System.out.println("Table Vote is dropped");
+                            }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }System.out.println();
+                            break;
+
+                        case 3: // insert a vote
+                            System.out.println();
+                            System.out.println("Enter the user id:" );
+                            user_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            try{
+                            rs = database.selectUserById(user_id);
+                            if(!rs.next())
+                            {
+                                System.out.println("User doesn't exist");
+                                break;
+                            }
+                            System.out.println("Enter the post id:" );
+                            post_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            
+                            rs = database.selectPostById(post_id);
+                            if(!rs.next())
+                            {
+                                System.out.println("Post doesn't exist");
+                                break;
+                            }
+                            System.out.println("Enter if it is upvote: true/false" );
+                            up_Vote = keyboard.nextBoolean();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            System.out.println("Enter if it is downvote: true/false" );
+                            down_Vote = keyboard.nextBoolean();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                                database.insertVote(user_id, post_id, up_Vote, down_Vote);
+                                System.out.println("The vote has been inserted.");
+                                rs = database.selectPostById(post_id);
+                                if(rs.next()){
+                                int vote_up_counts = rs.getInt("vote_up");
+                                int vote_down_counts = rs.getInt("vote_down");
+                                if(up_Vote == true)
+                                {
+                                    database.updatePostVotesUpIncrease(post_id);
+                                }
+                                else{
+                                    continue;
+                                }
+                                if(down_Vote == true)
+                                {
+                                    database.updatePostVotesDownIncrease(post_id);
+                                }
+                                else{
+                                    continue;
+                                }
+                            }
+                            }
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        case 4: //select votes by user id
+                        System.out.println();
+                            try{
+                                System.out.println("Enter the user id: ");
+                                user_id = keyboard.nextInt();
+                                if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
+                                rs = database.selectVotesByUserId(user_id);
+                                System.out.println();
+                                if(!rs.next())
+                                {
+                                    System.out.println("Sorry, we don't have this record.");
+                                    break;
+                                }
+                                do
+                                {
+                                    System.out.printf("%15s%15s%15s%15s\n","user_id", "post_id", "upVote", "down_Vote");
+                                    user_id = rs.getInt("user_id");
+                                    post_id = rs.getInt("post_id");
+                                    up_Vote = rs.getBoolean("vote_up");
+                                    down_Vote = rs.getBoolean("vote_down");
+                                    System.out.printf("%15d%15d%15b%15b\n",user_id, post_id, up_Vote, down_Vote);
+                                    //System.out.println(user_id + " ," + post_id + " ," + up_Vote + " ," + down_Vote);
+                                }while(rs.next());
+                            }
+                                catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                            break;
+                        case 5:   //select votes by ids
+                            System.out.println();
+                            try{
+                                System.out.println("Enter the user id: ");
+                                user_id = keyboard.nextInt();
+                                if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
+                                System.out.println("Enter the post id: ");
+                                post_id = keyboard.nextInt();
+                                if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
+                                    rs = database.selectVoteByIds(user_id, post_id);
+                                    if(!rs.next())
+                                    {
+                                        System.out.println("This user hasn't voted this post");
+                                    }
+                                    else{
+                                //
+                                do
+                                {   System.out.printf("%15s%15s%15s%15s\n","user_id", "post_id", "upVote", "down_Vote");
+                                    user_id = rs.getInt("user_id");
+                                    post_id = rs.getInt("post_id");
+                                    up_Vote = rs.getBoolean("vote_up");
+                                    down_Vote = rs.getBoolean("vote_down");
+                                    System.out.printf("%15d%15d%15b%15b\n",user_id, post_id, up_Vote, down_Vote);
+                                }while(rs.next());
+                            }}
+                                catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                            break;
+
+                        case 6: // update votes by ids
+                            System.out.println();
+                            System.out.println("Enter the user id");
+                            user_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            
+                            System.out.println("Enter the post id");
+                            post_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                     
+                            try{
+                                boolean original_up_Vote = true;
+                                boolean original_down_Vote = true;
+                                rs = database.selectVoteByIds(user_id, post_id);
+                                if(!rs.next())
+                                {
+                                    System.out.println("\nThis user hasn't voted this post");
+                                }
+                                else{   
+                                    original_up_Vote = rs.getBoolean("vote_up");
+                                    original_down_Vote=rs.getBoolean("vote_down");
+                                    System.out.println("Enter the upVote Status: true/false");
+                                    up_Vote = keyboard.nextBoolean();
+                                    if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
+                                    System.out.println("Enter the downVote Status: true/false");
+                                    down_Vote = keyboard.nextBoolean();
+                                    if(keyboard.hasNextLine()){
+                                        keyboard.nextLine();
+                                    }
+                                    database.updateVoteByIds(up_Vote, down_Vote, user_id, post_id);
+                                    System.out.println("\nThe vote has been reset: ");
+
+                                    rs = database.selectVoteByIds(user_id, post_id);
+
+                                    rs = database.selectPostById(post_id);
+                                    if(rs.next()){
+                                    int vote_up_counts = rs.getInt("vote_up");
+                                    int vote_down_counts = rs.getInt("vote_down");
+                                    if(up_Vote != original_up_Vote){
+                                        if(up_Vote == true)
+                                        {
+                                            database.updatePostVotesUpIncrease(post_id);
+                                        }
+                                        else{
+                                            database.updatePostVotesUpDecrease(post_id);
+                                        }
+                                    }
+                                    if(down_Vote != original_down_Vote){
+                                        if(down_Vote == true)
+                                        {
+                                            database.updatePostVotesDownIncrease(post_id);
+                                        }
+                                        else{
+                                            database.updatePostVotesDownDecrease(post_id);
+                                        }
+                                }
+                                }
+
+                                }
+
+                                }catch (SQLException e) {
+                                        e.printStackTrace();
+                                    }
+                            break;
+                        case 7:
+                            System.out.println();
+                            System.out.println("To delete the vote, enter the user id: " );
+                            user_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            System.out.println("To delete the vote, enter the post id: " );
+                            post_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            try{
+                                rs = database.selectVoteByIds(user_id, post_id);
+                                if(!rs.next())
+                                {
+                                    System.out.println("This user hasn't voted this post.");
+                                }
+                                else{
+                                database.deleteVoteByIds(user_id, post_id);
+
+                                System.out.println("The vote has been deleted.");
+                                rs= database.selectVoteByIds(user_id, post_id);
+                                if(rs.next()){
+                                    up_Vote = rs.getBoolean("vote_up");
+                                    down_Vote=rs.getBoolean("vote_down");
+                                }    
+                                rs = database.selectPostById(post_id);
+                                    if(rs.next()){
+                                    int vote_up_counts = rs.getInt("vote_up");
+                                    int vote_down_counts = rs.getInt("vote_down");
+                                    if(up_Vote == true) // if true, decrease by 1
+                                    {
+                                        database.updatePostVotesUpDecrease(post_id);
+                                    }
+                                    else{
+                                        continue;
+                                    }
+                                    if(down_Vote == true)   // if true, decrease by 1
+                                    {
+                                        database.updatePostVotesDownDecrease(post_id);
+                                    }
+                                    else{
+                                        continue;
+                                    }
+                                }
+                            }}
+                            catch (SQLException e) {
+                                e.printStackTrace();
+                            }System.out.println();
+                    break;
+                        case 8:   
+                            System.out.println("Quit Table Votes. Back to Main Menu ...");
+                            
+                            break;
+                    }   
+                
+                } while(v_choice != 8); // end of do loop
+            }  // end of the last option
+           
+        }
+        try {
+                database.disconnect();
+            } catch (SQLException exp) {
+                System.out.println(exp.getMessage());
+            }
+        keyboard.close();
+        
 }
+}
+  
+       
+ 
+  
+       
+ 
