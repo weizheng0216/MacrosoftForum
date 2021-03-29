@@ -23,7 +23,7 @@ class BasicStructure{
             $(".container").append(Handlebars.templates["BasicStructure.hb"]());
             $(".new-post-button").click(BasicStructure.showNewPostBlock);
             $(".my-profile-button").click(BasicStructure.showMyProfileBlock);
-
+            $("#sign-out").click(BasicStructure.signOut)
             BriefPostsList.refresh();
 
             // initial new post block
@@ -31,6 +31,11 @@ class BasicStructure{
 
             BasicStructure.isInit = true;
         }
+    }
+
+    private static signOut(){
+        alert("sign out successfully");
+        window.location.replace(backendUrl+"/login.html");
     }
 
     /**
