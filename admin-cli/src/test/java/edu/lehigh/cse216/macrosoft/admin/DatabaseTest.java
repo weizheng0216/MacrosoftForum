@@ -146,10 +146,11 @@ public class DatabaseTest extends TestCase {
         e.printStackTrace();
     }
     }
-    
+
+
     /**
-     * Test for User Table Attributes
-     * check if user can be inserted and deleted
+     * Test for User Table Insert and Delete
+     * check if it is correctly constructed
      */
     public void testUserInsert(){
         String user_email = "345345345@google.com";
@@ -185,6 +186,8 @@ public class DatabaseTest extends TestCase {
     }
     }
 
+
+
     /**
      * Test for Post Table Attributes
      */
@@ -202,7 +205,10 @@ public class DatabaseTest extends TestCase {
         }
     }
     
-
+    /**
+     * Test for Post Table Attributes
+     * check if an existing post if correctly constructed
+     */
     public void testPostConstructor() {
        
         String title_ts = "wohoo";
@@ -244,7 +250,10 @@ public class DatabaseTest extends TestCase {
                 e.printStackTrace();
             }
         }
-
+    /**
+     * Test for Comment Table 
+     * check if it an existing comment is correctly constructed
+     */
     public void testCommentCheck(){
         String comment_content = "Got it!";
         int comment_user_id = 12;  
@@ -282,7 +291,10 @@ public class DatabaseTest extends TestCase {
             e.printStackTrace();
         } 
     }
-
+    /**
+     * Test for Votes Table Attributes
+     * check if an existing vote is correctly constructed
+     */
     public void testVoteCheck(){
         int user_id_vote = 16;
         int post_id_vote = 28;

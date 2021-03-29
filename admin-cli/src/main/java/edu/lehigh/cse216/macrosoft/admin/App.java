@@ -585,7 +585,7 @@ import java.sql.ResultSetMetaData;
                                         break;
                                     }
                                     else{database.deletePostById(post_id);
-                                    System.out.println("Post "+ post_id + "has been deleted.");
+                                    System.out.println("Post "+ post_id + " has been deleted.");
                                     }
                                 }
                                 catch (SQLException e) {
@@ -775,7 +775,7 @@ import java.sql.ResultSetMetaData;
                             }
                             try{
                                 database.deleteCommentById(comment_id);
-                                System.out.println("Comment "+ comment_id + "has been deleted.");
+                                System.out.println("Comment "+ comment_id + " has been deleted.");
                             }
                             
                         catch (SQLException e) {
