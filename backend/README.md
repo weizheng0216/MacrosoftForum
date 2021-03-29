@@ -75,3 +75,4 @@ These two function are used to delete the post and comment the current user sent
 
 ## **Tests**
 Unit tests are written in *cse216_macrosoft/backend/src/test/java/edu/lehigh/cse216/macrosoft/backend/test mainly on ensure the constructor works correctly.
+
