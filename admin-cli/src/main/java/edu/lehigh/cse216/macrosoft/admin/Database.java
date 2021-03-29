@@ -121,6 +121,11 @@ public class Database {
     private PreparedStatement mUpdateVoteByIds;
     private PreparedStatement mDeleteVoteByIds;
 
+    private PreparedStatement mUpdatePostVotesUpIncrease;
+    private PreparedStatement mUpdatePostVotesUpDecrease;
+    private PreparedStatement mUpdatePostVotesDownIncrease;
+    private PreparedStatement mUpdatePostVotesDownDecrease;
+
     /**
      * Initialize the tables of this Database.  The primary job is to create
      * the {@code PreparedStatement}s for Database operations.  This function
@@ -165,11 +170,37 @@ public class Database {
         mSelectVoteByIds = mConnection.prepareStatement("SELECT * FROM votes WHERE user_id=? AND post_id=?");
         mUpdateVoteByIds = mConnection.prepareStatement("UPDATE votes SET vote_up=?, vote_down=? WHERE user_id=? AND post_id=?");
         mDeleteVoteByIds = mConnection.prepareStatement("DELETE FROM votes WHERE user_id=? AND post_id=?");
+        mUpdatePostVotesUpIncrease = mConnection.prepareStatement("UPDATE posts SET vote_up=vote_up+1 WHERE post_id=?");
+        mUpdatePostVotesUpDecrease = mConnection.prepareStatement("UPDATE posts SET vote_up=vote_up-1 WHERE post_id=?");
+        mUpdatePostVotesDownIncrease = mConnection.prepareStatement("UPDATE posts SET vote_down=vote_down+1 WHERE post_id=?");
+        mUpdatePostVotesDownDecrease = mConnection.prepareStatement("UPDATE posts SET vote_down=vote_down-1 WHERE post_id=?");
     }
 
     // **********************************************************************
     // *                database operations (generated)
     // **********************************************************************
+
+    void updatePostVotesUpIncrease(int postId) throws SQLException{
+        mUpdatePostVotesUpIncrease.setInt(1, postId);
+        mUpdatePostVotesUpIncrease.executeUpdate();
+    }
+
+    void updatePostVotesUpDecrease(int postId) throws SQLException{
+        mUpdatePostVotesUpDecrease.setInt(1, postId);
+        mUpdatePostVotesUpDecrease.executeUpdate();
+    }
+
+    void updatePostVotesDownIncrease(int postId) throws SQLException{
+        mUpdatePostVotesDownIncrease.setInt(1, postId);
+        mUpdatePostVotesDownIncrease.executeUpdate();
+    }
+
+    void updatePostVotesDownDecrease(int postId) throws SQLException{
+        mUpdatePostVotesDownDecrease.setInt(1, postId);
+        mUpdatePostVotesDownDecrease.executeUpdate();
+    }
+
+
 
     void createUserTable() throws SQLException {
         mCreateUserTable.execute();
@@ -328,8 +359,6 @@ public class Database {
         mUpdateVoteByIds.executeUpdate();
     }
     
-    //mUpdateVoteByIds = mConnection.prepareStatement("UPDATE votes SET vote_up=?, vote_down=?");
-    //mDeleteVoteByIds = mConnection.prepareStatement("DELETE FROM votes WHERE user_id=? AND post_id=?");
     void deleteVoteByIds(int userId, int postId) throws SQLException {
         mDeleteVoteByIds.setInt(1, userId);
         mDeleteVoteByIds.setInt(2, postId);

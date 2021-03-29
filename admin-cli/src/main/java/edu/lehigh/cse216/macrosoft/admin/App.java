@@ -99,33 +99,6 @@ import java.sql.ResultSetMetaData;
         System.out.println("    [8] Quit Table Session");
         System.out.println("*******************************");
     }
-    /**
-     * Ask the user to enter a menu option; repeat until we get a valid option
-     * 
-     * @param in A BufferedReader, for reading from the keyboard
-     * 
-     * @return The character corresponding to the chosen menu option
-     */
-
-    
-
-    /**
-     * Ask the user to enter a String message
-     * 
-     * @param in A BufferedReader, for reading from the keyboard
-     * @param message A message to display when asking for input
-     * 
-     * @return The string that the user provided.  May be "".
-     */
-
-    /**
-     * Ask the user to enter an integer
-     * 
-     * @param in A BufferedReader, for reading from the keyboard
-     * @param message A message to display when asking for input
-     * 
-     * @return The integer that the user provided.  On error, it will be -1
-     */
 
  
     /**
@@ -181,20 +154,13 @@ import java.sql.ResultSetMetaData;
         String content_comment;
 
         //      Votes Table Attributes
-        boolean up_Vote;
-        boolean down_Vote;
+        boolean up_Vote = true;
+        boolean down_Vote = true;
 
-
-
-        // Start our basic command-line interpreter:
-        //BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         Scanner keyboard = new Scanner(System.in);
         int operation = 0;
         while (true) {
-            // Get the user's request, and do it
-            //
-            // NB: for better testability, each action should be a separate
-            //     function call
+            // User can enter the operation by number and make editions to the database
             System.out.println();
             main_menu();  
             operation = keyboard.nextInt();
@@ -871,6 +837,7 @@ import java.sql.ResultSetMetaData;
                                 e.printStackTrace();
                             }System.out.println();
                             break;
+
                         case 2:
                             
                             try{
@@ -881,7 +848,8 @@ import java.sql.ResultSetMetaData;
                                 e.printStackTrace();
                             }System.out.println();
                             break;
-                        case 3:
+
+                        case 3: // insert a vote
                             System.out.println();
                             System.out.println("Enter the user id:" );
                             user_id = keyboard.nextInt();
@@ -919,12 +887,34 @@ import java.sql.ResultSetMetaData;
                             }
                                 database.insertVote(user_id, post_id, up_Vote, down_Vote);
                                 System.out.println("The vote has been inserted.");
+                                rs = database.selectPostById(post_id);
+                                if(rs.next()){
+                                int vote_up_counts = rs.getInt("vote_up");
+                                int vote_down_counts = rs.getInt("vote_down");
+                                if(up_Vote == true)
+                                {
+                                    database.updatePostVotesUpIncrease(post_id);
+                                    //vote_up_counts+=1;
+                                }
+                                else{
+                                    //database.updatePostVotesUpDecrease(post_id);
+                                    //vote_up_counts -= 1;
+                                    continue;
+                                }
+                                if(down_Vote == true)
+                                {
+                                    database.updatePostVotesDownIncrease(post_id);
+                                }
+                                else{
+                                    continue;
+                                }
+                            }
                             }
                             catch (SQLException e) {
                                 e.printStackTrace();
                             }
                             break;
-                        case 4: // by user id
+                        case 4: //select votes by user id
                         System.out.println();
                             try{
                                 System.out.println("Enter the user id: ");
@@ -955,7 +945,7 @@ import java.sql.ResultSetMetaData;
                                     e.printStackTrace();
                                 }
                             break;
-                        case 5:   // by ids
+                        case 5:   //select votes by ids
                             System.out.println();
                             try{
                                 System.out.println("Enter the user id: ");
@@ -988,7 +978,8 @@ import java.sql.ResultSetMetaData;
                                     e.printStackTrace();
                                 }
                             break;
-                        case 6: // update
+
+                        case 6: // update votes by ids
                             System.out.println();
                             System.out.println("Enter the user id");
                             user_id = keyboard.nextInt();
@@ -1003,12 +994,16 @@ import java.sql.ResultSetMetaData;
                             }
                      
                             try{
+                                boolean original_up_Vote = true;
+                                boolean original_down_Vote = true;
                                 rs = database.selectVoteByIds(user_id, post_id);
                                 if(!rs.next())
                                 {
                                     System.out.println("\nThis user hasn't voted this post");
                                 }
                                 else{   
+                                    original_up_Vote = rs.getBoolean("vote_up");
+                                    original_down_Vote=rs.getBoolean("vote_down");
                                     System.out.println("Enter the upVote Status: true/false");
                                     up_Vote = keyboard.nextBoolean();
                                     if(keyboard.hasNextLine()){
@@ -1021,7 +1016,33 @@ import java.sql.ResultSetMetaData;
                                     }
                                     database.updateVoteByIds(up_Vote, down_Vote, user_id, post_id);
                                     System.out.println("\nThe vote has been reset: ");
-                                    
+
+                                    rs = database.selectVoteByIds(user_id, post_id);
+
+                                    rs = database.selectPostById(post_id);
+                                    if(rs.next()){
+                                    int vote_up_counts = rs.getInt("vote_up");
+                                    int vote_down_counts = rs.getInt("vote_down");
+                                    if(up_Vote != original_up_Vote){
+                                        if(up_Vote == true)
+                                        {
+                                            database.updatePostVotesUpIncrease(post_id);
+                                        }
+                                        else{
+                                            database.updatePostVotesUpDecrease(post_id);
+                                        }
+                                    }
+                                    if(down_Vote != original_down_Vote){
+                                        if(down_Vote == true)
+                                        {
+                                            database.updatePostVotesDownIncrease(post_id);
+                                        }
+                                        else{
+                                            database.updatePostVotesDownDecrease(post_id);
+                                        }
+                                }
+                                }
+
                                 }
 
                                 }catch (SQLException e) {
@@ -1050,8 +1071,31 @@ import java.sql.ResultSetMetaData;
                                 database.deleteVoteByIds(user_id, post_id);
 
                                 System.out.println("The vote has been deleted.");
+                                rs= database.selectVoteByIds(user_id, post_id);
+                                if(rs.next()){
+                                    up_Vote = rs.getBoolean("vote_up");
+                                    down_Vote=rs.getBoolean("vote_down");
+                                }    
+                                rs = database.selectPostById(post_id);
+                                    if(rs.next()){
+                                    int vote_up_counts = rs.getInt("vote_up");
+                                    int vote_down_counts = rs.getInt("vote_down");
+                                    if(up_Vote == true) // if true, decrease by 1
+                                    {
+                                        database.updatePostVotesUpDecrease(post_id);
+                                    }
+                                    else{
+                                        continue;
+                                    }
+                                    if(down_Vote == true)   // if true, decrease by 1
+                                    {
+                                        database.updatePostVotesDownDecrease(post_id);
+                                    }
+                                    else{
+                                        continue;
+                                    }
                                 }
-                            }
+                            }}
                             catch (SQLException e) {
                                 e.printStackTrace();
                             }System.out.println();
