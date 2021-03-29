@@ -91,7 +91,7 @@ import java.sql.ResultSetMetaData;
         System.out.println("    [1] Create Votes Table");
         System.out.println("    [2] Drop Votes Table");
         System.out.println("    [3] Insert a new Vote");
-        System.out.println("    [4] Select a vote by User ID");
+        System.out.println("    [4] Select votes by User ID");
         System.out.println("    [5] Select a vote by Post and User IDs");
         System.out.println("    [6] Update a Vote");        
         System.out.println("    [7] Delete a Vote");
@@ -197,12 +197,9 @@ import java.sql.ResultSetMetaData;
             System.out.println();
             main_menu();  
             operation = keyboard.nextInt();
-                 // once in, the main menu shows up
-            // if (action == '?') {
-            //     main_menu();
-            // }
-            // else 
-            System.out.println();
+            if(keyboard.hasNextLine()){
+                keyboard.nextLine();
+            }
             if(operation == 5)
             {   
                 System.out.println("Thanks for using the database");
@@ -214,13 +211,16 @@ import java.sql.ResultSetMetaData;
                 int u_choice = 0;
                 //BufferedReader u = new BufferedReader(new InputStreamReader(System.in));
                 //BufferedReader uin = new BufferedReader(new InputStreamReader(System.in));
-                Scanner u = new Scanner(System.in);
-                Scanner uin = new Scanner(System.in);
+                //Scanner u = new Scanner(System.in);
+                //Scanner uin = new Scanner(System.in);
                 do {
                     System.out.println();
                     UserMenu();
                     System.out.println();
-                    u_choice = u.nextInt();
+                    u_choice = keyboard.nextInt();
+                    if(keyboard.hasNextLine()){
+                        keyboard.nextLine();
+                    }
                     //System.out.println(u_choice);
                     switch(u_choice)
                     {   
@@ -248,11 +248,11 @@ import java.sql.ResultSetMetaData;
                         case 3:
                             System.out.println();
                             System.out.println("Enter the user email");
-                            email = uin.nextLine();
+                            email = keyboard.nextLine();
                             System.out.println("Enter the user first name");
-                            first_name = uin.nextLine();
+                            first_name = keyboard.nextLine();
                             System.out.println("Enter the user last name");
-                            last_name = uin.nextLine();
+                            last_name = keyboard.nextLine();
                             System.out.println();
                             try{
                                 database.insertUser(email, first_name, last_name);
@@ -266,7 +266,10 @@ import java.sql.ResultSetMetaData;
                         System.out.println();
                             try{
                                 System.out.println("Enter the user id: ");
-                                user_id = uin.nextInt();
+                                user_id = keyboard.nextInt();
+                                if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
                             rs = database.selectUserById(user_id);
                             if(!rs.next())
                             {
@@ -293,7 +296,7 @@ import java.sql.ResultSetMetaData;
                             System.out.println();
                             try{
                                 System.out.println("Enter the user email");
-                                email = uin.nextLine();
+                                email = keyboard.nextLine();
                                 rs = database.selectUserByEmail(email); 
                                 System.out.println();
                                 if(!rs.next())
@@ -319,8 +322,10 @@ import java.sql.ResultSetMetaData;
                         case 6: //deleteUserById()
                             System.out.println();
                             System.out.println("Enter the user id you want to delete:" );
-                                user_id = uin.nextInt();
-                                
+                                user_id = keyboard.nextInt();
+                                if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
                                 try{
                                     rs = database.selectUserById(user_id);
                                     System.out.println();
@@ -332,7 +337,7 @@ import java.sql.ResultSetMetaData;
                                 }
                                 else{   
                                     database.deleteUserById(user_id);
-                                    System.out.println("User "+ user_id + "has been deleted.");
+                                    System.out.println("User "+ user_id + " has been deleted.");
                                 }
                                 }
                                 catch (SQLException e) {
@@ -347,39 +352,32 @@ import java.sql.ResultSetMetaData;
 
                 }   while(u_choice != 7); // end of user table
             }
-            else if (operation == 2){
+            else if (operation == 2){ // switch to post table 
                 int p_choice = 0;
-                // BufferedReader p = new BufferedReader(new InputStreamReader(System.in));
-                // BufferedReader pin = new BufferedReader(new InputStreamReader(System.in));
-                Scanner p = new Scanner(System.in);
-                Scanner pin = new Scanner(System.in);
                
                 do {
                     PostMenu();
-                    p_choice = p.nextInt();
-
+                    p_choice = keyboard.nextInt();
+                    if(keyboard.hasNextLine()){
+                        keyboard.nextLine();
+                    }
                     switch(p_choice)
                     {   
                         case 1:
-                            System.out.println();
                             try{
                                 database.createPostTable();
                                 System.out.println("Post Table is created");
-                                // ResultSet rs1 = database.selectPostAll();
-                                // ResultSetMetaData rsmd = rs1.getMetaData();
-                                // String name = rsmd.getColumnName(7);
-                                // System.out.println("Column name is " + name);
 
                             }
                             catch (SQLException e) {
                                 e.printStackTrace();
                             }break;
                         case 2:
-                            System.out.println();
+                          
                             try{
                                 database.dropPostTable();
                                 System.out.println("Post Table is dropped");
-                                System.out.println();
+                         
                             }
                             catch (SQLException e) {
                                 e.printStackTrace();
@@ -388,17 +386,29 @@ import java.sql.ResultSetMetaData;
                         case 3:
                         System.out.println();
                         System.out.println("Enter the post title");
-                        title = pin.nextLine();
+                        title = keyboard.nextLine();
                         System.out.println("Enter the post content");
-                        content = pin.nextLine();
+                        content = keyboard.nextLine();
                         System.out.println("Enter the number of upvotes");
-                        vote_up = pin.nextInt();
+                        vote_up = keyboard.nextInt();
+                        if(keyboard.hasNextLine()){
+                            keyboard.nextLine();
+                        }
                         System.out.println("Enter the number of downvotes");
-                        vote_down = pin.nextInt();
+                        vote_down = keyboard.nextInt();
+                        if(keyboard.hasNextLine()){
+                            keyboard.nextLine();
+                        }
                         System.out.println("Enter the user id");
-                        user_id = pin.nextInt();
+                        user_id = keyboard.nextInt();
+                        if(keyboard.hasNextLine()){
+                            keyboard.nextLine();
+                        }
                         System.out.println("Is it pinned");
-                        pinned = pin.nextBoolean();
+                        pinned = keyboard.nextBoolean();
+                        if(keyboard.hasNextLine()){
+                            keyboard.nextLine();
+                        }
                         try{
                             database.insertPost(title, content, vote_up, vote_down, user_id, pinned);
                             System.out.println("New post has been added to the data base");
@@ -451,7 +461,10 @@ import java.sql.ResultSetMetaData;
                             break;
                         case 5:
                             System.out.println("Enter the post id you want to check");
-                            post_id = pin.nextInt();
+                            post_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
                             try{
                                 rs = database.selectPostById(post_id);
                                 if(!rs.next())
@@ -501,10 +514,13 @@ import java.sql.ResultSetMetaData;
                                 e.printStackTrace();
                             }
                             break;
-                        case 6: // update post // can be improved
+                        case 6: // update post
                             System.out.println();
                             System.out.println("Enter the post id you want to update: ");
-                                post_id = pin.nextInt();
+                                post_id = keyboard.nextInt();
+                                if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
                                 try{
                                     rs = database.selectPostById(post_id);
                                     System.out.println();
@@ -515,18 +531,29 @@ import java.sql.ResultSetMetaData;
                                     }
                                     else{
                                         System.out.println("Enter the new post title");
-                                        title = pin.nextLine();
+                                        title = keyboard.nextLine();
                                         System.out.println("Enter the post content");
-                                        System.out.println();
-                                        content = pin.nextLine();
+                                        content = keyboard.nextLine();
                                         System.out.println("Enter the number of upvotes");
-                                        vote_up = pin.nextInt();
+                                        vote_up = keyboard.nextInt();
+                                        if(keyboard.hasNextLine()){
+                                            keyboard.nextLine();
+                                        }
                                         System.out.println("Enter the number of downvotes");
-                                        vote_down = pin.nextInt();
+                                        vote_down = keyboard.nextInt();
+                                        if(keyboard.hasNextLine()){
+                                            keyboard.nextLine();
+                                        }
                                         System.out.println("Is it pinned");
-                                        pinned = pin.nextBoolean(); 
+                                        pinned = keyboard.nextBoolean();
+                                        if(keyboard.hasNextLine()){
+                                            keyboard.nextLine();
+                                        } 
                                         System.out.println("Enter the user id");
-                                        user_id = pin.nextInt();
+                                        user_id = keyboard.nextInt();
+                                        if(keyboard.hasNextLine()){
+                                            keyboard.nextLine();
+                                        }
                                         try{
                                         
                                         database.updatePostById(title, content, vote_up, vote_down, pinned, user_id);
@@ -545,7 +572,10 @@ import java.sql.ResultSetMetaData;
                         case 7:  // delete a post
                             System.out.println();
                             System.out.println("Enter the post id you want to delete:" );
-                                post_id = pin.nextInt();
+                                post_id = keyboard.nextInt();
+                                if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
                                 try{
                                     rs = database.selectPostById(post_id);
                                     if(!rs.next())
@@ -574,15 +604,13 @@ import java.sql.ResultSetMetaData;
             {
                 
                 int c_choice = 0;
-                // BufferedReader c = new BufferedReader(new InputStreamReader(System.in));
-                // BufferedReader cin = new BufferedReader(new InputStreamReader(System.in));
-                Scanner c = new Scanner(System.in);
-                Scanner cin = new Scanner(System.in);
                 do {
                     System.out.println();
                     CommentMenu();
-                    c_choice = c.nextInt();
-
+                    c_choice = keyboard.nextInt();
+                    if(keyboard.hasNextLine()){
+                        keyboard.nextLine();
+                    }
                     switch(c_choice)
                     {   
                         case 1:
@@ -610,14 +638,29 @@ import java.sql.ResultSetMetaData;
                         case 3: // insert comment
                             System.out.println();
                             System.out.println("Enter the content");
-                            content_comment = cin.nextLine();
-                            System.out.println();
+                            content_comment = keyboard.nextLine();
                             System.out.println("Enter the user id");
-                            user_id = cin.nextInt();
+                            user_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            try{
+                                rs = database.selectUserById(user_id);
+                            
                             System.out.println("Enter the post id");
-                            post_id = cin.nextInt();
+                            post_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            ResultSet rs1 = database.selectPostById(post_id);
+                            if(!rs.next() || !rs1.next())
+                            {
+                                System.out.println("Record doesn't exist");
+                                break;
+                            }
+                            
                             System.out.println();
-                        try{
+                        
                             database.insertComment(content_comment, user_id, post_id);
                             System.out.println("Comment has been added to the data base");
                         }
@@ -663,7 +706,10 @@ import java.sql.ResultSetMetaData;
                         System.out.println();
                             try{
                             System.out.println("Enter the post id you want to check:" );
-                            post_id = cin.nextInt(); 
+                            post_id = keyboard.nextInt(); 
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
                             rs = database.selectCommentsByPostId(post_id);
                             System.out.println();
                             if(!rs.next())
@@ -702,13 +748,16 @@ import java.sql.ResultSetMetaData;
                             System.out.println();
                             break;
                         case 6: // update
-                            System.out.println();
-                            System.out.println("Enter the comment id you want to change:" );
-                            comment_id = cin.nextInt(); 
-                            System.out.println();
-                            System.out.println("Enter the content you want to update:" );
-                            content_comment = cin.next(); 
                             try{
+                            System.out.println("Enter the comment id you want to change:" );
+                            comment_id = keyboard.nextInt(); 
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            
+                            System.out.println("Enter the new content you want to update:" );
+                            content_comment = keyboard.nextLine(); 
+                            
                                 database.updateCommentById(content_comment, comment_id);
                                 System.out.println("Comment has been updated.");
                             }
@@ -720,7 +769,10 @@ import java.sql.ResultSetMetaData;
                         case 7: // delete
                         System.out.println();
                             System.out.println("Enter the comment id you want to delete:" );
-                            comment_id = cin.nextInt(); 
+                            comment_id = keyboard.nextInt(); 
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
                             try{
                                 database.deleteCommentById(comment_id);
                                 System.out.println("Comment "+ comment_id + "has been deleted.");
@@ -741,18 +793,20 @@ import java.sql.ResultSetMetaData;
             {
              
                 int v_choice = 0;
-                Scanner v = new Scanner(System.in);
-                Scanner vin = new Scanner(System.in);
+                // Scanner v = new Scanner(System.in);
+                // Scanner vin = new Scanner(System.in);
                
                 do {
                     System.out.println();
                     VotesMenu();
-                    v_choice = v.nextInt();
-
+                    v_choice = keyboard.nextInt();
+                    if(keyboard.hasNextLine()){
+                        keyboard.nextLine();
+                    }
                     switch(v_choice)
                     {   
                         case 1:
-                            System.out.println();
+                            
                             try{
                                 database.createVoteTable();
                                 System.out.println("Table Vote is created");
@@ -762,7 +816,7 @@ import java.sql.ResultSetMetaData;
                             }System.out.println();
                             break;
                         case 2:
-                            System.out.println();
+                            
                             try{
                                 database.dropVoteTable();
                                 System.out.println("Table Vote is dropped");
@@ -774,15 +828,41 @@ import java.sql.ResultSetMetaData;
                         case 3:
                             System.out.println();
                             System.out.println("Enter the user id:" );
-                            user_id = vin.nextInt();
-                            System.out.println("Enter the post id:" );
-                            post_id = vin.nextInt();
-                            System.out.println("Enter if it is upvote" );
-                            up_Vote = vin.nextBoolean();
-                            System.out.println("Enter if it is downvote:" );
-                            down_Vote = vin.nextBoolean();
-                            System.out.println();
+                            user_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
                             try{
+                            rs = database.selectUserById(user_id);
+                            if(!rs.next())
+                            {
+                                System.out.println("User doesn't exist");
+                                break;
+                            }
+                            System.out.println("Enter the post id:" );
+                            post_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            
+                            rs = database.selectPostById(post_id);
+                            if(!rs.next())
+                            {
+                                System.out.println("Post doesn't exist");
+                                break;
+                            }
+                            System.out.println("Enter if it is upvote" );
+                            up_Vote = keyboard.nextBoolean();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            System.out.println("Enter if it is downvote:" );
+                            down_Vote = keyboard.nextBoolean();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                   
+                            
                                 database.insertVote(user_id, post_id, up_Vote, down_Vote);
                                 System.out.println("The vote has been inserted.");
                             }
@@ -794,7 +874,10 @@ import java.sql.ResultSetMetaData;
                         System.out.println();
                             try{
                                 System.out.println("Enter the user id: ");
-                                user_id = vin.nextInt();
+                                user_id = keyboard.nextInt();
+                                if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
                                 rs = database.selectVotesByUserId(user_id);
                                 System.out.println();
                                 if(!rs.next())
@@ -822,11 +905,21 @@ import java.sql.ResultSetMetaData;
                             System.out.println();
                             try{
                                 System.out.println("Enter the user id: ");
-                                user_id = vin.nextInt();
+                                user_id = keyboard.nextInt();
+                                if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
                                 System.out.println("Enter the post id: ");
-                                post_id = vin.nextInt();
-                                rs = database.selectVoteByIds(user_id, post_id);
-                                System.out.println();
+                                post_id = keyboard.nextInt();
+                                if(keyboard.hasNextLine()){
+                                    keyboard.nextLine();
+                                }
+                                    rs = database.selectVoteByIds(user_id, post_id);
+                                    if(!rs.next())
+                                    {
+                                        System.out.println("This user hasn't voted this post");
+                                    }
+                                    else{
                                 System.out.printf("%15s%15s%15s%15s\n","user_id", "post_id", "upVote", "down_Vote");
                                 while(rs.next())
                                 {
@@ -836,25 +929,35 @@ import java.sql.ResultSetMetaData;
                                     down_Vote = rs.getBoolean("vote_down");
                                     System.out.printf("%15d%15d%15b%15b\n",user_id, post_id, up_Vote, down_Vote);
                                 }
-                            }
+                            }}
                                 catch (SQLException e) {
                                     e.printStackTrace();
                                 }
                             break;
                         case 6: // update
-                            System.out.println();
+                            
                             System.out.println("Enter the upVote Status");
-                            up_Vote = vin.nextBoolean();
-                            System.out.println();
+                            up_Vote = keyboard.nextBoolean();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
                             System.out.println("Enter the downVote Status");
-                            down_Vote = vin.nextBoolean();
-                            System.out.println();
+                            down_Vote = keyboard.nextBoolean();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
                             System.out.println("Enter the user id");
-                            user_id = vin.nextInt();
-                            System.out.println();
+                            user_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                            
                             System.out.println("Enter the post id");
-                            post_id = vin.nextInt();
-                            System.out.println();
+                            post_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
+                     
                             try{
                                 rs = database.selectVoteByIds(user_id, post_id);
                                 if(!rs.next())
@@ -873,9 +976,15 @@ import java.sql.ResultSetMetaData;
                         case 7:
                             System.out.println();
                             System.out.println("Enter the user id you want to delete:" );
-                            user_id = vin.nextInt();
+                            user_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
                             System.out.println("Enter the post id you want to delete:" );
-                            post_id = vin.nextInt();
+                            post_id = keyboard.nextInt();
+                            if(keyboard.hasNextLine()){
+                                keyboard.nextLine();
+                            }
                             try{
                                 rs = database.selectVoteByIds(user_id, post_id);
                                 if(!rs.next())
@@ -885,7 +994,7 @@ import java.sql.ResultSetMetaData;
                                 else{
                                 database.deleteVoteByIds(user_id, post_id);
 
-                                System.out.println("The comment has been deleted.");
+                                System.out.println("The vote has been deleted.");
                                 }
                             }
                             catch (SQLException e) {
@@ -907,6 +1016,7 @@ import java.sql.ResultSetMetaData;
             } catch (SQLException exp) {
                 System.out.println(exp.getMessage());
             }
+        keyboard.close();
         
 }
 }

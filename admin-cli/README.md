@@ -14,7 +14,7 @@ the first command-line argument. If no command-line argument is provided, the
 App will use the default(current) URL of the database. The default URL may not
 be valid.
 
-
+Before start testing, make sure to `docker pull postgres` everytime because some changes may added before testing. 
 
 ## Developer Guide
 
@@ -120,8 +120,8 @@ The unit tests primarily done are the constructor tests.
 - Response Test: `ResponseTest` are for checking if raw data values are constructed correctly
   - Inside `Response Test`, the testConstructor contains three parts:
     • CommentResponse: check if the existing comment is correctly constructed
-    • PostResponse: check if the existing post is correctly constructed
-    • UserResponse: check if the existing user is correctly constructed
+    • PostResponse: check if the existing post is correctly constructed based on comment
+    • UserResponse: check if the existing user is correctly constructed based on post
 
 The integration tests that includes the front-end HTTP requests are done
 manually. The font-end tests scripts and the database queries are contained
@@ -140,13 +140,16 @@ correctly, and could be queried through the getters.
 - Database Test:
   Database instance is created and connected for the tests.
   The tests are divided in couple parts.
+
   • Check table attributes
     Using select___ById to retrieve an entity by `ResultSet` 
-    and then use `ResultSetMetaData.getColumnName()` to check if the table is created correctly.
+    and then use `ResultSetMetaData.getColumnName()` to check if each table is created correctly with correct column names.
     
   • Check if entity is wholesome 
-    Initiate some variables and use them to compare with an existing entity.
-  
+    Initiate some variables and use them to compare with an existing entity to see if the constructor is correct.
+
+  • Check if entity is inserted successfully and deleted successfully   
+    
   
 All tests are passed. The basic functionality of command-line interface is
 guaranteed. Integration tests that include database queries could be added

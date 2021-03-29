@@ -132,7 +132,7 @@ public class Database {
         mInsertUser = mConnection.prepareStatement("INSERT INTO users VALUES (default, ?, ?, ?)");
         mSelectUserById = mConnection.prepareStatement("SELECT * FROM users WHERE user_id=?");
         mSelectUserByEmail = mConnection.prepareStatement("SELECT * FROM users WHERE email=?");
-        mDeleteUserById = mConnection.prepareStatement("DELETE * FROM users WHERE user_id=?");
+        mDeleteUserById = mConnection.prepareStatement("DELETE  FROM users WHERE user_id=?");
         //mUpdateUserById = mConnection.prepareStatement("UPDATE users SET email=?, first_name=?, last_name=? WHERE user_id=?");
 
 
@@ -143,11 +143,9 @@ public class Database {
         mInsertPost = mConnection.prepareStatement("INSERT INTO posts VALUES (default, ?, ?, default, ?, ?, ?, ?)");
         mSelectAllPostsJoinUsers = mConnection.prepareStatement("SELECT post_id, title, content, date, vote_up, vote_down, pinned, users.last_name, users.first_name FROM posts JOIN users ON posts.user_id=users.user_id");
         mSelectAllPosts = mConnection.prepareStatement("SELECT posts.post_id, posts.title, posts.content, posts.date, posts.vote_up, posts.vote_down, posts.pinned, users.last_name, users.first_name, users.email FROM posts LEFT JOIN users ON posts.user_id=users.user_id");
-        
-        
         mSelectPostById = mConnection.prepareStatement("SELECT * FROM posts WHERE post_id=?");
         mUpdatePostById = mConnection.prepareStatement("UPDATE posts SET title=?, content=?, vote_up=?, vote_down=?, pinned=? WHERE post_id=?");
-        mDeletePostById = mConnection.prepareStatement("DELETE * FROM posts WHERE post_id=?");
+        mDeletePostById = mConnection.prepareStatement("DELETE FROM posts WHERE post_id=?");
         
         mCreateCommentTable = mConnection.prepareStatement("CREATE TABLE comments ( comment_id SERIAL PRIMARY KEY, content VARCHAR(500), date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, user_id INTEGER REFERENCES users (user_id), post_id INTEGER REFERENCES posts (post_id) )");
         mDropCommentTable = mConnection.prepareStatement("DROP TABLE comments");
@@ -156,7 +154,7 @@ public class Database {
         mSelectCommentsByUserId = mConnection.prepareStatement("SELECT * FROM comments WHERE user_id=?");
         mSelectCommentsByPostId = mConnection.prepareStatement("SELECT * FROM comments WHERE post_id=?");
         mUpdateCommentById = mConnection.prepareStatement("UPDATE comments SET content=? WHERE comment_id=?");
-        mDeleteCommentById = mConnection.prepareStatement("DELETE * FROM comments WHERE commentId=?");
+        mDeleteCommentById = mConnection.prepareStatement("DELETE FROM comments WHERE comment_id=?");
         
         mCreateVoteTable = mConnection.prepareStatement("CREATE TABLE votes ( user_id INTEGER, post_id INTEGER, vote_up BOOLEAN, vote_down BOOLEAN )");
         mDropVoteTable = mConnection.prepareStatement("DROP TABLE votes");
@@ -164,7 +162,7 @@ public class Database {
         mSelectVotesByUserId = mConnection.prepareStatement("SELECT * FROM votes WHERE user_id=?");
         mSelectVoteByIds = mConnection.prepareStatement("SELECT * FROM votes WHERE user_id=? AND post_id=?");
         mUpdateVoteByIds = mConnection.prepareStatement("UPDATE votes SET vote_up=?, vote_down=?");
-        mDeleteVoteByIds = mConnection.prepareStatement("DELETE * FROM votes WHERE user_id=? AND post_id=?");
+        mDeleteVoteByIds = mConnection.prepareStatement("DELETE FROM votes WHERE user_id=? AND post_id=?");
     }
 
     // **********************************************************************

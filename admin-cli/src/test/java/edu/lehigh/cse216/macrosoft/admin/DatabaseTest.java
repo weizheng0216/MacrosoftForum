@@ -85,11 +85,10 @@ public class DatabaseTest extends TestCase {
 
     /**
      * Test for User Table Attributes
+     * check if it is correctly constructed
      */
     
     public void testUser(){
-        //database.createPostTable();
-        //System.out.println("Post Table is created");
         try{
         Database database = getDatabase();
         ResultSet rs = database.selectUserById(15);
@@ -102,6 +101,10 @@ public class DatabaseTest extends TestCase {
         }
     }
 
+    /**
+     * Test for User Table Attributes
+     * check if it is correctly constructed
+     */
     public void testUser1(){
         //database.createPostTable();
         //System.out.println("Post Table is created");
@@ -117,6 +120,10 @@ public class DatabaseTest extends TestCase {
         }
     }
 
+    /**
+     * Test for User Table Attributes
+     * check if an existing user is correctly constructed
+     */
      public void testUserCheck(){
         String user_email = "sic323@lehigh.edu";
         String user_first_name = "Coco";
@@ -140,36 +147,43 @@ public class DatabaseTest extends TestCase {
     }
     }
     
-    // public void testUserInsert(){
-    //     String user_email = "345345345@google.com";
-    //     String user_first_name = "Try";
-    //     String user_last_name = "Mr.";
-    //     try{
-    //         Database database = getDatabase();
-    //         database.insertUser(user_email, user_first_name, user_last_name);
-    //     }
-    //     catch (SQLException e) {
-    //         e.printStackTrace();
-    //     }
-    //     try{
-    //         ResultSet rs = database.selectUserByEmail(user_email);
-    //         while(rs.next())
-    //         {
-    //             //user_id = rs.getInt("user_id");
-    //             email = rs.getString("email");
-    //             first_name = rs.getString("first_name");
-    //             last_name = rs.getString("last_name");
-    //         }
+    /**
+     * Test for User Table Attributes
+     * check if user can be inserted and deleted
+     */
+    public void testUserInsert(){
+        String user_email = "345345345@google.com";
+        String user_first_name = "Try";
+        String user_last_name = "Mr.";
+        try{
+            Database database = getDatabase();
+            database.insertUser(user_email, user_first_name, user_last_name);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try{
+            ResultSet rs = database.selectUserByEmail(user_email);
+            while(rs.next())
+            {
+                //user_id = rs.getInt("user_id");
+                email = rs.getString("email");
+                first_name = rs.getString("first_name");
+                last_name = rs.getString("last_name");
+            }
 
-    //     assertTrue(user_email.equals(email));
-    //     assertTrue(user_first_name.equals(first_name));
-    //     assertTrue(user_last_name.equals(last_name));
-    //  database.selectUserByEmail(user_id);
-
-    // }catch (SQLException e) {
-    //     e.printStackTrace();
-    // }
-    // }
+        assertTrue(user_email.equals(email));
+        assertTrue(user_first_name.equals(first_name));
+        assertTrue(user_last_name.equals(last_name));
+     rs = database.selectUserByEmail(user_email);
+     if (rs.next() ) 
+     {int user_id_ts = rs.getInt("user_id");
+    database.deleteUserById(user_id_ts);
+        }
+    }catch (SQLException e) {
+        e.printStackTrace();
+    }
+    }
 
     /**
      * Test for Post Table Attributes
@@ -191,32 +205,23 @@ public class DatabaseTest extends TestCase {
 
     public void testPostConstructor() {
        
-        String title_ts = "Wow";
-        String content_ts = "This is fantastic!";
+        String title_ts = "wohoo";
+        String content_ts = "happy monday";
         //int user_id_ts = 2;
         // int upVote = 0;
         // int downVote = 0;
         // boolean pinned_ts = false;
         try{
-            ResultSet rs = database.selectPostById(26);
+            ResultSet rs = database.selectPostById(44);
         while(rs.next())
         {
             //post_id = rs.getInt("post_id");
             title = rs.getString("title");
             content = rs.getString("content");
-            //date = rs.getDate("date");
-            // vote_up = rs.getInt("vote_up");
-            // vote_down = rs.getInt("vote_down");
-            // //user_id = rs.getInt("user_id");
-            // pinned = rs.getBoolean("pinned");
         }
 
         assertTrue(title_ts.equals(title));
         assertTrue(content_ts.equals(content));
-        //assertTrue(d.mDate.equals(date));
-        // assertTrue(upVote == upVote);
-        // assertTrue(downVote == downVote);
-        // assertTrue(pinned_ts == pinned);
     }catch (SQLException e) {
         e.printStackTrace();
     }
@@ -240,30 +245,25 @@ public class DatabaseTest extends TestCase {
             }
         }
 
-    // public void testCommentCheck(){
-    //     String comment_content = "";
-    //     int comment_user_id = 16;  
-    //     try{
-    //         ResultSet rs = database.selectCommentsByPostId(26);
-    //     while(rs.next())
-    //     {
-    //         //post_id = rs.getInt("post_id");
-    //         content = rs.getString("content");
-    //         user_id = rs.getInt("user_id");
+    public void testCommentCheck(){
+        String comment_content = "Got it!";
+        int comment_user_id = 12;  
+        try{
+            ResultSet rs = database.selectCommentsByPostId(30);
+        while(rs.next())
+        {
+            //post_id = rs.getInt("post_id");
+            content = rs.getString("content");
+            user_id = rs.getInt("user_id");
           
-    //     }
-    //     assertTrue(comment_content.equals(content));
-    //     assertTrue(comment_user_id == user_id);
-      
-    //     //assertTrue(d.mDate.equals(date));
-    //     // assertTrue(upVote == upVote);
-    //     // assertTrue(downVote == downVote);
-    //     // assertTrue(pinned_ts == pinned);
-    // }catch (SQLException e) {
-    //     e.printStackTrace();
-    // }
+        }
+        assertTrue(comment_content.equals(content));
+        assertTrue(comment_user_id == user_id);
+    }catch (SQLException e) {
+        e.printStackTrace();
+    }
          
-    // }
+    }
     
 
 //     // /**
