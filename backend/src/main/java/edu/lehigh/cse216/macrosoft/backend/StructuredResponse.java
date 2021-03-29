@@ -39,3 +39,4 @@ public class StructuredResponse {
         mData = data;
     }
 }
+
