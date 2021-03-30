@@ -63,3 +63,22 @@ component of this project.
 - [Backend](backend/README.md) is the HTTP server running on Heroku.
 - [Admin-cli](admin-cli/README.md) is the app used by the administrator to
   manage the state of Buzz.
+
+## Configurations
+
+### Environment Variables
+The following environment variables are configured on Heroku server and are
+accessible by the backend developer.
+
+- CLIENT\_ID: The OAuth client ID of our application to be used by Google verifier.
+- DATABASE\_URL: URL of our database on Heroku server for making database connection.
+
+### Google Developer Console
+The following settings on Google Developer Console has been changed.
+
+- Authorized Javascript origins
+- Authorized redirect URIs
+- Test users
+- Consent Screen
+
+Please login with our group Google account.
