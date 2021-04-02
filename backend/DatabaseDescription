@@ -1,0 +1,168 @@
+package edu.lehigh.cse216.macrosoft.backend;
+
+
+#############################
+##       Table Users
+#############################
+
+[?] createUserTable();
+    CREATE TABLE users (
+        user_id      SERIAL PRIMARY KEY,
+        email        VARCHAR(50),
+        first_name   VARCHAR(50),
+        last_name    VARCHAR(50)
+    );
+
+[?] dropUserTable();
+    DROP TABLE users;
+
+[C] insertUser(String email, String first, String last);
+    INSERT INTO users VALUES (default, ?, ?, ?);
+
+[R] selectUserById(int userId);
+    SELECT * FROM users WHERE user_id=?;
+
+[R] selectUserByEmail(String email);
+    SELECT * FROM users WHERE email=?;
+
+[D] deleteUserById(int userId);
+    DELETE FROM users WHERE user_id=?;
+
+
+
+
+
+#############################
+##       Table Posts
+#############################
+
+[?] createPostTable();
+    CREATE TABLE posts (
+        post_id     SERIAL PRIMARY KEY,
+        title       VARCHAR(100),
+        content     VARCHAR(500),
+        date        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        vote_up     INTEGER,
+        vote_down   INTEGER,
+        user_id     INTEGER REFERENCES users (user_id),
+        pinned      BOOLEAN
+    );
+
+[?] dropPostTable();
+    Drop TABLE posts;
+
+[C] insertPost(String title, String content, int upVote,
+               int downVote, int userId, boolean pinned);
+    INSERT INTO posts VALUES (default, ?, ?, default, ?, ?, ?, ?);
+
+[R] selectAllPostsJoinUsers();
+    SELECT post_id, title, content, date, vote_up,
+        vote_down, pinned, users.last_name, users.first_name
+    FROM posts JOIN users
+    ON posts.user_id=users.user_id
+    ORDER BY pinned DESC, posts.date DESC;
+
+[R] selectPostById(int postId);
+    SELECT * FROM posts WHERE post_id=?;
+
+[R] selectLatestPostId();
+    SELECT MAX(post_id) FROM posts;
+
+[U] updatePostById(String title, String content, int upVote,
+                   int downVote, boolean pinned, int userId);
+    UPDATE posts SET title=?, content=?, vote_up=?, vote_down=?, pinned=?
+    WHERE post_id=?;
+
+[U] updatePostByIdShort(String title, String content, int postId);
+    UPDATE posts SET title=?, content=? WHERE post_id=?;
+
+[U] updatePostVoteCountById(int upVote, int downVote, int postId);
+    UPDATE posts SET vote_up=?, vote_down=? WHERE post_id=?;
+
+[D] deletePostById(int postId);
+    DELETE FROM posts WHERE post_id=?;
+
+
+
+
+
+
+#############################
+##      Table Comments
+#############################
+
+[?] createCommentTable();
+    CREATE TABLE comments (
+        comment_id   SERIAL PRIMARY KEY,
+        content      VARCHAR(500),
+        date         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        user_id      INTEGER REFERENCES users (user_id),
+        post_id      INTEGER REFERENCES posts (post_id)
+    );
+
+[?] dropCommentTable();
+    DROP TABLE comments;
+
+[C] insertComment(String content, int userId, int postId);
+    INSERT INTO comments VALUES (default, ?, default, ?, ?);
+
+[R] selectAllCommentsJoinUsers();
+    SELECT comment_id, content, date, users.last_name, users.first_name
+    FROM comments JOIN users
+    ON comments.user_id=users.user_id;
+
+[R] selectCommentsByUserId(int userId);
+    SELECT * FROM comments WHERE user_id=?;
+
+[R] selectCommentsByPostId(int postId);
+    SELECT * FROM comments WHERE post_id=? ORDER BY date DESC;
+
+[U] updateCommentById(String content, int commentId);
+    UPDATE comments SET content=? WHERE comment_id=?;
+
+[D] deleteCommentById(int commentId);
+    DELETE FROM comments WHERE comment_id=?;
+
+
+
+
+
+#############################
+##      Table Votes
+#############################
+
+[?] createVoteTable();
+    CREATE TABLE votes (
+        user_id     SERIAL PRIMARY KEY,
+        post_id     SERIAL PRIMARY KEY,
+        vote_up     BOOLEAN,
+        vote_down   BOOLEAN
+    );
+
+[?] dropVoteTable();
+    DROP TABLE votes;
+
+[C] insertVote(int userId, int postId,
+               boolean upVote, boolean downVote);
+    INSERT INTO votes VALUES (?, ?, ?, ?);
+
+[R] selectVotesByUserId(int userId);
+    SELECT * FROM votes WHERE user_id=?;
+
+[R] selectVoteByIds(int userId, int postId);
+    SELECT * FROM votes WHERE user_id=? AND post_id=?;
+
+[R] selectUpVoteCountByPostId(int postId);
+    SELECT COUNT(*) FROM votes WHERE post_id=? AND vote_up=true;
+
+[R] selectDownVoteCountByPostId(int postId);
+    SELECT COUNT(*) FROM votes WHERE post_id=? AND vote_down=true;
+
+[U] updateVoteByIds(boolean upVote, boolean downVote,
+                    int userId, int postId);
+    UPDATE votes SET vote_up=?, vote_down=? WHERE user_id=? AND post_id=?;
+
+[D] deleteVoteByIds(int userId, int postId);
+    DELETE FROM votes WHERE user_id=? AND post_id=?;
+
+
