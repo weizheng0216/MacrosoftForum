@@ -16,16 +16,16 @@
 > - Use camel case in *VoteRequest*.
 
 - [GET /api/posts](#markdown-header-get-/api/posts)
-
-- [GET /api/users/:user_id](#api-03)
-- [POST /api/posts](#api-04)
-- [POST /api/posts/:post_id/comments](#api-05)
-- [POST /api/auth](#api-06)
-- [PUT /api/posts/:post_id](#api-07)
-- [PUT /api/posts/:post_id/comments/:comment_id](#api-08)
-- [PUT /api/posts/:post_id/vote](#api-09)
-- [DELETE /api/posts/:post_id/comments/:comment_id](#api-10)
-- [DELETE /api/posts/:post_id](#api-11)
+- [GET /api/users/my](#markdown-header-get-/api/users/my)
+- [GET /api/users/:user_id](#markdown-header-get-/api/users/:user_id)
+- [POST /api/posts](#markdown-header-post-/api/posts)
+- [POST /api/posts/:post_id/comments](#markdown-header-post-/api/posts/:post_id/comments)
+- [POST /api/auth](#markdown-header-post-/api/auth)
+- [PUT /api/posts/:post_id](#markdown-header-put-/api/posts/:post_id)
+- [PUT /api/posts/:post_id/comments/:comment_id](#markdown-header-put-/api/posts/:post_id/comments/:comment_id)
+- [PUT /api/posts/:post_id/vote](#markdown-header-put-/api/posts/:post_id/vote)
+- [DELETE /api/posts/:post_id/comments/:comment_id](#markdown-header-delete-/api/posts/:post_id/comments/:comment_id)
+- [DELETE /api/posts/:post_id](#markdown-header-delete-/api/posts/:post_id)
 
 The backend provides a set of APIs to collaborate with the front-end application.
 All APIs listed above, except `POST /api/auth`, which is explicitly used for
@@ -91,7 +91,7 @@ The response payload has the following format.
 ]
 ```
 
-### <span id="api-02">GET /api/users/my</span>
+### GET /api/users/my
 Get the profile of the front-end user, which will be displayed at the profile
 page. An example of the response `json` is shown below.
 
@@ -127,12 +127,12 @@ page. An example of the response `json` is shown below.
 }
 ```
 
-### <span id="api-03">GET /api/users/:user_id</span>
+### GET /api/users/:user_id
 Get the profile of the specified user, which will be displayed at the post
 or profile window. This is very similar to `GET /api/users/my`, therefore I
 will not provide another example response.
 
-### <span id="api-04">POST /api/posts</span>
+### POST /api/posts
 Request to add a new post. The front-end needs to provide the title and the
 content of the post. The server will record the author information based on
 the *session key*.
@@ -147,7 +147,7 @@ Example request:
 }
 ```
 
-### <span id="api-05">POST /api/posts/:post_id/comments</span>
+### POST /api/posts/:post_id/comments
 Request to add a new comment to an existing post. The target *post_id* is to
 be provided in the URL, and the front-end only needs to provide the content
 of the comment in its request body, which is something like:
@@ -163,7 +163,7 @@ Example request:
 }
 ```
 
-### <span id="api-06">POST /api/auth</span>
+### POST /api/auth
 This is the login API for **BUZZ**. The front-end needs to pass the *idToken*
 obtained through Google's authentication process. This *idToken* will be used
 by the backend to authenticate/verify with Google. A *session key* will be
@@ -180,7 +180,7 @@ Example request:
 
 The response payload will be a `String` instead of a nested `json` object.
 
-### <span id="api-07">PUT /api/posts/:post_id</span>
+### PUT /api/posts/:post_id
 Request to update an existing post with new title and new content. It is very
 similar to creating a new post, except that a valid *post_id* is required in
 the URL.
@@ -197,7 +197,7 @@ Example request:
 }
 ```
 
-### <span id="api-08">PUT /api/posts/:post_id/comments/:comment_id</span>
+### PUT /api/posts/:post_id/comments/:comment_id
 Request to update an existing comment under a particular post. It is very
 similar to creating a new comment, except that a valid *comment_id* is also
 required in the URL.
@@ -214,7 +214,7 @@ Example request:
 }
 ```
 
-### <span id="api-09">PUT /api/posts/:post_id/vote</span>
+### PUT /api/posts/:post_id/vote
 Submit a vote request through this API when the front-end user changes her
 vote status on a particular post. The front-end needs to provide the post on
 which the user wishes to make the update in URL and the vote status in the
@@ -233,7 +233,7 @@ Example request:
 }
 ```
 
-### <span id="api-10">DELETE /api/posts/:post_id/comments/:comment_id</span>
+### DELETE /api/posts/:post_id/comments/:comment_id
 Delete the comment identified by *comment_id* under the post identified by
 *post_id*. All parameters should be passed through URI.
 
@@ -242,7 +242,7 @@ will be returned.
 
 There is no request body nor response payload for this request.
 
-### <span id="api-11">DELETE /api/posts/:post_id</span>
+### DELETE /api/posts/:post_id
 Delete the post identified by *post_id* along with all comments attached to it.
 The *post_id* should be passed through URI.
 
