@@ -33,7 +33,7 @@ authentication, require a **session key** in the URL query: `?session=[session_k
 If the session key is missing, or if the session key is not valid or has expired,
 the server will respond with an authentication error with code `401`.
 
-All APIs will reply with a comment format called *StructuredResponse*. It contains
+All APIs will reply with a common format called *StructuredResponse*. It contains
 the status, the message, and a nullable payload. The optional payload could be in
 various `json` format that holds the data which the front-end is requesting.
 
