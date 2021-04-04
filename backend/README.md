@@ -15,17 +15,17 @@
 > - *postID* is no longer required for updating comments.
 > - Use camel case in *VoteRequest*.
 
-- [GET /api/posts](#markdown-header-get-/api/posts)
-- [GET /api/users/my](#markdown-header-get-/api/users/my)
-- [GET /api/users/:user_id](#markdown-header-get-/api/users/:user_id)
-- [POST /api/posts](#markdown-header-post-/api/posts)
-- [POST /api/posts/:post_id/comments](#markdown-header-post-/api/posts/:post_id/comments)
-- [POST /api/auth](#markdown-header-post-/api/auth)
-- [PUT /api/posts/:post_id](#markdown-header-put-/api/posts/:post_id)
-- [PUT /api/posts/:post_id/comments/:comment_id](#markdown-header-put-/api/posts/:post_id/comments/:comment_id)
-- [PUT /api/posts/:post_id/vote](#markdown-header-put-/api/posts/:post_id/vote)
-- [DELETE /api/posts/:post_id/comments/:comment_id](#markdown-header-delete-/api/posts/:post_id/comments/:comment_id)
-- [DELETE /api/posts/:post_id](#markdown-header-delete-/api/posts/:post_id)
+- [GET /api/posts](#markdown-header-get-apiposts)
+- [GET /api/users/my](#markdown-header-get-apiusersmy)
+- [GET /api/users/:user_id](#markdown-header-get-apiusersuser_id)
+- [POST /api/posts](#markdown-header-post-apiposts)
+- [POST /api/posts/:post_id/comments](#markdown-header-post-apipostspost_idcomments)
+- [POST /api/auth](#markdown-header-post-apiauth)
+- [PUT /api/posts/:post_id](#markdown-header-put-apipostspost_id)
+- [PUT /api/posts/:post_id/comments/:comment_id](#markdown-header-put-apipostspost_idcommentscomment_id)
+- [PUT /api/posts/:post_id/vote](#markdown-header-put-apipostspost_idvote)
+- [DELETE /api/posts/:post_id/comments/:comment_id](#markdown-header-delete-apipostspost_idcommentscomment_id)
+- [DELETE /api/posts/:post_id](#markdown-header-delete-apipostspost_id)
 
 The backend provides a set of APIs to collaborate with the front-end application.
 All APIs listed above, except `POST /api/auth`, which is explicitly used for
