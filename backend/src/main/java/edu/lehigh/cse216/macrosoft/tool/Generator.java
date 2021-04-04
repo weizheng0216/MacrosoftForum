@@ -13,11 +13,10 @@ import java.util.regex.Pattern;
 
 public class Generator {
     public static void main(String[] args) throws IOException {
-        String templatePath = "src/main/java/edu/lehigh/cse216/macrosoft/tool/Template.java";
-        String definitionPath = "DatabaseDescription";
-        String outputPath = "src/main/java/edu/lehigh/cse216/macrosoft/backend/Database.java";
-        Generator gen = new Generator(
-                templatePath, definitionPath, outputPath);
+        String templatePath = "backend/src/main/java/edu/lehigh/cse216/macrosoft/tool/Template.java";
+        String definitionPath = "backend/DatabaseDescription";
+        String outputPath = "backend/src/main/java/edu/lehigh/cse216/macrosoft/backend/Database.java";
+        Generator gen = new Generator(templatePath, definitionPath, outputPath);
         gen.generate();
     }
 

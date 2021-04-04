@@ -65,6 +65,9 @@ package edu.lehigh.cse216.macrosoft.backend;
 [R] selectPostById(int postId);
     SELECT * FROM posts WHERE post_id=?;
 
+[R] selectPostsByUserId(int userId);
+    SELECT * FROM posts WHERE user_id=?;
+
 [R] selectLatestPostId();
     SELECT MAX(post_id) FROM posts;
 
