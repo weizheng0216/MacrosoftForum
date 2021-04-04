@@ -15,8 +15,8 @@
 > - *postID* is no longer required for updating comments.
 > - Use camel case in *VoteRequest*.
 
-- [GET /api/posts](#markdown-header-api-01)
-- [GET /api/users/my](#api-02)
+- [GET /api/posts](#markdown-header-get-/api/posts)
+
 - [GET /api/users/:user_id](#api-03)
 - [POST /api/posts](#api-04)
 - [POST /api/posts/:post_id/comments](#api-05)
@@ -48,7 +48,7 @@ depending on the type of the response.
 }
 ```
 
-### GET /api/posts {#api-01}
+### GET /api/posts
 Get all post information, including all the posts, their comments, the author of
 the comments, and the vote status of the requesting user.
 
