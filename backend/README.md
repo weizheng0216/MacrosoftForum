@@ -44,11 +44,11 @@ depending on the type of the response.
 {
   "mStatus": "OK",
   "mMessage": "This is an example response",
-  "mData": {}  // payload
+  "mData": {}
 }
 ```
 
-### <span id="api-01">GET `/api/posts`</span>
+### GET /api/posts {#api-01}
 Get all post information, including all the posts, their comments, the author of
 the comments, and the vote status of the requesting user.
 
@@ -81,17 +81,17 @@ The response payload has the following format.
         },
         "mContent": "This is a comment",
         "mDate": "2019-02-01 12:46:39"
-      }
-      // ... other comments ...
+      },
+      {}
     ],
     "mUserUpVote": true,
     "mUserDownVote": false
-  }
-  // ... other posts ...
+  },
+  {}
 ]
 ```
 
-### <span id="api-02">GET `/api/users/my`</span>
+### <span id="api-02">GET /api/users/my</span>
 Get the profile of the front-end user, which will be displayed at the profile
 page. An example of the response `json` is shown below.
 
@@ -112,8 +112,8 @@ page. An example of the response `json` is shown below.
       "mUpVoteCount": 0,
       "mDownVoteCount": 100,
       "mPinned": false
-    }
-    // ... other posts ...
+    },
+    {}
   ],
   "mComments": [
     {
@@ -121,18 +121,18 @@ page. An example of the response `json` is shown below.
       "mPostID": 123,
       "mContent": "My comment 1",
       "mDate": "2018-02-18 14:00:06"
-    }
-    // ... other comments ...
+    },
+    {}
   ]
 }
 ```
 
-### <span id="api-03">GET `/api/users/:user_id`</span>
+### <span id="api-03">GET /api/users/:user_id</span>
 Get the profile of the specified user, which will be displayed at the post
 or profile window. This is very similar to `GET /api/users/my`, therefore I
 will not provide another example response.
 
-### <span id="api-04">POST `/api/posts`</span>
+### <span id="api-04">POST /api/posts</span>
 Request to add a new post. The front-end needs to provide the title and the
 content of the post. The server will record the author information based on
 the *session key*.
@@ -147,7 +147,7 @@ Example request:
 }
 ```
 
-### <span id="api-05">POST `/api/posts/:post_id/comments`</span>
+### <span id="api-05">POST /api/posts/:post_id/comments</span>
 Request to add a new comment to an existing post. The target *post_id* is to
 be provided in the URL, and the front-end only needs to provide the content
 of the comment in its request body, which is something like:
@@ -163,7 +163,7 @@ Example request:
 }
 ```
 
-### <span id="api-06">POST `/api/auth`</span>
+### <span id="api-06">POST /api/auth</span>
 This is the login API for **BUZZ**. The front-end needs to pass the *idToken*
 obtained through Google's authentication process. This *idToken* will be used
 by the backend to authenticate/verify with Google. A *session key* will be
@@ -174,13 +174,13 @@ If the login fails, an error with code `401` will be returned.
 Example request:
 ```json
 {
-  "idToken": ".............................."
+  "idToken": "this_is_a_fake_id_token"
 }
 ```
 
 The response payload will be a `String` instead of a nested `json` object.
 
-### <span id="api-07">PUT `/api/posts/:post_id`</span>
+### <span id="api-07">PUT /api/posts/:post_id</span>
 Request to update an existing post with new title and new content. It is very
 similar to creating a new post, except that a valid *post_id* is required in
 the URL.
@@ -197,7 +197,7 @@ Example request:
 }
 ```
 
-### <span id="api-08">PUT `/api/posts/:post_id/comments/:comment_id`</span>
+### <span id="api-08">PUT /api/posts/:post_id/comments/:comment_id</span>
 Request to update an existing comment under a particular post. It is very
 similar to creating a new comment, except that a valid *comment_id* is also
 required in the URL.
@@ -214,7 +214,7 @@ Example request:
 }
 ```
 
-### <span id="api-09">PUT `/api/posts/:post_id/vote`</span>
+### <span id="api-09">PUT /api/posts/:post_id/vote</span>
 Submit a vote request through this API when the front-end user changes her
 vote status on a particular post. The front-end needs to provide the post on
 which the user wishes to make the update in URL and the vote status in the
@@ -233,7 +233,7 @@ Example request:
 }
 ```
 
-### <span id="api-10">DELETE `/api/posts/:post_id/comments/:comment_id`</span>
+### <span id="api-10">DELETE /api/posts/:post_id/comments/:comment_id</span>
 Delete the comment identified by *comment_id* under the post identified by
 *post_id*. All parameters should be passed through URI.
 
@@ -242,13 +242,13 @@ will be returned.
 
 There is no request body nor response payload for this request.
 
-### <span id="api-11">DELETE `/api/posts/:post_id`</span>
+### <span id="api-11">DELETE /api/posts/:post_id</span>
 Delete the post identified by *post_id* along with all comments attached to it.
 The *post_id* should be passed through URI.
 
 If the *post_id* provided is invalid, a `404` error will be thrown.
 
-There is no request body nor resposne payload for this request.
+There is no request body nor response payload for this request.
 
 ## Database
 
