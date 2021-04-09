@@ -14,8 +14,15 @@
 > - most response payloads are re-structured.
 > - *postID* is no longer required for updating comments.
 > - Use camel case in *VoteRequest*.
+> - *GET, POST, PUT* APIs are changed to adapt phase3.
+> - New endpoints are added for file uploading/downloading.
+> - Forbidden operations will cause error now.
 
+Below is a list of APIs inherited from phase2, most of which are changed either
+for improving the comprehensiveness of the design or for adapting phase3 requirement.
 - [GET /api/posts](#markdown-header-get-apiposts)
+- [GET /api/posts/:post_id/file](#markdown-header-get-apipostspost_idfile)
+- [GET /api/posts/:post_id/comments/:comment_id/file](#markdown-header-get-apipostspost_idcommentscomment_idfile)
 - [GET /api/users/my](#markdown-header-get-apiusersmy)
 - [GET /api/users/:user_id](#markdown-header-get-apiusersuser_id)
 - [POST /api/posts](#markdown-header-post-apiposts)
@@ -27,11 +34,13 @@
 - [DELETE /api/posts/:post_id/comments/:comment_id](#markdown-header-delete-apipostspost_idcommentscomment_id)
 - [DELETE /api/posts/:post_id](#markdown-header-delete-apipostspost_id)
 
-The backend provides a set of APIs to collaborate with the front-end application.
 All APIs listed above, except `POST /api/auth`, which is explicitly used for
 authentication, require a **session key** in the URL query: `?session=[session_key]`.
 If the session key is missing, or if the session key is not valid or has expired,
 the server will respond with an authentication error with code `401`.
+
+Users may only edit the information created by themselves. Modifying other people's
+resource is considered invalid and will cause `403` error to be returned.
 
 All APIs will reply with a common format called *StructuredResponse*. It contains
 the status, the message, and a nullable payload. The optional payload could be in
@@ -52,8 +61,7 @@ depending on the type of the response.
 Get all post information, including all the posts, their comments, the author of
 the comments, and the vote status of the requesting user.
 
-The response payload has the following format.
-
+Example response payload:
 ```json
 [
   {
@@ -85,16 +93,69 @@ The response payload has the following format.
       {}
     ],
     "mUserUpVote": true,
-    "mUserDownVote": false
+    "mUserDownVote": false,
+    "mFileInfo": {
+      "mType": "pdf",
+      "mTime": "2020-01-15 08:15:23",
+      "mName": "MyPDF"
+    },
+    "mLinks": [
+      "https://www.examples.com",
+      "https://www.lehigh.edu"
+    ]
   },
   {}
 ]
 ```
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 401 | Session key is invalid |
+| 500+ | Unexpected server error |
+
+### GET /api/posts/:post_id/file
+Download the file attached to the particular post. The file content, which is
+Base64 encoded, along with other meta info will be returned. The file content
+is `null` if there is no file attached to the post.
+
+Example response payload:
+```json
+{
+  "mType": "pdf",
+  "mTime": "2020-12-23 11:11:11",
+  "mName": "Hello",
+  "mData": "(base64-encoded string, very long)"
+}
+```
+
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 401 | Session key is invalid |
+| 500+ | Unexpected server error |
+
+### GET /api/posts/:post_id/comments/:comment_id/file
+Download the file attached to the particular comment under a particular post.
+This is very similar to `GET /api/posts/:post_id/file`, so I will not provide
+further examples.
+
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 401 | Session key is invalid |
+| 500+ | Unexpected server error |
 
 ### GET /api/users/my
 Get the profile of the front-end user, which will be displayed at the profile
-page. An example of the response `json` is shown below.
+page.
 
+Example response payload:
 ```json
 {
   "mUser": {
@@ -111,7 +172,16 @@ page. An example of the response `json` is shown below.
       "mDate": "2020-12-32 00:00:00",
       "mUpVoteCount": 0,
       "mDownVoteCount": 100,
-      "mPinned": false
+      "mPinned": false,
+      "mFileInfo": {
+        "mType": "pdf",
+        "mTime": "2020-01-15 08:15:23",
+        "mName": "MyPDF"
+      },
+      "mLinks": [
+        "https://www.examples.com",
+        "https://www.lehigh.edu"
+      ]
     },
     {}
   ],
@@ -120,56 +190,113 @@ page. An example of the response `json` is shown below.
       "mCommentID": 555,
       "mPostID": 123,
       "mContent": "My comment 1",
-      "mDate": "2018-02-18 14:00:06"
+      "mDate": "2018-02-18 14:00:06",
+      "mFileInfo": {
+        "mType": "pdf",
+        "mTime": "2020-01-15 08:15:23",
+        "mName": "MyPDF"
+      },
+      "mLinks": [
+        "https://www.examples.com",
+        "https://www.lehigh.edu"
+      ]
     },
     {}
   ]
 }
 ```
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 401 | Session key is invalid |
+| 500+ | Unexpected server error |
 
 ### GET /api/users/:user_id
 Get the profile of the specified user, which will be displayed at the post
 or profile window. This is very similar to `GET /api/users/my`, therefore I
 will not provide another example response.
 
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 401 | Session key is invalid |
+| 500+ | Unexpected server error |
+
 ### POST /api/posts
 Request to add a new post. The front-end needs to provide the title and the
 content of the post. The server will record the author information based on
 the *session key*.
 
-There is no response payload for this request.
+In phase3, file uploading is supported. If there is no file attached, please
+set the fields related to file uploading to `null` or empty string.
 
 Example request:
 ```json
 {
   "title": "My Title",
-  "content": "And my post"
+  "content": "And my post",
+  "links": [
+    "https://www.examples.com",
+    "https://www.lehigh.edu"
+  ],
+  "fileName": "abc.png",
+  "fileType": "png",
+  "fileData": "(This is base64 encoded string)"
 }
 ```
+There is no response payload for this request.
+
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 401 | Session key is invalid |
+| 507 | Server runs out of quota. File not uploaded(however post is uploaded) |
+| Other 500+ | Unexpected server error |
 
 ### POST /api/posts/:post_id/comments
 Request to add a new comment to an existing post. The target *post_id* is to
 be provided in the URL, and the front-end only needs to provide the content
 of the comment in its request body, which is something like:
 
-There is no response payload of this request.
-
-If the *post_id* cannot be found, a `404` error is returned.
+In phase3, file uploading is supported. If there is no file attached, please
+set the fields related to file uploading to `null` or empty string.
 
 Example request:
 ```json
 {
-  "content": "Here is my comment"
+  "content": "Here is my comment",
+  "links": [
+    "https://www.examples.com",
+    "https://www.lehigh.edu"
+  ],
+  "fileName": "abc.png",
+  "fileType": "png",
+  "fileData": "(This is base64 encoded string)"
 }
 ```
+There is no response payload of this request.
+
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 401 | Session key is invalid |
+| 404 | *post_id* cannot be found |
+| 507 | Server runs out of quota. File not uploaded(however comment is uploaded) |
+| Other 500+ | Unexpected server error |
 
 ### POST /api/auth
 This is the login API for **BUZZ**. The front-end needs to pass the *idToken*
 obtained through Google's authentication process. This *idToken* will be used
 by the backend to authenticate/verify with Google. A *session key* will be
 returned if everything went well.
-
-If the login fails, an error with code `401` will be returned.
 
 Example request:
 ```json
@@ -180,50 +307,76 @@ Example request:
 
 The response payload will be a `String` instead of a nested `json` object.
 
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 401 | Login fails, probably because *idToken* is invalid |
+| 500+ | Unexpected server error |
+
+### PUT /api/fileupload
+Upload a file. The file will be logically attached to a post or a comment, not
+both. The file should be **Base64 Encoded** into ASCII.
+
 ### PUT /api/posts/:post_id
 Request to update an existing post with new title and new content. It is very
 similar to creating a new post, except that a valid *post_id* is required in
 the URL.
 
-An error of `404` will be returned if the *post_id* provided is invalid.
-
-There is no response payload of this request.
-
 Example request:
 ```json
 {
   "title": "My Updated Title",
-  "content": "And my updated post"
+  "content": "And my updated post",
+  "links": [
+    "https://www.examples.com",
+    "https://www.lehigh.edu"
+  ]
 }
 ```
+There is no response payload of this request.
+
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 403 | Editing other user's info |
+| 404 | *post_id* cannot be found |
+| 500+ | Unexpected server error |
 
 ### PUT /api/posts/:post_id/comments/:comment_id
 Request to update an existing comment under a particular post. It is very
 similar to creating a new comment, except that a valid *comment_id* is also
 required in the URL.
 
-If either *post_id* or *comment_id* is not valid, an error with code `404`
-will be returned.
-
-There is no response payload of this request.
-
 Example request:
 ```json
 {
-  "content": "Here is my comment"
+  "content": "Here is my comment",
+  "links": [
+    "https://www.examples.com",
+    "https://www.lehigh.edu"
+  ]
 }
 ```
+There is no response payload of this request.
+
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 403 | Editing other user's info |
+| 404 | *post_id* or *comment_id* cannot be found |
+| 500+ | Unexpected server error |
 
 ### PUT /api/posts/:post_id/vote
 Submit a vote request through this API when the front-end user changes her
 vote status on a particular post. The front-end needs to provide the post on
 which the user wishes to make the update in URL and the vote status in the
 request body.
-
-A `404` error will be returned if the *post_id* is invalid. A `401` error will
-be returned if both of the request fields are `true`.
-
-There is no response payload for this request.
 
 Example request:
 ```json
@@ -232,23 +385,42 @@ Example request:
   "downVote": false
 }
 ```
+There is no response payload for this request.
+
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 401 | Both fields of the quest are `true` |
+| 404 | *post_id* cannot be found |
+| 500+ | Unexpected server error |
 
 ### DELETE /api/posts/:post_id/comments/:comment_id
 Delete the comment identified by *comment_id* under the post identified by
 *post_id*. All parameters should be passed through URI.
 
-If either *post_id* or *comment_id* is not valid, an error with code `404`
-will be returned.
-
 There is no request body nor response payload for this request.
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 403 | Editing other user's info |
+| 404 | *post_id* or *comment_id* cannot be found |
+| 500+ | Unexpected server error |
 
 ### DELETE /api/posts/:post_id
 Delete the post identified by *post_id* along with all comments attached to it.
 The *post_id* should be passed through URI.
 
-If the *post_id* provided is invalid, a `404` error will be thrown.
-
 There is no request body nor response payload for this request.
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 403 | Editing other user's info |
+| 404 | *post_id* cannot be found |
+| 500+ | Unexpected server error |
 
 ## Database
 
