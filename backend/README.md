@@ -20,6 +20,7 @@
 
 Below is a list of APIs inherited from phase2, most of which are changed either
 for improving the comprehensiveness of the design or for adapting phase3 requirement.
+
 - [GET /api/posts](#markdown-header-get-apiposts)
 - [GET /api/posts/:post_id/file](#markdown-header-get-apipostspost_idfile)
 - [GET /api/posts/:post_id/comments/:comment_id/file](#markdown-header-get-apipostspost_idcommentscomment_idfile)
@@ -402,6 +403,8 @@ Delete the comment identified by *comment_id* under the post identified by
 
 There is no request body nor response payload for this request.
 
+Return codes:
+
 | Return code | Explanation |
 | :---------: | :---------- |
 | 200 | OK |
@@ -414,6 +417,8 @@ Delete the post identified by *post_id* along with all comments attached to it.
 The *post_id* should be passed through URI.
 
 There is no request body nor response payload for this request.
+
+Return codes:
 
 | Return code | Explanation |
 | :---------: | :---------- |
