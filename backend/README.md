@@ -315,10 +315,6 @@ Return codes:
 | 401 | Login fails, probably because *idToken* is invalid |
 | 500+ | Unexpected server error |
 
-### PUT /api/fileupload
-Upload a file. The file will be logically attached to a post or a comment, not
-both. The file should be **Base64 Encoded** into ASCII.
-
 ### PUT /api/posts/:post_id
 Request to update an existing post with new title and new content. It is very
 similar to creating a new post, except that a valid *post_id* is required in
@@ -342,6 +338,7 @@ Return codes:
 | Return code | Explanation |
 | :---------: | :---------- |
 | 200 | OK |
+| 401 | Session key is invalid |
 | 403 | Editing other user's info |
 | 404 | *post_id* cannot be found |
 | 500+ | Unexpected server error |
@@ -368,6 +365,7 @@ Return codes:
 | Return code | Explanation |
 | :---------: | :---------- |
 | 200 | OK |
+| 401 | Session key is invalid |
 | 403 | Editing other user's info |
 | 404 | *post_id* or *comment_id* cannot be found |
 | 500+ | Unexpected server error |
@@ -392,7 +390,8 @@ Return codes:
 | Return code | Explanation |
 | :---------: | :---------- |
 | 200 | OK |
-| 401 | Both fields of the quest are `true` |
+| 400 | Both fields of the quest are `true` |
+| 401 | Session key is invalid |
 | 404 | *post_id* cannot be found |
 | 500+ | Unexpected server error |
 
@@ -407,6 +406,7 @@ Return codes:
 | Return code | Explanation |
 | :---------: | :---------- |
 | 200 | OK |
+| 401 | Session key is invalid |
 | 403 | Editing other user's info |
 | 404 | *post_id* or *comment_id* cannot be found |
 | 500+ | Unexpected server error |
@@ -422,6 +422,7 @@ Return codes:
 | Return code | Explanation |
 | :---------: | :---------- |
 | 200 | OK |
+| 401 | Session key is invalid |
 | 403 | Editing other user's info |
 | 404 | *post_id* cannot be found |
 | 500+ | Unexpected server error |
