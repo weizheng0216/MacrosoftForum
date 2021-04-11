@@ -41,11 +41,15 @@ package edu.lehigh.cse216.macrosoft.backend;
         post_id     SERIAL PRIMARY KEY,
         title       VARCHAR(100),
         content     VARCHAR(500),
-        date        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        date        VARCHAR(19),
         vote_up     INTEGER,
         vote_down   INTEGER,
         user_id     INTEGER REFERENCES users (user_id),
-        pinned      BOOLEAN
+        pinned      BOOLEAN,
+        filetype    VARCHAR(10),
+        filedate    VARCHAR(19),
+        filename    VARCHAR(100),
+        links       VARCHAR(500)
     );
 
 [?] dropPostTable();
@@ -70,6 +74,9 @@ package edu.lehigh.cse216.macrosoft.backend;
 
 [R] selectLatestPostId();
     SELECT MAX(post_id) FROM posts;
+
+[R] selectPostFileNameById(int postId);
+    SELECT filename FROM posts where post_id=?;
 
 [U] updatePostById(String title, String content, int upVote,
                    int downVote, boolean pinned, int userId);
@@ -98,9 +105,13 @@ package edu.lehigh.cse216.macrosoft.backend;
     CREATE TABLE comments (
         comment_id   SERIAL PRIMARY KEY,
         content      VARCHAR(500),
-        date         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        date         VARCHAR(19),
         user_id      INTEGER REFERENCES users (user_id),
-        post_id      INTEGER REFERENCES posts (post_id)
+        post_id      INTEGER REFERENCES posts (post_id),
+        filetype     VARCHAR(10),
+        filedate     VARCHAR(19),
+        filename     VARCHAR(100),
+        links        VARCHAR(500)
     );
 
 [?] dropCommentTable();
