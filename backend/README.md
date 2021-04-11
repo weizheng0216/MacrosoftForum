@@ -79,6 +79,15 @@ Example response payload:
     "mUpVoteCount": 10,
     "mDownVoteCount": 25,
     "mPinned": true,
+    "mFileInfo": {
+      "mType": "pdf",
+      "mTime": "2020-01-15 08:15:23",
+      "mName": "MyPDF"
+    },
+    "mLinks": [
+      "https://www.examples.com",
+      "https://www.lehigh.edu"
+    ],
     "mComments": [
       {
         "mCommentID": 333,
@@ -94,16 +103,7 @@ Example response payload:
       {}
     ],
     "mUserUpVote": true,
-    "mUserDownVote": false,
-    "mFileInfo": {
-      "mType": "pdf",
-      "mTime": "2020-01-15 08:15:23",
-      "mName": "MyPDF"
-    },
-    "mLinks": [
-      "https://www.examples.com",
-      "https://www.lehigh.edu"
-    ]
+    "mUserDownVote": false
   },
   {}
 ]
@@ -124,9 +124,6 @@ is `null` if there is no file attached to the post.
 Example response payload:
 ```json
 {
-  "mType": "pdf",
-  "mTime": "2020-12-23 11:11:11",
-  "mName": "Hello",
   "mData": "(base64-encoded string, very long)"
 }
 ```
@@ -212,6 +209,7 @@ Return codes:
 | :---------: | :---------- |
 | 200 | OK |
 | 401 | Session key is invalid |
+| 404 | user info cannot be found |
 | 500+ | Unexpected server error |
 
 ### GET /api/users/:user_id
@@ -225,6 +223,7 @@ Return codes:
 | :---------: | :---------- |
 | 200 | OK |
 | 401 | Session key is invalid |
+| 404 | *user_id* cannot be found |
 | 500+ | Unexpected server error |
 
 ### POST /api/posts
