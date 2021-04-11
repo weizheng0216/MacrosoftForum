@@ -90,15 +90,19 @@ Example response payload:
     ],
     "mComments": [
       {
-        "mCommentID": 333,
-        "mAuthor": {
-          "mUserID": 202,
-          "mEmail": "example2@lehigh.edu",
-          "mFirstName": "first",
-          "mLastName": "last"
+        "mCommentID": 555,
+        "mPostID": 123,
+        "mContent": "My comment 1",
+        "mDate": "2018-02-18 14:00:06",
+        "mFileInfo": {
+          "mType": "pdf",
+          "mTime": "2020-01-15 08:15:23",
+          "mName": "MyPDF"
         },
-        "mContent": "This is a comment",
-        "mDate": "2019-02-01 12:46:39"
+        "mLinks": [
+          "https://www.examples.com",
+          "https://www.lehigh.edu"
+        ]
       },
       {}
     ],
