@@ -1,4 +1,4 @@
-package edu.lehigh.cse216.macrosoft.backend.old;
+package edu.lehigh.cse216.macrosoft.backend;
 
 // Import the Spark package, so that we can make use of the "get" function to 
 // create an HTTP GET route
