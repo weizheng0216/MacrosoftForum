@@ -36,7 +36,7 @@ class AuthHelper {
      *         hasn't logged in.
      */
     String verifyLogin(String sessionKey) {
-        return null;
+        return "66";
     }
 
     /**

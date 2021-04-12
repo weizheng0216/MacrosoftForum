@@ -80,12 +80,13 @@ class DatabaseHelper {
     /**
      * Get a user's profile information.
      * @param userId ID of the target user.
-     * @return Response payload.
+     * @return Response payload, or {@code null} if not exist.
      */
     UserInfoPayload queryUserInfo(String userId) throws SQLException {
         int userIdInt = Integer.parseInt(userId);
         // user's info
         ResultSet userRs = db.selectUserById(userIdInt);
+        if (!userRs.next()) return null;
         UserSubtype user = rs2User(userRs);
         userRs.close();
         // user's posts
@@ -205,6 +206,8 @@ class DatabaseHelper {
         ResultSet upCountRs, downCountRs;
         upCountRs = db.selectUpVoteCountByPostId(postIdInt);
         downCountRs = db.selectDownVoteCountByPostId(postIdInt);
+        upCountRs.next();
+        downCountRs.next();
         upCount = upCountRs.getInt(1);
         downCount = downCountRs.getInt(1);
         db.updatePostVoteCountById(upCount, downCount, postIdInt);
@@ -220,6 +223,7 @@ class DatabaseHelper {
         int postIdInt = Integer.parseInt(postId);
         db.deleteCommentsByPostId(postIdInt);
         db.deletePostById(postIdInt);
+        db.deleteVotesByPostId(postIdInt);
     }
 
     /**
@@ -329,6 +333,7 @@ class DatabaseHelper {
     private PostSubtype rs2Post(ResultSet rs) throws SQLException {
         // Author of the post
         ResultSet userRs = db.selectUserById(rs.getInt("user_id"));
+        userRs.next();
         UserSubtype user = rs2User(userRs);
         userRs.close();
 
@@ -336,9 +341,10 @@ class DatabaseHelper {
         FileInfoSubtype fileInfo = rs2FileInfo(rs);
 
         // Attached links of the post
-        ArrayList<String> links;
+        ArrayList<String> links = new ArrayList<>();
         String linksStr = rs.getString("links");
-        links = new ArrayList<>(Arrays.asList(linksStr.split("\\s")));
+        if (linksStr != null)
+            links.addAll(Arrays.asList(linksStr.split("\\s")));
 
         // Comments under the post
         ArrayList<CommentSubtype> comments = new ArrayList<>();
@@ -364,14 +370,20 @@ class DatabaseHelper {
     }
 
     private CommentSubtype rs2Comment(ResultSet rs) throws SQLException {
+        String linksStr = rs.getString("links");
+        ArrayList<String> links = new ArrayList<>();
+        if (linksStr != null)
+            links.addAll(Arrays.asList(linksStr.split("\\s")));
+        ResultSet userRs = db.selectUserById(rs.getInt("user_id"));
+        userRs.next();
         return new CommentSubtype(
                 rs.getInt("comment_id"),
                 rs.getInt("post_id"),
                 rs.getString("content"),
+                rs2User(userRs),
                 rs.getString("date"),
                 rs2FileInfo(rs),
-                new ArrayList<>(Arrays.asList(
-                        rs.getString("links").split("\\s")))
+                links
         );
     }
 

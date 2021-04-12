@@ -1,5 +1,16 @@
 package edu.lehigh.cse216.macrosoft.backend;
 
+import net.rubyeye.xmemcached.MemcachedClient;
+import net.rubyeye.xmemcached.MemcachedClientBuilder;
+import net.rubyeye.xmemcached.XMemcachedClientBuilder;
+import net.rubyeye.xmemcached.auth.AuthInfo;
+import net.rubyeye.xmemcached.command.BinaryCommandFactory;
+import net.rubyeye.xmemcached.utils.AddrUtil;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.List;
+
 /**
  * The BUZZ CacheHelper helps with backend cache management. It's a wrapper
  * around the XMemCache service, which makes the backend server stateless and
@@ -7,16 +18,35 @@ package edu.lehigh.cse216.macrosoft.backend;
  */
 class CacheHelper {
 
+    // private final MemcachedClient client;
+
     /**
      * Initialize with configuration variables.
-     * @param MEMCACHED_SERVERS
-     * @param MEMCACHED_USERNAME
-     * @param MEMCACHED_PASSWORD
      */
     CacheHelper(String MEMCACHED_SERVERS,
                 String MEMCACHED_USERNAME,
-                String MEMCACHED_PASSWORD) {
+                String MEMCACHED_PASSWORD) throws IOException {
+        /*
+        List<InetSocketAddress> servers = AddrUtil.getAddresses(MEMCACHED_SERVERS.replace(",", " "));
+        AuthInfo authInfo =
+                AuthInfo.plain(System.getenv("MEMCACHED_USERNAME"),
+                        System.getenv("MEMCACHED_PASSWORD"));
+        MemcachedClientBuilder builder = new XMemcachedClientBuilder(servers);
+        // Configure SASL auth for each server
+        for(InetSocketAddress server : servers) {
+            builder.addAuthInfo(server, authInfo);
+        }
+        // Use binary protocol
+        builder.setCommandFactory(new BinaryCommandFactory());
+        // Connection timeout in milliseconds (default: 1000)
+        builder.setConnectTimeout(1000);
+        // Reconnect to servers (default: true)
+        builder.setEnableHealSession(true);
+        // Delay until reconnect attempt in milliseconds (default: 2000)
+        builder.setHealSessionInterval(2000);
 
+        client = builder.build();
+         */
     }
 
     /**

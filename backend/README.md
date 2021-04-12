@@ -93,6 +93,12 @@ Example response payload:
         "mCommentID": 555,
         "mPostID": 123,
         "mContent": "My comment 1",
+        "mAuthor": {
+          "mUserID": 201,
+          "mEmail": "example@lehigh.edu",
+          "mFirstName": "first",
+          "mLastName": "last"
+        },
         "mDate": "2018-02-18 14:00:06",
         "mFileInfo": {
           "mType": "pdf",
@@ -171,6 +177,12 @@ Example response payload:
       "mPostID": 111,
       "mTitle": "title",
       "mContent": "This is content.",
+      "mAuthor": {
+        "mUserID": 201,
+        "mEmail": "example@lehigh.edu",
+        "mFirstName": "first",
+        "mLastName": "last"
+      },
       "mDate": "2020-12-32 00:00:00",
       "mUpVoteCount": 0,
       "mDownVoteCount": 100,
@@ -192,6 +204,12 @@ Example response payload:
       "mCommentID": 555,
       "mPostID": 123,
       "mContent": "My comment 1",
+      "mAuthor": {
+        "mUserID": 201,
+        "mEmail": "example@lehigh.edu",
+        "mFirstName": "first",
+        "mLastName": "last"
+      },
       "mDate": "2018-02-18 14:00:06",
       "mFileInfo": {
         "mType": "pdf",

@@ -130,7 +130,7 @@ package edu.lehigh.cse216.macrosoft.backend;
     DELETE FROM comments WHERE post_id=?;
 
 [D] deleteCommentByIds(int postId, int commentId);
-    DELETE FROM comments WHERE postId=? AND comment_id=?;
+    DELETE FROM comments WHERE post_id=? AND comment_id=?;
 
 
 
@@ -165,3 +165,6 @@ package edu.lehigh.cse216.macrosoft.backend;
 [U] updateVoteByIds(boolean upVote, boolean downVote,
                     int userId, int postId);
     UPDATE votes SET vote_up=?, vote_down=? WHERE user_id=? AND post_id=?;
+
+[D] deleteVotesByPostId(int postId);
+    DELETE FROM votes where post_id=?;

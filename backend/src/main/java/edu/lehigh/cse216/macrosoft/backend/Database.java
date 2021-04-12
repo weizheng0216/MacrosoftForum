@@ -116,6 +116,7 @@ class Database {
     private PreparedStatement mSelectUpVoteCountByPostId;
     private PreparedStatement mSelectDownVoteCountByPostId;
     private PreparedStatement mUpdateVoteByIds;
+    private PreparedStatement mDeleteVotesByPostId;
 
     /**
      * Initialize the tables of this Database.  The primary job is to create
@@ -144,12 +145,13 @@ class Database {
         mUpdateCommentById = mConnection.prepareStatement("UPDATE comments SET content=? WHERE comment_id=?");
         mUpdateCommentFilePathById = mConnection.prepareStatement("UPDATE comments SET filepath=? WHERE comment_id=?");
         mDeleteCommentsByPostId = mConnection.prepareStatement("DELETE FROM comments WHERE post_id=?");
-        mDeleteCommentByIds = mConnection.prepareStatement("DELETE FROM comments WHERE postId=? AND comment_id=?");
+        mDeleteCommentByIds = mConnection.prepareStatement("DELETE FROM comments WHERE post_id=? AND comment_id=?");
         mInsertVote = mConnection.prepareStatement("INSERT INTO votes VALUES (?, ?, ?, ?)");
         mSelectVoteByIds = mConnection.prepareStatement("SELECT * FROM votes WHERE user_id=? AND post_id=?");
         mSelectUpVoteCountByPostId = mConnection.prepareStatement("SELECT COUNT(*) FROM votes WHERE post_id=? AND vote_up=true");
         mSelectDownVoteCountByPostId = mConnection.prepareStatement("SELECT COUNT(*) FROM votes WHERE post_id=? AND vote_down=true");
         mUpdateVoteByIds = mConnection.prepareStatement("UPDATE votes SET vote_up=?, vote_down=? WHERE user_id=? AND post_id=?");
+        mDeleteVotesByPostId = mConnection.prepareStatement("DELETE FROM votes where post_id=?");
     }
 
     // **********************************************************************
@@ -313,6 +315,11 @@ class Database {
         mUpdateVoteByIds.setInt(3, userId);
         mUpdateVoteByIds.setInt(4, postId);
         mUpdateVoteByIds.executeUpdate();
+    }
+
+    void deleteVotesByPostId(int postId) throws SQLException {
+        mDeleteVotesByPostId.setInt(1, postId);
+        mDeleteVotesByPostId.executeUpdate();
     }
 
 }

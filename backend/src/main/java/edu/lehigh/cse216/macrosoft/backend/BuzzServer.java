@@ -64,7 +64,7 @@ class BuzzServer {
         // *****************************************************************
         // *                       GET /api/posts
         // *****************************************************************
-        Spark.get("/api/posts", (req, res) -> {
+        Spark.get("api/posts", (req, res) -> {
             res.type("application/json");
 
             // verify login

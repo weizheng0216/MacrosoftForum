@@ -6,9 +6,11 @@ public class App {
 
     public static void main(String[] args) throws Exception {
         // Default server configurations
-        int PORT = 20000;
+        int PORT = 4567;
         String STATIC_LOCATION = "/src/main/resources";
-        String DATABASE_URL = "";
+        String DATABASE_URL = "postgres://vdtksuqjtzvetb:b7ccb5e707b07d8c8bfdf7" +
+                "badbae2048282884d6b2e8ad336a71ff5833b2abc3@ec2-52-22-16" +
+                "1-59.compute-1.amazonaws.com:5432/d9m8d6ulhh2bbk";
         String CLIENT_ID = "";
         String MEMCACHED_SERVERS = "";
         String MEMCACHED_USERNAME = "";

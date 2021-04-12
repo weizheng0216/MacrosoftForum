@@ -21,7 +21,7 @@ class DriveHelper {
      * @return Whether the file is saved successfully.
      */
     boolean saveFile(String fullpath, String str64) {
-        return false;
+        return true;
     }
 
     /**
@@ -30,7 +30,7 @@ class DriveHelper {
      * @return Base64 encoded file data, or {@code null} if it does not exist.
      */
     String getFile(String fullpath) {
-        return null;
+        return "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
     }
 
     /**
@@ -45,6 +45,8 @@ class DriveHelper {
      * Get the fullpath of a file under a post when it's stored in Google drive.
      */
     static String toFullPath(String fileName, String postId) {
+        if (fileName == null || fileName.length() == 0)
+            return "";
         return String.format("%s/%s", postId, fileName);
     }
 
@@ -52,7 +54,9 @@ class DriveHelper {
      * Get the fullpath of a file under a comment when it's stored in Google drive.
      */
     static String toFullPath(String fileName,
-                                     String postId, String commentId) {
+                             String postId, String commentId) {
+        if (fileName == null || fileName.length() == 0)
+            return "";
         return String.format("%s/%s/%s", postId, commentId, fileName);
     }
 
@@ -60,6 +64,8 @@ class DriveHelper {
      * Get the filename from the fullpath.
      */
     static String fromFullPath(String fullpath) {
+        if (fullpath == null || fullpath.length() == 0)
+            return "";
         int last = fullpath.lastIndexOf("/");
         return fullpath.substring(last + 1);
     }
