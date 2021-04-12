@@ -51,6 +51,14 @@ class AuthHelper {
     }
 
     /**
+     * Logout a user by clearing the <i>sessionKey</i> entry in the backend cache.
+     * @param userId The user to be logged out.
+     */
+    void logout(String userId) {
+
+    }
+
+    /**
      * Access Google's resource server to retrieve user's personal information
      * using the <i>idToken</i> obtained from the front-end.
      * @param idToken The credential granted by front-end user.

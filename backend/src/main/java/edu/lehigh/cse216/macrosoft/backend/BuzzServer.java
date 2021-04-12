@@ -274,9 +274,9 @@ class BuzzServer {
         }, gson::toJson);
 
         // *****************************************************************
-        // *                        POST /api/auth
+        // *                        POST /api/login
         // *****************************************************************
-        Spark.post("/api/auth", (req, res) -> {
+        Spark.post("/api/login", (req, res) -> {
             res.type("application/json");
 
             // read auth request & try access resource
@@ -296,6 +296,27 @@ class BuzzServer {
             // user is valid, login and add to db
             String userId = db.addUser(payload);  // will not add duplicate user
             String sessionKey = auth.login(userId);
+
+            res.status(200);
+            return StructuredResponse.OK(sessionKey);
+        }, gson::toJson);
+
+        // *****************************************************************
+        // *                        POST /api/logout
+        // *****************************************************************
+        Spark.post("/api/logout", (req, res) -> {
+            res.type("application/json");
+
+            // verify login
+            String sessionKey = req.queryParams("session");
+            String loginUserId = auth.verifyLogin(sessionKey);
+            if (loginUserId == null) {
+                res.status(401);
+                return StructuredResponse.LOGIN_ERR;
+            }
+
+            // logout the user
+            auth.logout(loginUserId);
 
             res.status(200);
             return StructuredResponse.OK(sessionKey);

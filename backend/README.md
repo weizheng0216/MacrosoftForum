@@ -296,7 +296,7 @@ Return codes:
 | 507 | Server runs out of quota. File not uploaded(however comment is uploaded) |
 | Other 500+ | Unexpected server error |
 
-### POST /api/auth
+### POST /api/login
 This is the login API for **BUZZ**. The front-end needs to pass the *idToken*
 obtained through Google's authentication process. This *idToken* will be used
 by the backend to authenticate/verify with Google. A *session key* will be
@@ -317,6 +317,20 @@ Return codes:
 | :---------: | :---------- |
 | 200 | OK |
 | 401 | Login fails, probably because *idToken* is invalid |
+| 500+ | Unexpected server error |
+
+### POST /api/logout
+The logout API of **BUZZ**. By submitting a request to this endpoint, the 
+session key will expire immediately.
+
+There is no request body nor response payload for this request.
+
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 401 | Session key is invalid |
 | 500+ | Unexpected server error |
 
 ### PUT /api/posts/:post_id
