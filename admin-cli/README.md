@@ -3,7 +3,60 @@
 ## Admin Role
 - Phase 1: Haocheng Gao
 - Phase 2: Coco Chen
+- Phase 3: Weihang Guo
 
+## What's New
+- **Integration Test**. Add a integration test for admin. Try `sh test.sh`
+- **Manage files**. Admin app can list all files under posts, comments, and a specific user. For convenience, one can not only check file information under posts table and comments table but also can manage files under "Manage File" interface. 
+ 
+Manage File Menu
+***
+    [1] Select all files under posts
+    [2] Select all files under comments
+    [3] Select all files of a user
+    [4] Delete a file under posts
+    [5] Delete a file under comments
+    [6] Manage Least used file
+    [0] Quit Table Session
+***
+
+- **Standardized Output**. Replace "+" with "=" and "-" as a decoration of output, which make the UI clearer. Standardized the space in front of each line.  
+
+**example:**
+```
+=====================
+ -- Under Post ----
+      ID: 12
+ ---- From User ---
+        Weihang Guo
+ ---- File Name ---
+        underpost3.pdf
+=====================
+```
+
+- **Input check**. In previous phase, there is no input check, so whenever there is an invalid input (require int or boolean but input is String) the entire system will crash. In this phase, input check is implement, when there is an invalid input, application will let the user type again until the input is valid. 
+
+**example:**
+```java
+private static int getInputInt(int lower, int upper, String prompt) {
+		try {
+			System.out.print(prompt);
+			String input = keyboard.nextLine();
+			int choose = Integer.parseInt(input);
+			if (choose < lower || choose > upper) {
+				// invalid input
+				throw new Exception("");
+			}
+			System.out.println("");
+			return choose;
+		} catch (Exception exception) {
+			System.out.println("\ninvlid input, please try again");
+			return getInputInt(lower, upper, prompt);
+		}
+	}
+```
+
+- **Expection guide**. In previous phase, the error message are print directly to user. In this phase, whenever this is a expection, a one-sentence error message will be showed. Some expections will print a guide to user.  
 ## User Guide
 
 The Admin App is a stand-alone tool from the front-end and the backend of Buzz.
@@ -27,7 +80,8 @@ Once the Admin App successfully make the connection to the database, the main me
     [2] Post Table
     [3] Comment Table
     [4] Votes Table
-    [5] Quit the session
+    [5] Manage File
+    [0] Quit the session
 ***
 
 As the admin, you will be asked to enter the action you want to make targeting different tables.
@@ -41,7 +95,7 @@ There are four tables in total:
     [4] Select user by User ID
     [5] Select user by Email
     [6] Delete an User
-    [7] Quit Table Session
+    [0] Quit Table Session
 ***
   Post Table
 ***
@@ -52,7 +106,8 @@ There are four tables in total:
     [5] Select a Post by Post Id
     [6] Update a Post by Post Id        
     [7] Delete a Post
-    8] Quit Table Session
+    [8] View all files
+    [0] Quit Table Session
 ***
   Comment Table
 ***
@@ -64,7 +119,8 @@ There are four tables in total:
     [6] View Comment(s) made by an User
     [7] Update a Comment
     [8] Delete a Comment
-    [9] Quit Table Session
+    [9] View all files
+    [0] Quit Table Session
 ***
   Votes Table
 ***
@@ -75,8 +131,18 @@ There are four tables in total:
     [5] Select a vote by Post and User IDs
     [6] Update a Vote        
     [7] Delete a Vote
-    [8] Quit Table Session
-
+    [0] Quit Table Session
+***
+Manage File Menu
+***
+    [1] Select all files under posts
+    [2] Select all files under comments
+    [3] Select all files of a user
+    [4] Delete a file under posts
+    [5] Delete a file under comments
+    [5] Manage Least used file
+    [0] Quit Table Session
+***
 The admin can make changes to these four tables. 
 Right now, it provides the basic functions, 
   i.e. create, drop, select, insert, delete.

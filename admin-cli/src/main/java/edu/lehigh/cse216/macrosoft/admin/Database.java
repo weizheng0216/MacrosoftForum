@@ -102,6 +102,8 @@ public class Database {
     private PreparedStatement mUpdatePostById;
     private PreparedStatement mDeletePostById;
 
+    private PreparedStatement mSelectPostWithFile;
+
     private PreparedStatement mSelectAll;
 
     private PreparedStatement mCreateCommentTable;
@@ -120,12 +122,23 @@ public class Database {
     private PreparedStatement mSelectVoteByIds;
     private PreparedStatement mUpdateVoteByIds;
     private PreparedStatement mDeleteVoteByIds;
-
+    private PreparedStatement mSelectCommentWithFile;
     private PreparedStatement mUpdatePostVotesUpIncrease;
     private PreparedStatement mUpdatePostVotesUpDecrease;
     private PreparedStatement mUpdatePostVotesDownIncrease;
     private PreparedStatement mUpdatePostVotesDownDecrease;
 
+    private PreparedStatement mGetNewestPost;
+
+
+    private PreparedStatement mSelectFileByPostID;
+    private PreparedStatement mSelectFileByCommentID;
+
+    private PreparedStatement mDeleteFileByPostID;
+    private PreparedStatement mDeleteFileByCommentID;
+
+    private PreparedStatement mSelectFileUnderPostByEmail;
+    private PreparedStatement mSelectFileUnderCommentByEmail;
     /**
      * Initialize the tables of this Database.  The primary job is to create
      * the {@code PreparedStatement}s for Database operations.  This function
@@ -134,6 +147,13 @@ public class Database {
     private void initPreparedStatements() throws SQLException {
 
         // User table prepared statement
+        mDeleteFileByPostID = mConnection.prepareStatement("update posts set filetype='', filedate='',filepath='',links='' where post_id=?;");
+        mDeleteFileByCommentID = mConnection.prepareStatement("update comments set filetype='', filedate='',filepath='',links='' where comment_id=?;");
+        mSelectFileByPostID= mConnection.prepareStatement("select  from posts where post_id=? and filepath!='';");
+        mSelectFileByCommentID = mConnection.prepareStatement("select filepath from comments where comment_id=? and filepath!='';");
+        mSelectFileUnderPostByEmail = mConnection.prepareStatement("select post_id, filepath, title, users.user_id, email from posts, users where users.email=? and filepath != '' and users.user_id=posts.user_id;");
+        
+        mSelectFileUnderCommentByEmail = mConnection.prepareStatement(" select comment_id, filepath, content, users.user_id, email from comments, users where users.email=? and filepath != '' and users.user_id=comments.user_id;");
         mCreateUserTable = mConnection.prepareStatement("CREATE TABLE users ( user_id SERIAL PRIMARY KEY, email VARCHAR(50), first_name VARCHAR(50), last_name VARCHAR(50) )");
         mDropUserTable = mConnection.prepareStatement("DROP TABLE users");
         mInsertUser = mConnection.prepareStatement("INSERT INTO users VALUES (default, ?, ?, ?)");
@@ -143,25 +163,31 @@ public class Database {
         
         // Post Table Prepared Statement
         mSelectAll = mConnection.prepareStatement("SELECT * from posts");
-        mCreatePostTable = mConnection.prepareStatement("CREATE TABLE posts ( post_id SERIAL PRIMARY KEY, title VARCHAR(100), content VARCHAR(500), date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, vote_up INTEGER, vote_down INTEGER, user_id INTEGER REFERENCES users (user_id), pinned BOOLEAN )");
+
+        // phase3: change the statement 
+        mCreatePostTable = mConnection.prepareStatement("CREATE TABLE posts ( post_id SERIAL PRIMARY KEY, title VARCHAR(100), content VARCHAR(500), date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, vote_up INTEGER, vote_down INTEGER, user_id INTEGER REFERENCES users (user_id), pinned BOOLEAN, filetype varchar(10), filedate varchar(19), filepath varchar(100), links varchar(500) )");
+
+
         mDropPostTable = mConnection.prepareStatement("Drop TABLE posts");
-        mInsertPost = mConnection.prepareStatement("INSERT INTO posts VALUES (default, ?, ?, default, ?, ?, ?, ?)");
+        mInsertPost = mConnection.prepareStatement("INSERT INTO posts VALUES (default, ?, ?, default, ?, ?, ?, ? ,'','' ,'','')");
         mSelectAllPostsJoinUsers = mConnection.prepareStatement("SELECT post_id, title, content, date, vote_up, vote_down, pinned, users.last_name, users.first_name FROM posts JOIN users ON posts.user_id=users.user_id");
         mSelectAllPosts = mConnection.prepareStatement("SELECT posts.post_id, posts.title, posts.content, posts.date, posts.vote_up, posts.vote_down, posts.pinned, users.last_name, users.first_name, users.email FROM posts LEFT JOIN users ON posts.user_id=users.user_id");
         mSelectPostById = mConnection.prepareStatement("SELECT * FROM posts WHERE post_id=?");
         mUpdatePostById = mConnection.prepareStatement("UPDATE posts SET title=?, content=?, vote_up=?, vote_down=?, pinned=? WHERE post_id=?");
         mDeletePostById = mConnection.prepareStatement("DELETE FROM posts WHERE post_id=?");
-        
+        mSelectPostWithFile = mConnection.prepareStatement("select post_id, filepath, last_name, first_name from posts, users where posts.user_id= users.user_id and filepath != '';");
         // Comments Table Prepared Statement
-        mCreateCommentTable = mConnection.prepareStatement("CREATE TABLE comments ( comment_id SERIAL PRIMARY KEY, content VARCHAR(500), date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, user_id INTEGER REFERENCES users (user_id), post_id INTEGER REFERENCES posts (post_id) )");
+
+        // phase3: change the statement
+        mCreateCommentTable = mConnection.prepareStatement("CREATE TABLE comments ( comment_id SERIAL PRIMARY KEY, content VARCHAR(500), date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, user_id INTEGER REFERENCES users (user_id), post_id INTEGER REFERENCES posts (post_id), filetype varchar(10), filedate varchar(19), filepath varchar(100), links varchar(500) )");
         mDropCommentTable = mConnection.prepareStatement("DROP TABLE comments");
-        mInsertComment = mConnection.prepareStatement("INSERT INTO comments VALUES (default, ?, default, ?, ?)");
+        mInsertComment = mConnection.prepareStatement("INSERT INTO comments VALUES (default, ?, default, ?, ?, '','' ,'','')");
         mSelectAllCommentsJoinUsers = mConnection.prepareStatement("SELECT comment_id, content, date, users.last_name, users.first_name FROM comments JOIN users ON comments.user_id=users.user_id");
         mSelectCommentsByUserId = mConnection.prepareStatement("SELECT * FROM comments WHERE user_id=?");
         mSelectCommentsByPostId = mConnection.prepareStatement("SELECT * FROM comments WHERE post_id=?");
         mUpdateCommentById = mConnection.prepareStatement("UPDATE comments SET content=? WHERE comment_id=?");
         mDeleteCommentById = mConnection.prepareStatement("DELETE FROM comments WHERE comment_id=?");
-        
+        mSelectCommentWithFile = mConnection.prepareStatement("select post_id,comment_id, filepath, last_name, first_name from comments, users where comments.user_id= users.user_id and filepath != '';");
         // Votes Table Prepared Statement
         mCreateVoteTable = mConnection.prepareStatement("CREATE TABLE votes ( user_id INTEGER, post_id INTEGER, vote_up BOOLEAN, vote_down BOOLEAN )");
         mDropVoteTable = mConnection.prepareStatement("DROP TABLE votes");
@@ -174,12 +200,18 @@ public class Database {
         mUpdatePostVotesUpDecrease = mConnection.prepareStatement("UPDATE posts SET vote_up=vote_up-1 WHERE post_id=?");
         mUpdatePostVotesDownIncrease = mConnection.prepareStatement("UPDATE posts SET vote_down=vote_down+1 WHERE post_id=?");
         mUpdatePostVotesDownDecrease = mConnection.prepareStatement("UPDATE posts SET vote_down=vote_down-1 WHERE post_id=?");
+
+        mGetNewestPost = mConnection.prepareStatement("select max(post_id) from posts");
     }
 
     // **********************************************************************
     // *                database operations (generated)
     // **********************************************************************
 
+    ResultSet GetNewestPost() throws SQLException {
+        return mGetNewestPost.executeQuery();
+    }
+    
     void createUserTable() throws SQLException {
         mCreateUserTable.execute();
     }
@@ -200,6 +232,24 @@ public class Database {
         return mSelectUserById.executeQuery();
     }
 
+    ResultSet SelectFileByPostID(int userId) throws SQLException {
+        mSelectFileByPostID.setInt(1, userId);
+        return mSelectFileByPostID.executeQuery();
+    }
+
+    ResultSet SelectFileByCommentID(int userId) throws SQLException {
+        mSelectFileByCommentID.setInt(1, userId);
+        return mSelectFileByCommentID.executeQuery();
+    }
+    
+    ResultSet SelectFileUnderPostByEmail(String email) throws SQLException {
+        mSelectFileUnderPostByEmail.setString(1, email);
+        return mSelectFileUnderPostByEmail.executeQuery();
+    }
+    ResultSet SelectFileUnderCommentByEmail(String email) throws SQLException {
+        mSelectFileUnderCommentByEmail.setString(1, email);
+        return mSelectFileUnderCommentByEmail.executeQuery();
+    }
     ResultSet selectUserByEmail(String email) throws SQLException {
         mSelectUserByEmail.setString(1, email);
         return mSelectUserByEmail.executeQuery();
@@ -209,6 +259,8 @@ public class Database {
         mDeleteUserById.setInt(1, userId);
         mDeleteUserById.executeUpdate();
     }
+
+
 
     // ***************
     // Post Table Part
@@ -224,6 +276,14 @@ public class Database {
     ResultSet selectPostAll() throws SQLException{
         return mSelectAll.executeQuery();
 
+    }
+
+    ResultSet SelectPostWithFile() throws SQLException{
+        return mSelectPostWithFile.executeQuery();
+    }
+
+    ResultSet SelectCommentWithFile() throws SQLException{
+        return mSelectCommentWithFile.executeQuery();
     }
 
     void insertPost(String title, String content, int upVote, int downVote, int userId, boolean pinned) throws SQLException {
@@ -253,6 +313,16 @@ public class Database {
         mUpdatePostById.setBoolean(5, pinned);
         mUpdatePostById.setInt(6, postId);
         mUpdatePostById.executeUpdate();
+    }     
+
+    void DeleteFileByPostID(int postId) throws SQLException {
+
+        mDeleteFileByPostID.setInt(1, postId);
+        mDeleteFileByPostID.executeUpdate();
+    }     
+    void DeleteFileByCommentID(int commentId) throws SQLException {
+        mDeleteFileByCommentID.setInt(1, commentId);
+        mDeleteFileByCommentID.executeUpdate();
     }        
 
     void deletePostById(int postId) throws SQLException {
