@@ -254,8 +254,9 @@ class DatabaseHelper {
         String newId = Integer.toString(newIdInt);
         rs.close();
         // set the filepath now
-        db.updatePostFilePathById(toFullPath(
-                req.fileName, newId), newIdInt);
+        if (req.fileName != null && req.fileName.length() != 0)
+            db.updatePostFilePathById(toFullPath(
+                    req.fileName, newId), newIdInt);
         return newId;
     }
 
@@ -289,8 +290,9 @@ class DatabaseHelper {
         String newId = Integer.toString(newIdInt);
         rs.close();
         // set the filepath now
-        db.updateCommentFilePathById(toFullPath(
-                req.fileName, postId, newId), newIdInt);
+        if (req.fileName != null && req.fileName.length() != 0)
+            db.updateCommentFilePathById(toFullPath(
+                    req.fileName, postId, newId), newIdInt);
         return newId;
     }
 
