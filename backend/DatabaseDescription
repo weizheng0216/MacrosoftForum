@@ -47,7 +47,7 @@ package edu.lehigh.cse216.macrosoft.backend;
 #         pinned      BOOLEAN,
 #         filetype    VARCHAR(10),
 #         filedate    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  # future PUT
-#         filename    VARCHAR(100),
+#         filepath    VARCHAR(100),
 #         links       VARCHAR(500)
 #     );
 #
@@ -55,7 +55,7 @@ package edu.lehigh.cse216.macrosoft.backend;
 #     Drop TABLE posts;
 
 [C] insertPost(String title, String content, int userId,
-               String filetype, String filename, String links);
+               String filetype, String filepath, String links);
     INSERT INTO posts VALUES (default, ?, ?, default, 0, 0, ?, false, ?, default, ?, ?);
 
 [R] selectPostById(int postId);
@@ -76,6 +76,9 @@ package edu.lehigh.cse216.macrosoft.backend;
 [U] updatePostVoteCountById(int upVote, int downVote, int postId);
     UPDATE posts SET vote_up=?, vote_down=? WHERE post_id=?;
 
+[U] updatePostFilePathById(String fullpath, int postId);
+    UPDATE posts SET filepath=? WHERE post_id=?;
+
 [D] deletePostById(int postId);
     DELETE FROM posts WHERE post_id=?;
 
@@ -94,7 +97,7 @@ package edu.lehigh.cse216.macrosoft.backend;
 #         post_id      INTEGER REFERENCES posts (post_id),
 #         filetype     VARCHAR(10),
 #         filedate     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-#         filename     VARCHAR(100),
+#         filepath     VARCHAR(100),
 #         links        VARCHAR(500)
 #     );
 #
@@ -102,7 +105,7 @@ package edu.lehigh.cse216.macrosoft.backend;
 #     DROP TABLE comments;
 
 [C] insertComment(String content, int userId, int postId,
-                  String filetype, String filename, String links);
+                  String filetype, String filepath, String links);
     INSERT INTO comments VALUES (default, ?, default, ?, ?, ?, default, ?, ?);
 
 [R] selectCommentByIds(int postId, int commentId);
@@ -119,6 +122,9 @@ package edu.lehigh.cse216.macrosoft.backend;
 
 [U] updateCommentById(String content, int commentId);
     UPDATE comments SET content=? WHERE comment_id=?;
+
+[U] updateCommentFilePathById(String fullpath, int commentId);
+    UPDATE comments SET filepath=? WHERE comment_id=?;
 
 [D] deleteCommentsByPostId(int postId);
     DELETE FROM comments WHERE post_id=?;

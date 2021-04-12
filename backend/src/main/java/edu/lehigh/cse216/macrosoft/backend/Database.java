@@ -100,6 +100,7 @@ class Database {
     private PreparedStatement mSelectLatestPostId;
     private PreparedStatement mUpdatePostById;
     private PreparedStatement mUpdatePostVoteCountById;
+    private PreparedStatement mUpdatePostFilePathById;
     private PreparedStatement mDeletePostById;
     private PreparedStatement mInsertComment;
     private PreparedStatement mSelectCommentByIds;
@@ -107,6 +108,7 @@ class Database {
     private PreparedStatement mSelectCommentsByUserId;
     private PreparedStatement mSelectLatestCommentId;
     private PreparedStatement mUpdateCommentById;
+    private PreparedStatement mUpdateCommentFilePathById;
     private PreparedStatement mDeleteCommentsByPostId;
     private PreparedStatement mDeleteCommentByIds;
     private PreparedStatement mInsertVote;
@@ -132,6 +134,7 @@ class Database {
         mSelectLatestPostId = mConnection.prepareStatement("SELECT MAX(post_id) FROM posts");
         mUpdatePostById = mConnection.prepareStatement("UPDATE posts SET title=?, content=? WHERE post_id=?");
         mUpdatePostVoteCountById = mConnection.prepareStatement("UPDATE posts SET vote_up=?, vote_down=? WHERE post_id=?");
+        mUpdatePostFilePathById = mConnection.prepareStatement("UPDATE posts SET filepath=? WHERE post_id=?");
         mDeletePostById = mConnection.prepareStatement("DELETE FROM posts WHERE post_id=?");
         mInsertComment = mConnection.prepareStatement("INSERT INTO comments VALUES (default, ?, default, ?, ?, ?, default, ?, ?)");
         mSelectCommentByIds = mConnection.prepareStatement("SELECT * FROM comments WHERE post_id=? AND comment_id=?");
@@ -139,6 +142,7 @@ class Database {
         mSelectCommentsByUserId = mConnection.prepareStatement("SELECT * FROM comments WHERE user_id=?");
         mSelectLatestCommentId = mConnection.prepareStatement("SELECT MAX(comment_id) FROM comments");
         mUpdateCommentById = mConnection.prepareStatement("UPDATE comments SET content=? WHERE comment_id=?");
+        mUpdateCommentFilePathById = mConnection.prepareStatement("UPDATE comments SET filepath=? WHERE comment_id=?");
         mDeleteCommentsByPostId = mConnection.prepareStatement("DELETE FROM comments WHERE post_id=?");
         mDeleteCommentByIds = mConnection.prepareStatement("DELETE FROM comments WHERE postId=? AND comment_id=?");
         mInsertVote = mConnection.prepareStatement("INSERT INTO votes VALUES (?, ?, ?, ?)");
@@ -173,12 +177,12 @@ class Database {
         return mSelectUserByEmail.executeQuery();
     }
 
-    void insertPost(String title, String content, int userId, String filetype, String filename, String links) throws SQLException {
+    void insertPost(String title, String content, int userId, String filetype, String filepath, String links) throws SQLException {
         mInsertPost.setString(1, title);
         mInsertPost.setString(2, content);
         mInsertPost.setInt(3, userId);
         mInsertPost.setString(4, filetype);
-        mInsertPost.setString(5, filename);
+        mInsertPost.setString(5, filepath);
         mInsertPost.setString(6, links);
         mInsertPost.executeUpdate();
     }
@@ -215,17 +219,23 @@ class Database {
         mUpdatePostVoteCountById.executeUpdate();
     }
 
+    void updatePostFilePathById(String fullpath, int postId) throws SQLException {
+        mUpdatePostFilePathById.setString(1, fullpath);
+        mUpdatePostFilePathById.setInt(2, postId);
+        mUpdatePostFilePathById.executeUpdate();
+    }
+
     void deletePostById(int postId) throws SQLException {
         mDeletePostById.setInt(1, postId);
         mDeletePostById.executeUpdate();
     }
 
-    void insertComment(String content, int userId, int postId, String filetype, String filename, String links) throws SQLException {
+    void insertComment(String content, int userId, int postId, String filetype, String filepath, String links) throws SQLException {
         mInsertComment.setString(1, content);
         mInsertComment.setInt(2, userId);
         mInsertComment.setInt(3, postId);
         mInsertComment.setString(4, filetype);
-        mInsertComment.setString(5, filename);
+        mInsertComment.setString(5, filepath);
         mInsertComment.setString(6, links);
         mInsertComment.executeUpdate();
     }
@@ -254,6 +264,12 @@ class Database {
         mUpdateCommentById.setString(1, content);
         mUpdateCommentById.setInt(2, commentId);
         mUpdateCommentById.executeUpdate();
+    }
+
+    void updateCommentFilePathById(String fullpath, int commentId) throws SQLException {
+        mUpdateCommentFilePathById.setString(1, fullpath);
+        mUpdateCommentFilePathById.setInt(2, commentId);
+        mUpdateCommentFilePathById.executeUpdate();
     }
 
     void deleteCommentsByPostId(int postId) throws SQLException {

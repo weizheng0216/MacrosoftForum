@@ -40,10 +40,10 @@ class CacheHelper {
     }
 
     /**
-     * Remove a directory from the cache. Do nothing if it does not exist.
-     * @param dir Unique identifier of the directory.
+     * Remove a file from the cache. Do nothing if it does not exist.
+     * @param fullpath Unique identifier of the file.
      */
-    void removeDir(String dir) {
+    void removeFile(String fullpath) {
 
     }
 }

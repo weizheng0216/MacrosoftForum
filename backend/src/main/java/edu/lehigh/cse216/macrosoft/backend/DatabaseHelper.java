@@ -9,6 +9,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static edu.lehigh.cse216.macrosoft.backend.DriveHelper.fromFullPath;
+import static edu.lehigh.cse216.macrosoft.backend.DriveHelper.toFullPath;
+
 class DatabaseHelper {
     Database db;
 
@@ -102,42 +105,59 @@ class DatabaseHelper {
     }
 
     /**
-     * Get the filename to the file attached to the post.
+     * Get the filepath to the file attached to the post.
      * @param postId Identifier of the target post.
-     * @return filename to the file, or {@code null} if there is no file.
+     * @return filepath to the file, or {@code null} if there is no file.
      */
-    String queryPostFileName(String postId) throws SQLException {
+    String queryPostFilePath(String postId) throws SQLException {
         int postIdInt = Integer.parseInt(postId);
         ResultSet postRs = db.selectPostById(postIdInt);
         if (postRs.next()) {
-            String filename = postRs.getString("filename");
+            String filepath = postRs.getString("filepath");
             postRs.close();
-            if (filename != null && filename.length() != 0)
-                return filename;
+            if (filepath != null && filepath.length() != 0)
+                return filepath;
         }
         postRs.close();
         return null;
     }
 
     /**
-     * Get the filename to the file attached to the comment under a post.
+     * Get the filepath to the file attached to the comment under a post.
      * @param postId Identifier of the target post.
      * @param commentId Identifier of the comment under target post.
-     * @return filename to the file, or {@code null} if there is no file.
+     * @return filepath to the file, or {@code null} if there is no file.
      */
-    String queryCommentFileName(String postId,
+    String queryCommentFilePath(String postId,
                                 String commentId) throws SQLException {
         int postIdInt = Integer.parseInt(postId);
         int commentIdInt = Integer.parseInt(commentId);
         ResultSet commentRs = db.selectCommentByIds(postIdInt, commentIdInt);
         if (commentRs.next()) {
-            String filename = commentRs.getString("filename");
+            String filepath = commentRs.getString("filepath");
             commentRs.close();
-            if (filename != null && filename.length() != 0)
-                return filename;
+            if (filepath != null && filepath.length() != 0)
+                return filepath;
         }
         commentRs.close();
         return null;
+    }
+
+    /**
+     * Get a list of fullpath for all comments under a particular post.
+     * Note that this function does not check for postId validity.
+     * @param postId Identifier of the target post.
+     * @return the list containing all fullpath.
+     */
+    ArrayList<String> queryAllCommentFilePaths(String postId)
+            throws SQLException {
+        int postIdInt = Integer.parseInt(postId);
+        ArrayList<String> list = new ArrayList<>();
+        ResultSet commentsRs = db.selectCommentsByPostId(postIdInt);
+        while (commentsRs.next())
+            list.add(commentsRs.getString("filepath"));
+        commentsRs.close();
+        return list;
     }
 
     /**
@@ -226,13 +246,17 @@ class DatabaseHelper {
         for (String link : req.links)
             linksSB.append(link).append(" ");
         db.insertPost(req.title, req.content, userIdInt, req.fileType,
-                req.fileName, linksSB.toString());
-        // return the id of newly added post
+                "", linksSB.toString());
+        // get the id of newly added post
         ResultSet rs = db.selectLatestPostId();
         rs.next();
-        int newId = rs.getInt(1);
+        int newIdInt = rs.getInt(1);
+        String newId = Integer.toString(newIdInt);
         rs.close();
-        return Integer.toString(newId);
+        // set the filepath now
+        db.updatePostFilePathById(toFullPath(
+                req.fileName, newId), newIdInt);
+        return newId;
     }
 
     /**
@@ -258,12 +282,16 @@ class DatabaseHelper {
             linksSB.append(link).append(" ");
         db.insertComment(req.content, userIdInt, postIdInt, req.fileType,
                 req.fileName, linksSB.toString());
-        // return the id of newly added comment
-        ResultSet idRs = db.selectLatestCommentId();
-        idRs.next();
-        int newId = idRs.getInt(1);
-        idRs.close();
-        return Integer.toString(newId);
+        // get the id of newly added comment
+        ResultSet rs = db.selectLatestPostId();
+        rs.next();
+        int newIdInt = rs.getInt(1);
+        String newId = Integer.toString(newIdInt);
+        rs.close();
+        // set the filepath now
+        db.updateCommentFilePathById(toFullPath(
+                req.fileName, postId, newId), newIdInt);
+        return newId;
     }
 
     /**
@@ -349,7 +377,7 @@ class DatabaseHelper {
         return new FileInfoSubtype(
                 rs.getString("filetype"),
                 rs.getString("filedate"),
-                rs.getString("filename")
+                fromFullPath(rs.getString("filepath"))
         );
     }
 

@@ -6,6 +6,10 @@ import spark.Spark;
 
 import edu.lehigh.cse216.macrosoft.backend.json.*;
 
+import java.util.ArrayList;
+
+import static edu.lehigh.cse216.macrosoft.backend.DriveHelper.toFullPath;
+
 /**
  * This class only contains static members. It uses the <i>Java Spark Framework</i>
  * to implement the backend server of BUZZ. All required configurations are
@@ -93,10 +97,9 @@ class BuzzServer {
 
             // get file from storage
             String postId = req.params("post_id");
-            String filename = db.queryPostFileName(postId);
+            String fullpath = db.queryPostFilePath(postId);
             String str64 = null;
-            if (filename != null) {
-                String fullpath = toFullPath(filename, filename);
+            if (fullpath != null) {
                 str64 = cache.getFile(fullpath);
                 if (str64 == null) {
                     str64 = drive.getFile(fullpath);
@@ -128,10 +131,9 @@ class BuzzServer {
             // get file from storage
             String postId = req.params("post_id");
             String commentId = req.params("comment_id");
-            String filename = db.queryCommentFileName(postId, commentId);
+            String fullpath = db.queryCommentFilePath(postId, commentId);
             String str64 = null;
-            if (filename != null) {
-                String fullpath = toFullPath(filename, filename, commentId);
+            if (fullpath != null) {
                 str64 = cache.getFile(fullpath);
                 if (str64 == null) {
                     str64 = drive.getFile(fullpath);
@@ -442,8 +444,9 @@ class BuzzServer {
             }
 
             // remove file from storage
-            cache.removeDir(toFullPath("", postId, commentId));
-            drive.removeDir(toFullPath("", postId, commentId));
+            String fullpath = db.queryCommentFilePath(postId, commentId);
+            cache.removeFile(fullpath);
+            drive.removeFile(fullpath);
 
             // execute update in db
             db.deleteComment(postId, commentId);
@@ -481,8 +484,17 @@ class BuzzServer {
             }
 
             // remove files from storage
-            cache.removeDir(toFullPath("", postId));
-            drive.removeDir(toFullPath("", postId));
+            // file under the post
+            String fullpath = db.queryPostFilePath(postId);
+            cache.removeFile(fullpath);
+            drive.removeFile(fullpath);
+            // files under all comments
+            ArrayList<String> fullpaths =
+                    db.queryAllCommentFilePaths(postId);
+            for (String path : fullpaths) {
+                cache.removeFile(path);
+                drive.removeFile(path);
+            }
 
             // execute update in db
             db.deletePost(postId);  // will also delete the comments under the post
@@ -490,22 +502,5 @@ class BuzzServer {
             res.status(200);
             return StructuredResponse.OK(null);
         }, gson::toJson);
-    }
-
-    // ======== Utility functions ========
-
-    /*
-     * Get the fullpath of a file under a post when it's stored in Google drive.
-     */
-    static String toFullPath(String fileName, String postId) {
-        return String.format("%s/%s", postId, fileName);
-    }
-
-    /*
-     * Get the fullpath of a file under a comment when it's stored in Google drive.
-     */
-    static String toFullPath(String fileName,
-                             String postId, String commentId) {
-        return String.format("%s/%s/%s", postId, commentId, fileName);
     }
 }

@@ -34,10 +34,33 @@ class DriveHelper {
     }
 
     /**
-     * Remove a directory from the cache. Do nothing if it does not exist.
-     * @param dir Unique identifier of the directory.
+     * Remove a file from the cache. Do nothing if it does not exist.
+     * @param fullpath Unique identifier of the file.
      */
-    void removeDir(String dir) {
+    void removeFile(String fullpath) {
 
+    }
+
+    /**
+     * Get the fullpath of a file under a post when it's stored in Google drive.
+     */
+    static String toFullPath(String fileName, String postId) {
+        return String.format("%s/%s", postId, fileName);
+    }
+
+    /**
+     * Get the fullpath of a file under a comment when it's stored in Google drive.
+     */
+    static String toFullPath(String fileName,
+                                     String postId, String commentId) {
+        return String.format("%s/%s/%s", postId, commentId, fileName);
+    }
+
+    /**
+     * Get the filename from the fullpath.
+     */
+    static String fromFullPath(String fullpath) {
+        int last = fullpath.lastIndexOf("/");
+        return fullpath.substring(last + 1);
     }
 }
