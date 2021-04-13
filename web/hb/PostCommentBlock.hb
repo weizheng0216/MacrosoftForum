@@ -22,8 +22,8 @@
                 </div>
                 <div class="lower-information">
 
-                    <button id="my-down-vote-button{{this.mPostID}}" class="dislike-button little-button my-down-vote-button my-vote-{{mDownVoteCount}}"
-                        data-postid="{{this.mPostID}}" data-downvotestate="{{mDownVoteCount}}">
+                    <button id="my-down-vote-button{{this.mPostID}}" class="dislike-button little-button my-down-vote-button my-vote-{{this.mDownVoteCount}}"
+                        data-postid="{{this.mPostID}}" data-downvotestate="{{this.mUserDownVote}}">
                         <!-- leave down vote count of this post here -->
                         <span id="my-down-vote-count{{this.mPostID}}" class="glyphicon glyphicon-thumbs-down">{{this.mDownVote}}
 
@@ -36,8 +36,8 @@
                         </span>
                     </button>
 
-                    <button id="my-up-vote-button{{this.mPostID}}" class="like-button little-button my-up-vote-button my-vote-{{mUpVoteCount}}" 
-                        data-postid="{{this.mPostID}}" data-upvotestate="{{mUpVoteCount}}">
+                    <button id="my-up-vote-button{{this.mPostID}}" class="like-button little-button my-up-vote-button my-vote-{{this.mUpVoteCount}}" 
+                        data-postid="{{this.mPostID}}" data-upvotestate="{{this.mUserUpVote}}">
                         <!-- leave up vote count of this post here -->
                         <span id="my-up-vote-count{{this.mPostID}}" class="glyphicon glyphicon-thumbs-up">{{this.mUpVote}}
                             

@@ -9,23 +9,7 @@ class PostCommentBlock {
     private static filedata = null;
     private static filetype = null;
 
-    private static init() {
-        let postID = $(this).data("value");
-        let imageType=$('#imgType').val();
-        console.log("imageType", imageType);
-        if(imageType=="image/jpg" || imageType=="image/png")
-        {
-        $.ajax({
-            type: "GET",
-            url: backendUrl + "/api/posts/" + postID + "/file?session=" + BasicStructure.sessionKey,
-            dataType: "json",
-            success: function (result: any) {
-                console.log(result);
-                $('#img').attr("src","data:"+imageType+";base64,"+result);
-            } 
-        });
-        }
-    }
+  
 
 
     public static readFile(input) {
@@ -49,7 +33,25 @@ class PostCommentBlock {
             }
             //reader.readAsDataURL(document.getElementById('file').files[0]);
         } 
-      }
+      }  
+      
+    public static showImage() {
+        let postID = $(this).data("value");
+        let imageType=$('#imgType').val();
+        console.log("imageType", imageType);
+        if(imageType=="image/jpg" || imageType=="image/png")
+        {
+        $.ajax({
+            type: "GET",
+            url: backendUrl + "/api/posts/" + postID + "/file?session=" + BasicStructure.sessionKey,
+            dataType: "json",
+            success: function (result: any) {
+                console.log(result);
+                $('#img').attr("src","data:"+imageType+";base64,"+result);
+            } 
+        });
+        }
+    }
 
     public static AddLink()
     {
@@ -314,7 +316,5 @@ class PostCommentBlock {
 
     }
 
-    public static refresh() {
-        this.init();
-    }
+   
 }
