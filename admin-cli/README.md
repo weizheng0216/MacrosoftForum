@@ -57,6 +57,8 @@ private static int getInputInt(int lower, int upper, String prompt) {
 ```
 
 - **Expection guide**. In previous phase, the error message are print directly to user. In this phase, whenever this is a expection, a one-sentence error message will be showed. Some expections will print a guide to user.  
+
+## **Integration Test**. Try `sh test.sh`
 ## User Guide
 
 The Admin App is a stand-alone tool from the front-end and the backend of Buzz.

@@ -110,11 +110,11 @@ public class GoogleDriveAPI
                     .execute();
             List<File> files = result.getFiles();
             if (files == null || files.isEmpty()) {
-                System.out.println("/tNo files found.");
+                System.out.println("\tNo files found.");
             } else {
                 System.out.println("Files:");
                 for (File eachFile : files) {
-                    System.out.printf("/t%s (%s)\n", eachFile.getName(), eachFile.getId());
+                    System.out.printf("\t%s (%s)\n", eachFile.getName(), eachFile.getId());
                 }
             }
         } catch (java.io.IOException eIO) {
