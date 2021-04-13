@@ -6,6 +6,8 @@
 - Phase 3: Haocheng Gao
 
 ## Introduction
+The backend of BUZZ serves the front-end pages and provides a set of APIs
+for the front-end pages to access. In phase3, support to files are added.
 
 ## APIs
 
@@ -463,8 +465,7 @@ Return codes:
 | 404 | *post_id* cannot be found |
 | 500+ | Unexpected server error |
 
-## Database
-
-## Unit Tests
 
 ## Integration Test
+The integration test of this phase is done manually, by using YARC(Yet
+Another REST Client).

@@ -18,7 +18,7 @@ import java.util.List;
  */
 class CacheHelper {
 
-    // private final MemcachedClient client;
+    final MemcachedClient client;
 
     /**
      * Initialize with configuration variables.
@@ -26,11 +26,9 @@ class CacheHelper {
     CacheHelper(String MEMCACHED_SERVERS,
                 String MEMCACHED_USERNAME,
                 String MEMCACHED_PASSWORD) throws IOException {
-        /*
         List<InetSocketAddress> servers = AddrUtil.getAddresses(MEMCACHED_SERVERS.replace(",", " "));
         AuthInfo authInfo =
-                AuthInfo.plain(System.getenv("MEMCACHED_USERNAME"),
-                        System.getenv("MEMCACHED_PASSWORD"));
+                AuthInfo.plain(MEMCACHED_USERNAME, MEMCACHED_PASSWORD);
         MemcachedClientBuilder builder = new XMemcachedClientBuilder(servers);
         // Configure SASL auth for each server
         for(InetSocketAddress server : servers) {
@@ -46,7 +44,6 @@ class CacheHelper {
         builder.setHealSessionInterval(2000);
 
         client = builder.build();
-         */
     }
 
     /**
@@ -57,7 +54,11 @@ class CacheHelper {
      * @param str64 File data that's encoded into ASCII.
      */
     void saveFile(String fullpath, String str64) {
-
+        try {
+            client.set(fullpath, 0, str64);
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        }
     }
 
     /**
@@ -66,7 +67,11 @@ class CacheHelper {
      * @return Base64 encoded file data, or {@code null} if file does not exist.
      */
     String getFile(String fullpath) {
-        return null;
+        try {
+            return client.get(fullpath);
+        } catch (Exception exp) {
+            return null;
+        }
     }
 
     /**
@@ -74,6 +79,10 @@ class CacheHelper {
      * @param fullpath Unique identifier of the file.
      */
     void removeFile(String fullpath) {
-
+        try {
+            client.delete(fullpath);
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        }
     }
 }

@@ -34,9 +34,9 @@ class BuzzServer {
      * @param STATIC_LOCATION The resource directory to be served.
      * @param DATABASE_URL The URL to the database, with credentials.
      * @param CLIENT_ID The Google Developer Console client ID.
-     * @param MEMCACHED_SERVERS
-     * @param MEMCACHED_USERNAME
-     * @param MEMCACHED_PASSWORD
+     * @param MEMCACHED_SERVERS MemCache config.
+     * @param MEMCACHED_USERNAME MemCache config.
+     * @param MEMCACHED_PASSWORD MemCache config.
      * @throws Exception Should terminate the program.
      */
     static void run(int PORT,
@@ -49,11 +49,17 @@ class BuzzServer {
         Spark.port(PORT);
         Spark.staticFileLocation(STATIC_LOCATION);
         gson = new Gson();
+        System.out.println("Gson OK.");
         db = new DatabaseHelper(DATABASE_URL);
+        System.out.println("Database OK.");
         cache = new CacheHelper(MEMCACHED_SERVERS, MEMCACHED_USERNAME, MEMCACHED_PASSWORD);
+        System.out.println("MemCache OK.");
         auth = new AuthHelper(CLIENT_ID, cache);
+        System.out.println("Auth OK.");
         drive = new DriveHelper();
+        System.out.println("Drive OK.");
 
+        System.out.println("The server is running...");
         defineGETs();
         definePOSTs();
         definePUTs();
@@ -281,6 +287,11 @@ class BuzzServer {
 
             // read auth request & try access resource
             LoginRequest request = gson.fromJson(req.body(), LoginRequest.class);
+            if (request == null) {
+                res.status(400);
+                return StructuredResponse.ERR("Invalid request body.");
+            }
+
             GoogleIdToken.Payload payload = auth.accessResource(request.idToken);
             if (payload == null) {
                 res.status(401);
@@ -340,6 +351,11 @@ class BuzzServer {
 
             // read request & get author of the post
             PostRequest request = gson.fromJson(req.body(), PostRequest.class);
+            if (request == null) {
+                res.status(400);
+                return StructuredResponse.ERR("Invalid request body.");
+            }
+
             String postId = req.params("post_id");
             String authorId = db.queryPostAuthor(postId);
 
@@ -376,6 +392,11 @@ class BuzzServer {
 
             // read request & get author of the comment
             CommentRequest request = gson.fromJson(req.body(), CommentRequest.class);
+            if (request == null) {
+                res.status(400);
+                return StructuredResponse.ERR("Invalid request body.");
+            }
+
             String postId = req.params("post_id");
             String commentId = req.params("comment_id");
             String authorId = db.queryCommentAuthor(postId, commentId);
@@ -413,6 +434,11 @@ class BuzzServer {
 
             // read request & check request validity
             VoteRequest request = gson.fromJson(req.body(), VoteRequest.class);
+            if (request == null) {
+                res.status(400);
+                return StructuredResponse.ERR("Invalid request body.");
+            }
+
             if (request.upVote && request.downVote) {
                 res.status(400);
                 return StructuredResponse.ERR("Can only have 1 upvote at most.");

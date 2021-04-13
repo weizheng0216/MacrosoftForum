@@ -1,7 +1,13 @@
 package edu.lehigh.cse216.macrosoft.backend;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -14,6 +20,9 @@ class AuthHelper {
     private final Random random;
 
     private final CacheHelper cache;
+
+    private static final HttpTransport transport = new NetHttpTransport();
+    private static final JsonFactory jsonFactory = new JacksonFactory();
 
     /**
      * Initialize the authentication helper with Google's CLIENT_ID and
@@ -36,7 +45,11 @@ class AuthHelper {
      *         hasn't logged in.
      */
     String verifyLogin(String sessionKey) {
-        return "66";
+         try {
+             return cache.client.get("k"+sessionKey);
+         } catch (Exception exp) {
+             return null;
+         }
     }
 
     /**
@@ -46,8 +59,18 @@ class AuthHelper {
      * @param userId The user to be logged in.
      * @return Generated <i>sessionKey</i>
      */
-    String login(String userId) {
-        return null;
+    String login(String userId) throws Exception {
+        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                    + "0123456789"
+                                    + "abcdefghijklmnopqrstuvxyz";
+        StringBuilder sb = new StringBuilder(32);
+        for (int i = 0; i < 32; i++) {
+            int index = (int)(AlphaNumericString.length() * random.nextDouble());
+            sb.append(AlphaNumericString.charAt(index));
+        }
+        String sk = sb.toString();
+        cache.client.set("k"+sk, 0, userId);
+        return sk;
     }
 
     /**
@@ -55,17 +78,34 @@ class AuthHelper {
      * @param userId The user to be logged out.
      */
     void logout(String userId) {
-
     }
 
     /**
      * Access Google's resource server to retrieve user's personal information
      * using the <i>idToken</i> obtained from the front-end.
-     * @param idToken The credential granted by front-end user.
+     * @param idTokenString The credential granted by front-end user.
      * @return The payload that holds the user information, or null if verification
      *         failed. That's most likely to be caused by invalid <i>idToken</i>.
      */
-    GoogleIdToken.Payload accessResource(String idToken) {
-        return null;
+    GoogleIdToken.Payload accessResource(String idTokenString) {
+        if (idTokenString == null || idTokenString.length() == 0) {
+            return null;
+        }
+        try {
+            GoogleIdToken idToken;
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                    // Specify the CLIENT_ID of the app that accesses the backend:
+                    .setAudience(Collections.singletonList(CLIENT_ID))
+                    // Or, if multiple clients access the backend:
+                    //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
+                    .build();
+            idToken = verifier.verify(idTokenString);
+            if (idToken != null) {
+                return idToken.getPayload();
+            }
+            return null;
+        } catch (Exception exp) {
+            return null;
+        }
     }
 }
