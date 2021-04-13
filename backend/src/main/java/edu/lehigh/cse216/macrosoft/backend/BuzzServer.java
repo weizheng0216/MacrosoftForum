@@ -231,6 +231,10 @@ class BuzzServer {
 
             // read post request & store the post into db
             PostRequest request = gson.fromJson(req.body(), PostRequest.class);
+            if (request == null) {
+                res.status(400);
+                return StructuredResponse.ERR("Invalid request body.");
+            }
             String postId = db.addPost(loginUserId, request);
 
             // try to save file into backend storage
@@ -264,6 +268,10 @@ class BuzzServer {
 
             // read comment request & save comment into db
             CommentRequest request = gson.fromJson(req.body(), CommentRequest.class);
+            if (request == null) {
+                res.status(400);
+                return StructuredResponse.ERR("Invalid request body.");
+            }
             String postId = req.params("post_id");
             String commentId = db.addComment(loginUserId, postId, request);
 

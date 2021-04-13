@@ -311,6 +311,7 @@ Return codes:
 | Return code | Explanation |
 | :---------: | :---------- |
 | 200 | OK |
+| 400 | Invalid request body |
 | 401 | Session key is invalid |
 | 404 | *post_id* cannot be found |
 | 507 | Server runs out of quota. File not uploaded(however comment is uploaded) |
@@ -336,7 +337,8 @@ Return codes:
 | Return code | Explanation |
 | :---------: | :---------- |
 | 200 | OK |
-| 401 | Login fails, probably because *idToken* is invalid |
+| 400 | Invalid request body |
+| 401 | Login fails |
 | 500+ | Unexpected server error |
 
 ### POST /api/logout
@@ -376,6 +378,7 @@ Return codes:
 | Return code | Explanation |
 | :---------: | :---------- |
 | 200 | OK |
+| 400 | Invalid request body |
 | 401 | Session key is invalid |
 | 403 | Editing other user's info |
 | 404 | *post_id* cannot be found |
@@ -403,6 +406,7 @@ Return codes:
 | Return code | Explanation |
 | :---------: | :---------- |
 | 200 | OK |
+| 400 | Invalid request body |
 | 401 | Session key is invalid |
 | 403 | Editing other user's info |
 | 404 | *post_id* or *comment_id* cannot be found |
@@ -428,6 +432,7 @@ Return codes:
 | Return code | Explanation |
 | :---------: | :---------- |
 | 200 | OK |
+| 400 | Invalid request body |
 | 400 | Both fields of the quest are `true` |
 | 401 | Session key is invalid |
 | 404 | *post_id* cannot be found |
