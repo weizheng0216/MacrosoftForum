@@ -18,7 +18,11 @@ import java.util.List;
  */
 class CacheHelper {
 
-    final MemcachedClient client;
+    private final MemcachedClient client;
+
+    private static final int FILE_EXPIRE = 18000; //ms
+
+    private static final int SESSION_EXPIRE = 3600; //ms
 
     /**
      * Initialize with configuration variables.
@@ -55,7 +59,7 @@ class CacheHelper {
      */
     void saveFile(String fullpath, String str64) {
         try {
-            client.set(fullpath, 0, str64);
+            client.set("f" + fullpath, FILE_EXPIRE, str64);
         } catch (Exception exp) {
             exp.printStackTrace();
         }
@@ -68,7 +72,7 @@ class CacheHelper {
      */
     String getFile(String fullpath) {
         try {
-            return client.get(fullpath);
+            return client.getAndTouch("f" + fullpath, FILE_EXPIRE);
         } catch (Exception exp) {
             return null;
         }
@@ -80,9 +84,35 @@ class CacheHelper {
      */
     void removeFile(String fullpath) {
         try {
-            client.delete(fullpath);
+            client.delete("f" + fullpath);
         } catch (Exception exp) {
             exp.printStackTrace();
+        }
+    }
+
+    /**
+     * Saves a user's session, which is a key-value pair of sessionKey and userId.
+     * @param sessionKey The sessionKey of target session.
+     * @param userId The authorized user of the session.
+     */
+    void saveSession(String sessionKey, String userId) {
+        try {
+            client.set("k" + sessionKey, SESSION_EXPIRE, userId);
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        }
+    }
+
+    /**
+     * Recover a user's session with the sessionKey.
+     * @param sessionKey Credential.
+     * @return The userId of user, or {@code null} if key is invalid.
+     */
+    String getSession(String sessionKey) {
+        try {
+            return client.getAndTouch("k" + sessionKey, SESSION_EXPIRE);
+        } catch (Exception exp) {
+            return null;
         }
     }
 }

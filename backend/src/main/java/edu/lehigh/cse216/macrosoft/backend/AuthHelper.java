@@ -45,11 +45,7 @@ class AuthHelper {
      *         hasn't logged in.
      */
     String verifyLogin(String sessionKey) {
-         try {
-             return cache.client.get("k"+sessionKey);
-         } catch (Exception exp) {
-             return null;
-         }
+         return cache.getSession(sessionKey);
     }
 
     /**
@@ -59,7 +55,7 @@ class AuthHelper {
      * @param userId The user to be logged in.
      * @return Generated <i>sessionKey</i>
      */
-    String login(String userId) throws Exception {
+    String login(String userId) {
         String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                     + "0123456789"
                                     + "abcdefghijklmnopqrstuvxyz";
@@ -69,7 +65,7 @@ class AuthHelper {
             sb.append(AlphaNumericString.charAt(index));
         }
         String sk = sb.toString();
-        cache.client.set("k"+sk, 0, userId);
+        cache.saveSession(sk, userId);
         return sk;
     }
 

@@ -87,7 +87,7 @@ class DriveHelper {
             FileContent mediaContent = new FileContent("image/png", filePath);
             service.files().create(fileMetadata, mediaContent).setFields("id").execute();
             return true;
-        } catch (IOException exp) {
+        } catch (Exception exp) {
             return false;
         }
     }
@@ -100,30 +100,24 @@ class DriveHelper {
     String getFile(String fullpath) {
         try {
             FileList result = service.files().list()
-                    .setPageSize(20)
+                    .setQ("name='"+fullpath+"'")
+                    .setPageSize(30)
                     .setFields("nextPageToken, files(id, name)")
                     .execute();
             List<File> files = result.getFiles();
             if (files == null || files.isEmpty()) {
                 return null;
             } else {
-                for (File file : files) {
-                    String name = file.getName();
-                    String id = file.getId();
-                    System.out.printf("%s (%s)\n", name, id);
-                    if (name.equals(fullpath)) {
-                        FileOutputStream out = new FileOutputStream("down");
-                        service.files().get(id).executeMediaAndDownloadTo(out);
-                        out.close();
-                        byte[] bytes = Files.readAllBytes(Paths.get("down"));
-                        return new String(Base64.getEncoder().encode(bytes));
-                    }
-                }
+                String id = files.get(0).getId();
+                FileOutputStream out = new FileOutputStream("down");
+                service.files().get(id).executeMediaAndDownloadTo(out);
+                out.close();
+                byte[] bytes = Files.readAllBytes(Paths.get("down"));
+                return new String(Base64.getEncoder().encode(bytes));
             }
-        } catch (IOException exp) {
+        } catch (Exception exp) {
             return null;
         }
-        return null;
     }
 
     /**
@@ -131,7 +125,20 @@ class DriveHelper {
      * @param fullpath Unique identifier of the file.
      */
     void removeFile(String fullpath) {
-
+        try {
+            FileList result = service.files().list()
+                    .setQ("name='"+fullpath+"'")
+                    .setPageSize(30)
+                    .setFields("nextPageToken, files(id, name)")
+                    .execute();
+            List<File> files = result.getFiles();
+            if (files != null && !files.isEmpty()) {
+                String id = files.get(0).getId();
+                service.files().delete(id).execute();
+            }
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        }
     }
 
     /**

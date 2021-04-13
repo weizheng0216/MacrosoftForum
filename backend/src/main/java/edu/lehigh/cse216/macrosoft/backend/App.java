@@ -8,7 +8,7 @@ public class App {
         System.out.println("App is running.");
         // Default server configurations
         int PORT = 4567;
-        String STATIC_LOCATION = "/src/main/resources";
+        String STATIC_LOCATION = "/web";
         String DATABASE_URL = "postgres://vdtksuqjtzvetb:b7ccb5e707b07d8c8bfdf7" +
                 "badbae2048282884d6b2e8ad336a71ff5833b2abc3@ec2-52-22-16" +
                 "1-59.compute-1.amazonaws.com:5432/d9m8d6ulhh2bbk";
