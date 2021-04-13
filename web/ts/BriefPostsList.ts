@@ -31,7 +31,7 @@ class BriefPostsList {
                 }
                 $.ajax({
                     type: "GET",
-                    url: backendUrl + "/api/posts/"+ BasicStructure.sessionKey,
+                    url: backendUrl + "/api/posts?session="+ BasicStructure.sessionKey,
                     dataType: "json",
                     success: function(result:any){
                         if(debug){

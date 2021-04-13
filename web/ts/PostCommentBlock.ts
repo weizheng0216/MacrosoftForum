@@ -5,6 +5,60 @@ class PostCommentBlock {
      * @param data 
      * NOTE: during testing, we do not need Handlebars to append div to html
      */
+
+    private static filedata = null;
+    private static filetype = null;
+
+    private static init() {
+        let postID = $(this).data("value");
+        let imageType=$('#imgType').val();
+        console.log("imageType", imageType);
+        if(imageType=="image/jpg" || imageType=="image/png")
+        {
+        $.ajax({
+            type: "GET",
+            url: backendUrl + "/api/posts/" + postID + "/file?session=" + BasicStructure.sessionKey,
+            dataType: "json",
+            success: function (result: any) {
+                console.log(result);
+                $('#img').attr("src","data:"+imageType+";base64,"+result);
+            } 
+        });
+        }
+    }
+
+
+    public static readFile(input) {
+        
+          if (input.files && input.files[0]) {
+            var reader = new FileReader();
+           
+
+            $('#file-title').val(input.files && input.files.length ? input.files[0].name.split('.')[0] : '');
+            PostCommentBlock.filetype = input.files && input.files.length ? input.files[0].type.split('.')[0] : '';
+
+         reader.readAsBinaryString(input.files[0]);
+        reader.onloadend = function(){
+            console.log(reader.result);
+            var encodedStr = btoa(reader.result);
+            //var img = $('#img');
+            //img.src = this.result;
+            $('#img-id').attr("src","data:"+PostCommentBlock.filetype+";base64,"+encodedStr);
+            PostCommentBlock.filedata = encodedStr;
+            console.log(encodedStr);
+            }
+            //reader.readAsDataURL(document.getElementById('file').files[0]);
+        } 
+      }
+
+    public static AddLink()
+    {
+        var strLink=$('#insert-link').val();
+        $('#id-link').attr('href',strLink);
+        $('#id-link').text(strLink);
+        $('#id-link').attr('target','_blank');
+    }
+    
     public static update(data: any) {
 
         if (!testing) {
@@ -22,16 +76,34 @@ class PostCommentBlock {
     private static addnewComment() {
         let postID = $(this).data("value");
         let newContent = $("#my-new-comment-content" + postID).val();
+        var newFileName = $("#file-title").val();
+        if(newFileName.length<=0){
+            newFileName=null;
+        }
+        var newFileType = PostCommentBlock.filetype;
+        if(newFileType.length<=0){
+            newFileType=null;
+        }
+        var newFileData = PostCommentBlock.filedata;
+        if(newFileData.length<=0){
+            newFileData=null;
+        }
+        var newLink = $('#id-link').text();
+        if(newLink.length<=0){
+            newLink=null;
+        }
+        console.log(newFileName);
+        // link and file
         if (newContent === "") {
             alert("invalid input")
         } else {
             sessionStorage.setItem("currentPost", postID);
             $.ajax({
                 type: "POST",
-                url: backendUrl + "/api/posts/" + postID + "/comments/" + BasicStructure.sessionKey,
+                url: backendUrl + "/api/posts/" + postID + "/comments?session=" + BasicStructure.sessionKey,
                 dataType: "json",
                 data: JSON.stringify({
-                    "postID": postID, "content": newContent
+                    "postID": postID, "content": newContent, "links" : "["+newLink+"]", "fileName":newFileName, "fileType":newFileType, "fileData":newFileData
                 }),
                 success: function (result: any) {
                     console.log(result);
@@ -80,7 +152,7 @@ class PostCommentBlock {
             if (!testing) {
                 $.ajax({
                     type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote/" + BasicStructure.sessionKey,
+                    url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
                         "upvote": 0, "downvote": 0
@@ -108,7 +180,7 @@ class PostCommentBlock {
             if (!testing) {
                 $.ajax({
                     type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote/" + BasicStructure.sessionKey,
+                    url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
                         "upvote": 0, "downvote": 1
@@ -146,7 +218,7 @@ class PostCommentBlock {
             if (!testing) {
                 $.ajax({
                     type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote/" + BasicStructure.sessionKey,
+                    url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
                         "upvote": 0, "downvote": 0
@@ -178,7 +250,7 @@ class PostCommentBlock {
             if (!testing) {
                 $.ajax({
                     type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote/" + BasicStructure.sessionKey,
+                    url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
                         "upvote": 1, "downvote": 0
@@ -205,9 +277,9 @@ class PostCommentBlock {
                 console.log("user click user: " + userID + ", request for detail");
             $.ajax({
                 type: "GET",
-                url: backendUrl + "/api/users/" + userID + "/" + BasicStructure.sessionKey,
+                url: backendUrl + "/api/users/" + userID + "?session=" + BasicStructure.sessionKey,
                 dataType: "json",
-                // data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
+                data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
                 success: function (result: any) {
                     if (debug)
                         console.log(result);
@@ -219,6 +291,7 @@ class PostCommentBlock {
         }
 
     }
+
 
     /**
      * 
@@ -239,5 +312,9 @@ class PostCommentBlock {
             })
         }
 
+    }
+
+    public static refresh() {
+        this.init();
     }
 }

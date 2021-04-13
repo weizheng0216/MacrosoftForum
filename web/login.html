@@ -52,7 +52,7 @@
             $(document).ready(function () {
                 $.ajax({
                     type: "POST",
-                    url: backendUrl + "/api/auth",
+                    url: backendUrl + "/api/login",
                     dataType: "json",
                     data: JSON.stringify({ idToken: id_token }),
                     success: function (result) {

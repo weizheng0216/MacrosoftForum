@@ -24,11 +24,11 @@ class BasicStructure{
             $(".new-post-button").click(BasicStructure.showNewPostBlock);
             $(".my-profile-button").click(BasicStructure.showMyProfileBlock);
             $("#sign-out").click(BasicStructure.signOut)
-            BriefPostsList.refresh();
-
+            BriefPostsList.refresh();   
+            //PostCommentBlock.refresh();
             // initial new post block
             NewPostBlock.refresh();
-
+            PostCommentBlock.refresh();
             BasicStructure.isInit = true;
         }
     }

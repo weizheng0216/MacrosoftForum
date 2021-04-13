@@ -14,7 +14,7 @@ class MyProfileBlock {
                 console.log("\tsession key: " + BasicStructure.sessionKey);
             $.ajax({
                 type: "GET",
-                url: backendUrl + "/api/users/my/" + BasicStructure.sessionKey,
+                url: backendUrl + "/api/users/my?session=" + BasicStructure.sessionKey,
                 dataType: "json",
                 // data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
                 success: function (result: any) {
@@ -77,7 +77,7 @@ class MyProfileBlock {
         }
         $.ajax({
             type: "PUT",
-            url: backendUrl + "/api/posts/" + mID + "/" + BasicStructure.sessionKey,
+            url: backendUrl + "/api/posts/" + mID + "?session=" + BasicStructure.sessionKey,
             dataType: "json",
             data: JSON.stringify({
                 "title": newTitle, "content": newContent
@@ -101,7 +101,7 @@ class MyProfileBlock {
             console.log("delete post: " + mID);
         $.ajax({
             type: "DELETE",
-            url: backendUrl + "/api/posts/" + mID + "/" + BasicStructure.sessionKey,
+            url: backendUrl + "/api/posts/" + mID + "?session=" + BasicStructure.sessionKey,
             dataType: "json",
             success: function (result: any) {
                 if (debug)
@@ -129,7 +129,7 @@ class MyProfileBlock {
         }
         $.ajax({
             type: "PUT",
-            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID + "/" + BasicStructure.sessionKey,
+            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID + "?session=" + BasicStructure.sessionKey,
             dataType: "json",
             data: JSON.stringify({
                 "postID": mPID,
@@ -154,7 +154,7 @@ class MyProfileBlock {
             console.log("delete comment: " + mCID + " under post: " + mPID);
         $.ajax({
             type: "DELETE",
-            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID + "/" + BasicStructure.sessionKey,
+            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID + "?session=" + BasicStructure.sessionKey,
             dataType: "json",
             success: function (result: any) {
                 if (debug)

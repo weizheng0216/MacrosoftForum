@@ -54,6 +54,33 @@ describe("basic structure", function() {
 
 });
 
+describe("hover or not", function(){
+    /**
+     * this test is to ensure when user click the "like" button, the count of like will increase by 1.
+     *  In spec_runner.html, the current count of like is "0", so we expect "1" here.
+     */
+    // it("hover color", function(){
+    //     $("#my-up-vote-button1").click();
+    //     expect($("#my-up-vote-count1").text()).toEqual('1');
+    // });
+   
+    // it("hover or not", function(){
+        
+    //     $(".file-upload-button").click();
+
+    //     //expect the new post block is hidden
+    //     expect($('#image-title').attr("style").indexOf("display: none;")).toEqual(0);
+
+    //     //expect the first post's detail is hidden
+    //     expect($(".post-comment-view").attr("style").indexOf("display: none;")).toEqual(0);
+    // });
+
+    it("tracks that the spy was called", function() {
+        expect(NewPostBlock.AddLink()).toHaveBeenCalled();
+      });
+});
+
+
 describe("test like and dislike", function(){
     /**
      * this test is to ensure when user click the "like" button, the count of like will increase by 1.
@@ -99,5 +126,7 @@ describe("test close/open other user interface", function(){
         expect($(".other-user-profile-block").attr("style").indexOf("display: none;")).toEqual(0);
     });
 });
+
+
 
 

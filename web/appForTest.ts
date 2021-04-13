@@ -21,7 +21,6 @@ const debug = false;
 // Run some configuration code when the web page loads
 $(document).ready(function () {
     console.log("ready");
- 
     BasicStructure.init();
     
 });
