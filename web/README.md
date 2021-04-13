@@ -1,5 +1,9 @@
 # Web
 
+## Front-end Role
+- Phase 1: Wei Zheng
+- Phase 2: Weihang Guo
+
 ## Introduction 
 
 User can login using google account in login.html. After login, the user will be redirected to index.html.

@@ -37,7 +37,6 @@ node_modules/typescript/bin/tsc app.ts --strict --outFile $TARGETFOLDER/$WEBFOLD
 cat css/BasicStructure.css css/PostBrief.css css/PostCommentBlock.css css/NewPostBlock.css css/MyProfileBlock.css css/OtherProfileBlock.css> $TARGETFOLDER/$WEBFOLDERNAME/app.css
 cp login.css $TARGETFOLDER/$WEBFOLDERNAME
 
-
 # step 6: compile handlebars templates to the deploy folder
 node_modules/handlebars/bin/handlebars hb/NewPostBlock.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
 node_modules/handlebars/bin/handlebars hb/BriefPostsList.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js

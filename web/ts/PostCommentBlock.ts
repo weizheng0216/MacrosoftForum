@@ -5,6 +5,63 @@ class PostCommentBlock {
      * @param data 
      * NOTE: during testing, we do not need Handlebars to append div to html
      */
+
+    private static filedata = null;
+    private static filetype = null;
+
+    private static init() {
+        let postID = $(this).data("value");
+        let imageType=$('#imgType').val();
+        console.log("imageType", imageType);
+        if(imageType=="image/jpg" || imageType=="image/png")
+        {
+        $.ajax({
+            type: "GET",
+            url: backendUrl + "/api/posts/" + postID + "/file/" + BasicStructure.sessionKey,
+            dataType: "json",
+            success: function (result: any) {
+                console.log(result);
+                $('#img').attr("src","data:"+imageType+";base64,"+result);
+            } 
+        });
+        }
+    }
+
+
+    public static readFile(input) {
+        if (input.files && input.files[0]) {
+      
+          var reader = new FileReader();
+      
+        $('#insert-file-input').change(function() {
+            //$('#title').val(this.value ? this.value.match(/([\w-_]+)(?=\.)/)[0] : '');
+            $('#file-title').val(this.files && this.files.length ? this.files[0].name.split('.')[0] : '');
+          PostCommentBlock.filetype = this.files && this.files.length ? this.files[0].type.split('.')[0] : '';
+          
+          })
+
+         reader.readAsBinaryString(input.files[0]);
+        reader.onloadend = function(){
+            console.log(reader.result);
+            var encodedStr = btoa(reader.result);
+            //var img = $('#img');
+            //img.src = this.result;
+            $('#img-id').attr("src","data:"+PostCommentBlock.filedata+";base64,"+encodedStr);
+            PostCommentBlock.filedata = encodedStr;
+            console.log(encodedStr);
+            }
+            //reader.readAsDataURL(document.getElementById('file').files[0]);
+        } 
+      }
+
+    public static AddLink()
+    {
+        var strLink=$('#insert-link').val();
+        $('#id-link').attr('href',strLink);
+        $('#id-link').text(strLink);
+        $('#id-link').attr('target','_blank');
+    }
+    
     public static update(data: any) {
 
         if (!testing) {
@@ -22,6 +79,24 @@ class PostCommentBlock {
     private static addnewComment() {
         let postID = $(this).data("value");
         let newContent = $("#my-new-comment-content" + postID).val();
+        var newFileName = $("#file-title").val();
+        if(newFileName.length<=0){
+            newFileName=null;
+        }
+        var newFileType = PostCommentBlock.filetype;
+        if(newFileType.length<=0){
+            newFileType=null;
+        }
+        var newFileData = PostCommentBlock.filedata;
+        if(newFileData.length<=0){
+            newLink=null;
+        }
+        var newLink = $('#id-link').val();
+        if(newLink.length<=0){
+            newLink=null;
+        }
+        console.log(newFileName);
+        // link and file
         if (newContent === "") {
             alert("invalid input")
         } else {
@@ -31,7 +106,7 @@ class PostCommentBlock {
                 url: backendUrl + "/api/posts/" + postID + "/comments/" + BasicStructure.sessionKey,
                 dataType: "json",
                 data: JSON.stringify({
-                    "postID": postID, "content": newContent
+                    "postID": postID, "content": newContent, "links" : "["+newLink+"]", "fileName":newFileName, "fileType":newFileType, "fileData":newFileData
                 }),
                 success: function (result: any) {
                     console.log(result);
@@ -207,7 +282,7 @@ class PostCommentBlock {
                 type: "GET",
                 url: backendUrl + "/api/users/" + userID + "/" + BasicStructure.sessionKey,
                 dataType: "json",
-                // data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
+                data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
                 success: function (result: any) {
                     if (debug)
                         console.log(result);
@@ -219,6 +294,7 @@ class PostCommentBlock {
         }
 
     }
+
 
     /**
      * 
@@ -239,5 +315,9 @@ class PostCommentBlock {
             })
         }
 
+    }
+
+    public static refresh() {
+        this.init();
     }
 }
