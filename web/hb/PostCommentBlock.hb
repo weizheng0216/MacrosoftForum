@@ -22,8 +22,8 @@
                 </div>
                 <div class="lower-information">
 
-                    <button id="my-down-vote-button{{this.mPostID}}" class="dislike-button little-button my-down-vote-button my-vote-{{mUserDownVote}}"
-                        data-postid="{{this.mPostID}}" data-downvotestate="{{mUserDownVote}}">
+                    <button id="my-down-vote-button{{this.mPostID}}" class="dislike-button little-button my-down-vote-button my-vote-{{mDownVoteCount}}"
+                        data-postid="{{this.mPostID}}" data-downvotestate="{{mDownVoteCount}}">
                         <!-- leave down vote count of this post here -->
                         <span id="my-down-vote-count{{this.mPostID}}" class="glyphicon glyphicon-thumbs-down">{{this.mDownVote}}
 
@@ -36,8 +36,8 @@
                         </span>
                     </button>
 
-                    <button id="my-up-vote-button{{this.mPostID}}" class="like-button little-button my-up-vote-button my-vote-{{mUserUpVote}}" 
-                        data-postid="{{this.mPostID}}" data-upvotestate="{{mUserUpVote}}">
+                    <button id="my-up-vote-button{{this.mPostID}}" class="like-button little-button my-up-vote-button my-vote-{{mUpVoteCount}}" 
+                        data-postid="{{this.mPostID}}" data-upvotestate="{{mUpVoteCount}}">
                         <!-- leave up vote count of this post here -->
                         <span id="my-up-vote-count{{this.mPostID}}" class="glyphicon glyphicon-thumbs-up">{{this.mUpVote}}
                             
@@ -45,10 +45,10 @@
                         
                     </button>
 
-                    <button class="user-button little-button" data-value="{{this.mUserID}}">
+                    <button class="user-button little-button" data-value="{{this.mAuthor.mUserID}}">
                         <span class="glyphicon glyphicon-user"></span>
                         <!-- leave post's user here -->
-                        {{this.mUserFirstName}} {{this.mUserLastName}}
+                        {{this.mAuthor.mFirstName}} {{this.mAuthor.mLastName}}
                     </button>
 
                     <button class="date-button little-button">
@@ -71,10 +71,10 @@
 
                     <div class="lower-information">
 
-                        <button class="user-button little-button" data-value="{{this.mUserID}}">
+                        <button class="user-button little-button" data-value="{{this.mAuthor.mUserID}}">
                             <span class="glyphicon glyphicon-user"></span>
                             <!-- leave comment's user here -->
-                            {{this.mFirstName}} {{this.mLastName}}
+                            {{this.mAuthor.mFirstName}} {{this.mAuthor.mLastName}}
                         </button>
 
                         <button class="date-button little-button">
