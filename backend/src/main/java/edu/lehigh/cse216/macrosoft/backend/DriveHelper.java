@@ -73,7 +73,7 @@ class DriveHelper {
      * @param str64 Base64 encoded file data.
      * @return Whether the file is saved successfully.
      */
-    boolean saveFile(String fullpath, String str64) {
+    synchronized boolean saveFile(String fullpath, String str64) {
         try {
             // decode the file
             byte[] bytes = Base64.getDecoder().decode(str64);
@@ -97,7 +97,7 @@ class DriveHelper {
      * @param fullpath Unique identifier of the file.
      * @return Base64 encoded file data, or {@code null} if it does not exist.
      */
-    String getFile(String fullpath) {
+    synchronized String getFile(String fullpath) {
         try {
             FileList result = service.files().list()
                     .setQ("name='"+fullpath+"'")
