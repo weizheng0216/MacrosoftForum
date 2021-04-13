@@ -149,7 +149,7 @@ public class Database {
         // User table prepared statement
         mDeleteFileByPostID = mConnection.prepareStatement("update posts set filetype='', filedate='',filepath='',links='' where post_id=?;");
         mDeleteFileByCommentID = mConnection.prepareStatement("update comments set filetype='', filedate='',filepath='',links='' where comment_id=?;");
-        mSelectFileByPostID= mConnection.prepareStatement("select  from posts where post_id=? and filepath!='';");
+        mSelectFileByPostID= mConnection.prepareStatement("select filepath from posts where post_id=? and filepath!='';");
         mSelectFileByCommentID = mConnection.prepareStatement("select filepath from comments where comment_id=? and filepath!='';");
         mSelectFileUnderPostByEmail = mConnection.prepareStatement("select post_id, filepath, title, users.user_id, email from posts, users where users.email=? and filepath != '' and users.user_id=posts.user_id;");
         
@@ -175,7 +175,7 @@ public class Database {
         mSelectPostById = mConnection.prepareStatement("SELECT * FROM posts WHERE post_id=?");
         mUpdatePostById = mConnection.prepareStatement("UPDATE posts SET title=?, content=?, vote_up=?, vote_down=?, pinned=? WHERE post_id=?");
         mDeletePostById = mConnection.prepareStatement("DELETE FROM posts WHERE post_id=?");
-        mSelectPostWithFile = mConnection.prepareStatement("select post_id, filepath, last_name, first_name from posts, users where posts.user_id= users.user_id and filepath != '';");
+        mSelectPostWithFile = mConnection.prepareStatement("select post_id, filepath, last_name, first_name from posts, users where posts.user_id= users.user_id and filepath != '' order by date;");
         // Comments Table Prepared Statement
 
         // phase3: change the statement
@@ -187,7 +187,7 @@ public class Database {
         mSelectCommentsByPostId = mConnection.prepareStatement("SELECT * FROM comments WHERE post_id=?");
         mUpdateCommentById = mConnection.prepareStatement("UPDATE comments SET content=? WHERE comment_id=?");
         mDeleteCommentById = mConnection.prepareStatement("DELETE FROM comments WHERE comment_id=?");
-        mSelectCommentWithFile = mConnection.prepareStatement("select post_id,comment_id, filepath, last_name, first_name from comments, users where comments.user_id= users.user_id and filepath != '';");
+        mSelectCommentWithFile = mConnection.prepareStatement("select post_id,comment_id, filepath, last_name, first_name from comments, users where comments.user_id= users.user_id and filepath != '' order by date;");
         // Votes Table Prepared Statement
         mCreateVoteTable = mConnection.prepareStatement("CREATE TABLE votes ( user_id INTEGER, post_id INTEGER, vote_up BOOLEAN, vote_down BOOLEAN )");
         mDropVoteTable = mConnection.prepareStatement("DROP TABLE votes");

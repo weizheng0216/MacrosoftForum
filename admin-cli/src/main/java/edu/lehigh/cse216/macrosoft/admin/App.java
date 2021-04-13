@@ -23,6 +23,7 @@ import java.sql.ResultSetMetaData;
  */
  class App {
 
+    final static Boolean DEBUG = true;
     private static int getInputInt(int lower, int upper, String prompt) {
 		try {
 			System.out.print(prompt);
@@ -169,10 +170,11 @@ import java.sql.ResultSetMetaData;
         System.out.println("    Manage File Menu");
         System.out.println("    [1] Select all files under posts");
         System.out.println("    [2] Select all files under comments"); 
-        System.out.println("    [3] Select all files of a user");
-        System.out.println("    [4] Delete a file under posts"); 
-        System.out.println("    [5] Delete a file under comments");
-        System.out.println("    [6] Delete Least used file");
+        System.out.println("    [3] Select all files of a user\n");
+        System.out.println("    [4] Delete a file under POSTS "); 
+        System.out.println("    [5] Delete a file under COMMENTS");
+        System.out.println("    [6] Delete Least used file\n");
+        System.out.println("    [7] Find a file in Drive\n");
         System.out.println("    [0] Quit Table Session");
         System.out.println("*******************************");
     }
@@ -237,7 +239,6 @@ import java.sql.ResultSetMetaData;
        
         int operation = 0;
         while (true) {
-            GoogleDriveAPI.removeFile("");
             // User can enter the operation by number and make editions to the database
             System.out.println();
             main_menu();  
@@ -274,7 +275,7 @@ import java.sql.ResultSetMetaData;
                                 first_name = rs.getString("first_name");
                                 last_name = rs.getString("last_name");
                                 filepath = rs.getString("filepath");
-                                String[] parsePath = filepath.split("_",2);
+                                String[] parsePath = filepath.split("/",2);
                                 System.out.println("=====================");
                                 System.out.println(" -- Under Post ----");
                                 System.out.println("      ID: " + post_id);
@@ -312,7 +313,7 @@ import java.sql.ResultSetMetaData;
                                 first_name = rs.getString("first_name");
                                 last_name = rs.getString("last_name");
                                 filepath = rs.getString("filepath");
-                                String[] parsePath = filepath.split("_",3);
+                                String[] parsePath = filepath.split("/",3);
                                 System.out.println("=====================");
                                 System.out.println(" -- Under Post ----");
                                 System.out.println("      ID: " + post_id);
@@ -351,7 +352,7 @@ import java.sql.ResultSetMetaData;
                                         post_id = rs.getInt("post_id");
                                         content = rs.getString("title");
                                         filepath = rs.getString("filepath");
-                                        String[] parsePath = filepath.split("_",2);
+                                        String[] parsePath = filepath.split("/",2);
                                         System.out.println("=====================");
                                         System.out.println(" -- Under Post ----");
                                         System.out.println("      ID: " + post_id);
@@ -381,7 +382,7 @@ import java.sql.ResultSetMetaData;
                                         comment_id = rs.getInt("comment_id");
                                         content = rs.getString("content");
                                         filepath = rs.getString("filepath");
-                                        String[] parsePath = filepath.split("_",3);
+                                        String[] parsePath = filepath.split("/",3);
                                         System.out.println("=====================");
                                         System.out.println(" -- Under Comment -");
                                         System.out.println("      ID: " + comment_id);
@@ -421,6 +422,8 @@ import java.sql.ResultSetMetaData;
                                 database.DeleteFileByPostID(post_id);
                                 System.out.println("Delete the file successfully!");
                             }catch (SQLException e) {
+                                if(DEBUG)
+                                    System.out.println(e.getMessage());
                                 System.out.println("An error happened when deleting the file");
                             }
                             break;
@@ -444,9 +447,66 @@ import java.sql.ResultSetMetaData;
                             }
                             break;
                         case 6:
-                            System.out.println("quota is not full.");
+                            Double precentage = GoogleDriveAPI.printAbout();
+                            if(precentage < 0.9){
+                                System.out.println("Do not need to remove anything");
+                                System.out.println("Still want to remove? ");
+                                System.out.println("Press [y] to remove 4 least used posts and 4 least used comments file");
+                                System.out.println("\tPress anything else to return");
+                                System.out.print("Enter: ");
+                                String userInput = keyboard.nextLine();
+                                if(userInput.equals("y")){
+                                    try{
+                                        rs = database.SelectPostWithFile();
+                                        int count = 0;
+                                        System.out.println();
+                                        if(!rs.next())
+                                        {
+                                            System.out.println("\nThere is no file under posts.");
+                                        }else{
+                                            do{
+                                                post_id = rs.getInt("post_id");
+                                                filepath = rs.getString("filepath");
+                                                System.out.printf("Deleting \"%s\" under post %d\n", filepath, post_id);
+                                                GoogleDriveAPI.removeFile(filepath);
+                                                database.DeleteFileByPostID(post_id);
+                                                count++;
+                                            }while(rs.next() && count<4);
+                                        }
+
+                                        rs = database.SelectCommentWithFile();
+                                        count = 0;
+                                        System.out.println();
+                                        if(!rs.next())
+                                        {
+                                            System.out.println("\nThere is no file under all comments.");
+                                        }else{
+                                            do{
+                                                post_id = rs.getInt("post_id");
+                                                comment_id = rs.getInt("comment_id");
+                                                filepath = rs.getString("filepath");
+                                                System.out.printf("Deleting \"%s\" under post %d with comment id %d\n", filepath, post_id, comment_id);
+                                                GoogleDriveAPI.removeFile(filepath);
+                                                database.DeleteFileByCommentID(comment_id);
+                                                count++;
+                                            }while(rs.next() && count<4);
+                                        }
+                                    }catch (SQLException e) {
+                                        System.out.println("An error happened when deleting the file");
+
+                                    }
+         
+                                }else{
+                                    System.out.println("Return to previous interface");
+                                }
+                            }
                             //GoogleDriveAPI.printAbout();
 
+                            break;
+                        case 7:
+                            System.out.println("Enter the file name: ");
+                            String fileName = keyboard.nextLine();
+                            GoogleDriveAPI.findFile(fileName);
                             break;
                         default:
                             System.out.println("invlid input");
@@ -854,7 +914,7 @@ import java.sql.ResultSetMetaData;
                                 first_name = rs.getString("first_name");
                                 last_name = rs.getString("last_name");
                                 filepath = rs.getString("filepath");
-                                String[] parsePath = filepath.split("_",2);
+                                String[] parsePath = filepath.split("/",2);
                                 System.out.println("=====================");
                                 System.out.println(" -- Under Post ----");
                                 System.out.println("      ID: " + post_id);
@@ -1112,7 +1172,7 @@ import java.sql.ResultSetMetaData;
                                 first_name = rs.getString("first_name");
                                 last_name = rs.getString("last_name");
                                 filepath = rs.getString("filepath");
-                                String[] parsePath = filepath.split("_",3);
+                                String[] parsePath = filepath.split("/",3);
                                 System.out.println("=====================");
                                 System.out.println(" -- Under Post ----");
                                 System.out.println("      ID: " + post_id);
