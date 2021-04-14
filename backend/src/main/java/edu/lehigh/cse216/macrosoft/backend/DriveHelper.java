@@ -71,9 +71,11 @@ class DriveHelper {
      * Save a file to Google Drive.
      * @param fullpath Unique identifier of the file.
      * @param str64 Base64 encoded file data.
+     * @param filetype Type of the file to be uploaded.
      * @return Whether the file is saved successfully.
      */
-    synchronized boolean saveFile(String fullpath, String str64) {
+    synchronized boolean saveFile(String fullpath,
+                                  String str64, String filetype) {
         try {
             // decode the file
             byte[] bytes = Base64.getDecoder().decode(str64);
@@ -84,7 +86,7 @@ class DriveHelper {
             File fileMetadata = new File();
             fileMetadata.setName(fullpath);
             java.io.File filePath = new java.io.File("decode");
-            FileContent mediaContent = new FileContent("image/png", filePath);
+            FileContent mediaContent = new FileContent(filetype, filePath);
             service.files().create(fileMetadata, mediaContent).setFields("id").execute();
             return true;
         } catch (Exception exp) {
