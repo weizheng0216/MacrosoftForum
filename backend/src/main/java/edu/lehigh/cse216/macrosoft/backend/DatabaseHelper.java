@@ -288,7 +288,7 @@ class DatabaseHelper {
         db.insertComment(req.content, userIdInt, postIdInt, req.fileType,
                 req.fileName, linksSB.toString());
         // get the id of newly added comment
-        ResultSet rs = db.selectLatestPostId();
+        ResultSet rs = db.selectLatestCommentId();
         rs.next();
         int newIdInt = rs.getInt(1);
         String newId = Integer.toString(newIdInt);
