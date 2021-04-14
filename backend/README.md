@@ -470,7 +470,381 @@ Return codes:
 | 404 | *post_id* cannot be found |
 | 500+ | Unexpected server error |
 
+## Database
+A database generator is added to the project to manage the database members and
+operations. It is a separated program placed in `edu.lehigh.cse216.macrosoft.tool`
+package. It takes *Template.java* and *DatabaseDescription* as input, and
+produces *Database.java* as output. *DatabaseDescription* is a file that lists
+all database operations backend needs to perform.
+
 
 ## Integration Test
-The integration test of this phase is done manually, by using YARC(Yet
-Another REST Client).
+The integration test of this phase is done manually, by using YARC(Yet Another
+REST Client). All API endpoints are tested.
+
+To perform the tests, first make sure to have internet connection. Then run
+command `mvn package && mvn exec:java` under the backend directory to start
+the server locally with default configurations.
+
+A special session key `buzztester66-qwertyuioplkjhgfdsa` is used to authenticate
+during the test. The test user had `userId=66`. This key should be disabled after
+the tests are finished.
+
+### Missing Session Key Test
+Request:
+```
+GET http://localhost:4567/api/posts
+```
+Response(401):
+```json
+{
+  "mStatus": "error",
+  "mMessage": "Session key is missing or invalid"
+}
+```
+
+### Get All Posts Test
+Request:
+```
+GET http://localhost:4567/api/posts?session=buzztester66-qwertyuioplkjhgfdsa
+```
+Response(200):
+```
+{
+  "mStatus": "OK",
+  "mMessage": "",
+  "mData": [
+    {
+      "mPostID": 23,
+      "mTitle": "newest post",
+      "mContent": "Here is my comment",
+      "mAuthor": {
+        "mUserID": 66,
+        "mEmail": "test@lehigh.edu",
+        "mFirstName": "test_first",
+        "mLastName": "test_last"
+      },
+      "mDate": "2021-04-13 09:20:01.62778",
+      "mUpVoteCount": 0,
+      "mDownVoteCount": 0,
+      "mPinned": false,
+      "mFileInfo": {
+        "mType": "",
+        "mTime": "",
+        "mName": ""
+      },
+      "mLinks": [
+        ""
+      ],
+      "mComments": [],
+      "mUserUpVote": false,
+      "mUserDownVote": false
+    },
+    {
+      "mPostID": 22,
+      "mTitle": "newest post",
+      "mContent": "Here is my comment",
+      "mAuthor": {
+        "mUserID": 66,
+        "mEmail": "test@lehigh.edu",
+        "mFirstName": "test_first",
+        "mLastName": "test_last"
+      },
+      "mDate": "2021-04-13 09:12:08.854174",
+      "mUpVoteCount": 0,
+      "mDownVoteCount": 0,
+      "mPinned": false,
+      "mFileInfo": {
+        "mType": "",
+        "mTime": "",
+        "mName": ""
+      },
+      "mLinks": [
+        ""
+      ],
+      "mComments": [],
+      "mUserUpVote": false,
+      "mUserDownVote": false
+    },
+    .......
+    (this rest of this json file is omitted)
+```
+
+### Get My Profile Test
+Request:
+```
+GET http://localhost:4567/api/users/my?session=buzztester66-qwertyuioplkjhgfdsa
+```
+Response(200):
+```
+{
+  "mStatus": "OK",
+  "mMessage": "",
+  "mData": {
+    "mUser": {
+      "mUserID": 66,
+      "mEmail": "test@lehigh.edu",
+      "mFirstName": "test_first",
+      "mLastName": "test_last"
+    },
+    "mPosts": [
+      {
+        "mPostID": 20,
+        "mTitle": "my title",
+        "mContent": "Here is my comment",
+        "mAuthor": {
+          "mUserID": 66,
+          "mEmail": "test@lehigh.edu",
+          "mFirstName": "test_first",
+          "mLastName": "test_last"
+        },
+        "mDate": "2021-04-13 09:04:19.940533",
+        "mUpVoteCount": 0,
+        "mDownVoteCount": 0,
+        "mPinned": false,
+        "mFileInfo": {
+          "mType": "",
+          "mTime": "",
+          "mName": ""
+        },
+        "mLinks": [
+          ""
+        ],
+        "mComments": []
+      },
+      {
+        "mPostID": 23,
+        "mTitle": "newest post",
+        "mContent": "Here is my comment",
+        "mAuthor": {
+          "mUserID": 66,
+          "mEmail": "test@lehigh.edu",
+          "mFirstName": "test_first",
+          "mLastName": "test_last"
+        },
+        "mDate": "2021-04-13 09:20:01.62778",
+        ......
+        (the rest of this json file is omitted)
+```
+
+### GET Others' Profile Test
+Request:
+```
+GET http://localhost:4567/api/users/66?session=buzztester66-qwertyuioplkjhgfdsa
+```
+Response(200):
+```
+{
+  "mStatus": "OK",
+  "mMessage": "",
+  "mData": {
+    "mUser": {
+      "mUserID": 66,
+      "mEmail": "test@lehigh.edu",
+      "mFirstName": "test_first",
+      "mLastName": "test_last"
+    },
+    "mPosts": [
+      {
+        "mPostID": 20,
+        "mTitle": "my title",
+        "mContent": "Here is my comment",
+        "mAuthor": {
+          "mUserID": 66,
+          "mEmail": "test@lehigh.edu",
+          "mFirstName": "test_first",
+          "mLastName": "test_last"
+        },
+        "mDate": "2021-04-13 09:04:19.940533",
+        "mUpVoteCount": 0,
+        "mDownVoteCount": 0,
+        "mPinned": false,
+        "mFileInfo": {
+          "mType": "",
+          "mTime": "",
+          "mName": ""
+        },
+        "mLinks": [
+          ""
+        ],
+        "mComments": []
+      },
+      {
+        "mPostID": 23,
+        "mTitle": "newest post",
+        "mContent": "Here is my comment",
+        "mAuthor": {
+          "mUserID": 66,
+          "mEmail": "test@lehigh.edu",
+          "mFirstName": "test_first",
+          "mLastName": "test_last"
+        },
+        "mDate": "2021-04-13 09:20:01.62778",
+        ......
+        (the rest of this json file is omitted)
+```
+
+### New Post Test
+Request:
+```
+POST http://localhost:4567/api/posts?session=buzztester66-qwertyuioplkjhgfdsa
+```
+```json
+{
+  "title": "My Title",
+  "content": "And my post",
+  "links": [
+    "https://www.examples.com",
+    "https://www.lehigh.edu"
+  ],
+  "fileName": "red-dot.png",
+  "fileType": "image/png",
+  "fileData": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+}
+```
+Response(200):
+```json
+{
+  "mStatus": "OK",
+  "mMessage": ""
+}
+```
+
+### Download File From Post Test
+Request:
+```
+GET http://localhost:4567/api/posts/25/file?session=buzztester66-qwertyuioplkjhgfdsa
+```
+Response(200):
+```json
+{
+  "mStatus": "OK",
+  "mMessage": "",
+  "mData": {
+    "mData": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+  }
+}
+```
+
+### New Comment Test
+Request:
+```
+POST http://localhost:4567/api/posts/25/comments?session=buzztester66-qwertyuioplkjhgfdsa
+```
+```json
+{
+  "content": "This is a comment with file",
+  "links": [
+    "https://www.examples.com",
+    "https://www.lehigh.edu"
+  ],
+  "fileName": "red-dot.png",
+  "fileType": "image/png",
+  "fileData": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+}
+```
+Response(200):
+```json
+{
+  "mStatus": "OK",
+  "mMessage": ""
+}
+```
+
+### Download File From Comment Test
+Request:
+```
+GET http://localhost:4567/api/posts/25/comments/15/file?session=buzztester66-qwertyuioplkjhgfdsa
+```
+Response(200):
+```json
+{
+  "mStatus": "OK",
+  "mMessage": "",
+  "mData": {
+    "mData": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+  }
+}
+```
+
+### Update Post Test
+Request:
+```
+PUT http://localhost:4567/api/posts/25?session=buzztester66-qwertyuioplkjhgfdsa
+```
+```json
+{
+  "title": "Updated Post",
+  "content": "This is my update"
+}
+```
+Response(200):
+```json
+{
+  "mStatus": "OK",
+  "mMessage": ""
+}
+```
+
+### Update Comment Test
+Request:
+```
+PUT http://localhost:4567/api/posts/25/comments/15?session=buzztester66-qwertyuioplkjhgfdsa
+```
+```json
+{
+  "content": "This is my updated comment"
+}
+```
+Response(200):
+```json
+{
+  "mStatus": "OK",
+  "mMessage": ""
+}
+```
+
+### Update Vote Test
+Request:
+```
+PUT http://localhost:4567/api/posts/25/vote?session=buzztester66-qwertyuioplkjhgfdsa
+```
+```json
+{
+  "upVote": false,
+  "downVote": false
+}
+```
+Response(200):
+```json
+{
+  "mStatus": "OK",
+  "mMessage": ""
+}
+```
+
+### Delete Comment Test
+Request:
+```
+DELETE http://localhost:4567/api/posts/10/comments/13?session=buzztester66-qwertyuioplkjhgfdsa
+```
+Response(200):
+```json
+{
+  "mStatus": "OK",
+  "mMessage": ""
+}
+```
+
+### Delete Post Test
+Request:
+```
+DELETE http://localhost:4567/api/posts/21?session=buzztester66-qwertyuioplkjhgfdsa
+```
+Response(200):
+```json
+{
+  "mStatus": "OK",
+  "mMessage": ""
+}
+```
