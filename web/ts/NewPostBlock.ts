@@ -86,11 +86,11 @@ class NewPostBlock {
             newFileName=null;
         }
         var newFileType = NewPostBlock.imagetype;
-        if(newFileType.length<=0){
+        if(newFileType==null){
             newFileType=null;
         }
         var newFileData = NewPostBlock.strbase64;
-        if(newFileData.length<=0){
+        if(newFileData ==null){
             newFileData=null;
         }
         var newLink = $('#upload-link').val();
@@ -106,7 +106,9 @@ class NewPostBlock {
                 type: "POST",
                 url: backendUrl + "/api/posts?session=" + BasicStructure.sessionKey,
                 dataType: "json",
-                data: JSON.stringify({ "title": newTitle, "content": newContent, "links": "["+newLink+"]", "fileName":newFileName, "fileType":newFileType, "fileData":newFileData}),
+                data: JSON.stringify({ 
+                    "title": newTitle, "content": newContent, "links": "["+newLink+"]", "fileName":newFileName, "fileType":newFileType, "fileData":newFileData
+            }),
                 success: function (result: any) {
                     if (debug)
                         console.log(result);

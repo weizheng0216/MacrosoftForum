@@ -47,7 +47,9 @@ class PostCommentBlock {
             dataType: "json",
             success: function (result: any) {
                 console.log(result);
-                $('#img').attr("src","data:"+imageType+";base64,"+result.mData.mData);
+                if(result.mData.mData != undefined){
+                $('#pcbimg').attr("src","data:"+imageType+";base64,"+result.mData.mData);
+            }
             } 
         });
         }
@@ -83,11 +85,12 @@ class PostCommentBlock {
             newFileName=null;
         }
         var newFileType = PostCommentBlock.filetype;
-        if(newFileType.length<=0){
+        if (newFileType==null){
+        //if(newFileType.length<=0){
             newFileType=null;
         }
         var newFileData = PostCommentBlock.filedata;
-        if(newFileData.length<=0){
+        if(newFileData==null){
             newFileData=null;
         }
         var newLink = $('#id-link').text();
@@ -157,7 +160,7 @@ class PostCommentBlock {
                     url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
-                        "upvote": 0, "downvote": 0
+                        "upVote": false, "downVote": false
                     }),
                     success: function (result: any) {
                         if (debug)
@@ -185,7 +188,7 @@ class PostCommentBlock {
                     url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
-                        "upvote": 0, "downvote": 1
+                        "upVote": false, "downVote": true
                     }),
                     success: function (result: any) {
                         if (debug)
@@ -223,7 +226,7 @@ class PostCommentBlock {
                     url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
-                        "upvote": 0, "downvote": 0
+                        "upVote": false, "downVote": false
                     }),
                     success: function (result: any) {
                         if (debug)
@@ -255,7 +258,7 @@ class PostCommentBlock {
                     url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
                     dataType: "json",
                     data: JSON.stringify({
-                        "upvote": 1, "downvote": 0
+                        "upVote": true, "downVote": false
                     }),
                     success: function (result: any) {
                         if (debug)

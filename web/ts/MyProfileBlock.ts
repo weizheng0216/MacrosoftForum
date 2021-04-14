@@ -64,6 +64,7 @@ class MyProfileBlock {
             console.log("update post: " + mID);
         var newTitle = $("#post-title" + mID).val();
         var newContent = $("#post-content" + mID).val();
+        var newLink = "";
         if (debug)
             console.log("\tnew title: " + newTitle);
         if (debug)
@@ -80,7 +81,7 @@ class MyProfileBlock {
             url: backendUrl + "/api/posts/" + mID + "?session=" + BasicStructure.sessionKey,
             dataType: "json",
             data: JSON.stringify({
-                "title": newTitle, "content": newContent
+                "title": newTitle, "content": newContent, "links" : "["+newLink+"]"
             }),
             success: function (result: any) {
                 if (debug)
@@ -118,6 +119,7 @@ class MyProfileBlock {
     private static updateComment() {
         var mCID = $(this).data("value");
         var mPID = $(this).data("postid");
+        var mLINK = "";
         if (debug)
             console.log("update comment: " + mCID + " under post: " + mPID);
         var newContent = $("#comment-content" + mCID).val();
@@ -133,7 +135,8 @@ class MyProfileBlock {
             dataType: "json",
             data: JSON.stringify({
                 "postID": mPID,
-                "content": newContent
+                "content": newContent,
+                "links" : "["+mLINK+"]",
             }),
             success: function (result: any) {
                 if (debug)

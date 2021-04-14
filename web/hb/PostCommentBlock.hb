@@ -16,7 +16,7 @@
                 {{/each}}
                 <div class = "show-image" >
                     <input type="hidden" id = "imgType" value="{{this.mFileInfo.mType}}" /> 
-                    <img src ="" id = "img" />
+                    <img src ="" id = "pcbimg" style="width:100px;height:100px;" />
                 </div>
                 <div class="lower-information">
 
