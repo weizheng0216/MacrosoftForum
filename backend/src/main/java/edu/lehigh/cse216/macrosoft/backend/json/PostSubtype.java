@@ -1,0 +1,35 @@
+package edu.lehigh.cse216.macrosoft.backend.json;
+
+import java.util.ArrayList;
+
+public class PostSubtype {
+    public int mPostID;
+    public String mTitle;
+    public String mContent;
+    public UserSubtype mAuthor;
+    public String mDate;
+    public int mUpVoteCount;
+    public int mDownVoteCount;
+    public boolean mPinned;
+    public FileInfoSubtype mFileInfo;
+    public ArrayList<String> mLinks;
+    public ArrayList<CommentSubtype> mComments;
+
+    public PostSubtype(int mPostID, String mTitle, String mContent,
+                       UserSubtype mAuthor, String mDate, int mUpVoteCount,
+                       int mDownVoteCount, boolean mPinned,
+                       FileInfoSubtype mFileInfo, ArrayList<String> mLinks,
+                       ArrayList<CommentSubtype> mComments) {
+        this.mPostID = mPostID;
+        this.mTitle = mTitle;
+        this.mContent = mContent;
+        this.mAuthor = mAuthor;
+        this.mDate = mDate;
+        this.mUpVoteCount = mUpVoteCount;
+        this.mDownVoteCount = mDownVoteCount;
+        this.mPinned = mPinned;
+        this.mFileInfo = mFileInfo;
+        this.mLinks = mLinks;
+        this.mComments = mComments;
+    }
+}

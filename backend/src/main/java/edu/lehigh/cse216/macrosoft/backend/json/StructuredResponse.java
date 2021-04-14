@@ -1,4 +1,4 @@
-package edu.lehigh.cse216.macrosoft.backend;
+package edu.lehigh.cse216.macrosoft.backend.json;
 
 /**
  * StructuredResponse provides a common format for success and failure messages,
@@ -31,12 +31,24 @@ public class StructuredResponse {
      * 
      * @param status The status of the response, typically "ok" or "error"
      * @param message The message to go along with an error status
-     * @param object An object with additional data to send to the client
+     * @param data An object with additional data to send to the client
      */
     public StructuredResponse(String status, String message, Object data) {
         mStatus = (status != null) ? status : "invalid";
         mMessage = message;
         mData = data;
     }
+
+    public static StructuredResponse OK(Object payload) {
+        return new StructuredResponse("OK", "", payload);
+    }
+
+    public static StructuredResponse ERR(String msg) {
+        return new StructuredResponse("ERR", msg, null);
+    }
+
+    public final static StructuredResponse LOGIN_ERR =
+            new StructuredResponse("ERR",
+                    "Session key is missing or invalid", null);
 }
 
