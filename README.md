@@ -4,10 +4,11 @@
 ## Project Manager
 - Phase 1: Siyu(Coco) Chen
 - Phase 2: Haocheng Gao
+- Phase 3: Wei Zheng
 
 ## Introduction
 Buzz provide a platform for the company staffs to illustrate, view, comment,
-and vote their ideas through posts.  The administrator can also pin important
+and vote their ideas through posts. People are also able to include files in their posts and comments for better user interaction. The administrator can also pin important
 posts on the very top of the post list.
 
 ## User Guide
@@ -24,9 +25,9 @@ below.
 
 ### Making Post
 To add a new post, click the `New Post` button on the left top of the message
-list.  Then follow the UI displayed in the viewing area.  Other users will be
+list. Then follow the UI displayed in the viewing area. Other users will be
 able to view, comment, and vote on your post.  You can edit or delete the post
-you made anytime you want.
+you made anytime you want. 
 
 ### Voting
 First select the post by clicking on it within the message list.  Then simply
@@ -55,6 +56,10 @@ post text and comment text shown in the profile page are enclosed by textarea.
 Simply edit those text areas and hit `update` to edit existing text.  To delete
 anything, click the `delete` button.
 
+### Uploading Files
+Whenever you are making a post or comment, you now has the ability to upload a file from you local machine to better illustrate your idea. Simply use the `File` button, and select whatever file you need!
+
+
 ## Developer Guide
 Please refer to the following sections to view the details of the different
 component of this project.
@@ -72,6 +77,9 @@ accessible by the backend developer.
 
 - CLIENT\_ID: The OAuth client ID of our application to be used by Google verifier.
 - DATABASE\_URL: URL of our database on Heroku server for making database connection.
+- MEMCACHED_SERVERS: The server we use when making memcached connection.
+- MEMCACHED_USERNAME: The username of the memcached account
+- MEMCACHED\_PASSWORD: The password of the memcached account
 
 ### Google Developer Console
 The following settings on Google Developer Console has been changed.
