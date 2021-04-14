@@ -229,18 +229,21 @@ class BuzzServer {
                 return StructuredResponse.LOGIN_ERR;
             }
 
-            // read post request & store the post into db
+            // read post request
             PostRequest request = gson.fromJson(req.body(), PostRequest.class);
-            if (request == null) {
+            if (request == null || !request.validate()) {
                 res.status(400);
                 return StructuredResponse.ERR("Invalid request body.");
             }
+
+            // === OPERATIONS ===
             String postId = db.addPost(loginUserId, request);
 
             // try to save file into backend storage
-            if (request.fileData != null) {
+            if (request.fileData.length() != 0) {
                 String fullpath = toFullPath(request.fileName, postId);
-                boolean success = drive.saveFile(fullpath, request.fileData);
+                boolean success = drive.saveFile(
+                        fullpath, request.fileData, request.fileType);
                 if (!success) {
                     res.status(507);
                     return StructuredResponse.ERR(
@@ -266,12 +269,14 @@ class BuzzServer {
                 return StructuredResponse.LOGIN_ERR;
             }
 
-            // read comment request & save comment into db
+            // read comment request
             CommentRequest request = gson.fromJson(req.body(), CommentRequest.class);
-            if (request == null) {
+            if (request == null || !request.validate()) {
                 res.status(400);
                 return StructuredResponse.ERR("Invalid request body.");
             }
+
+            // === OPERATIONS ===
             String postId = req.params("post_id");
             String commentId = db.addComment(loginUserId, postId, request);
 
@@ -281,9 +286,10 @@ class BuzzServer {
             }
 
             // try to save file into backend storage
-            if (request.fileData != null) {
+            if (request.fileData.length() != 0) {
                 String fullpath = toFullPath(request.fileName, postId, commentId);
-                boolean success = drive.saveFile(fullpath, request.fileData);
+                boolean success = drive.saveFile(
+                        fullpath, request.fileData, request.fileType);
                 if (!success) {
                     res.status(507);
                     return StructuredResponse.ERR(
@@ -301,13 +307,14 @@ class BuzzServer {
         Spark.post("/api/login", (req, res) -> {
             res.type("application/json");
 
-            // read auth request & try access resource
+            // read auth request
             LoginRequest request = gson.fromJson(req.body(), LoginRequest.class);
-            if (request == null) {
+            if (request == null || !request.validate()) {
                 res.status(400);
                 return StructuredResponse.ERR("Invalid request body.");
             }
 
+            // === OPERATIONS ===
             GoogleIdToken.Payload payload = auth.accessResource(request.idToken);
             if (payload == null) {
                 res.status(401);
@@ -365,13 +372,14 @@ class BuzzServer {
                 return StructuredResponse.LOGIN_ERR;
             }
 
-            // read request & get author of the post
+            // read request
             PostRequest request = gson.fromJson(req.body(), PostRequest.class);
-            if (request == null) {
+            if (request == null || !request.validate()) {
                 res.status(400);
                 return StructuredResponse.ERR("Invalid request body.");
             }
 
+            // === OPERATIONS ===
             String postId = req.params("post_id");
             String authorId = db.queryPostAuthor(postId);
 
@@ -406,13 +414,14 @@ class BuzzServer {
                 return StructuredResponse.LOGIN_ERR;
             }
 
-            // read request & get author of the comment
+            // read request
             CommentRequest request = gson.fromJson(req.body(), CommentRequest.class);
-            if (request == null) {
+            if (request == null || !request.validate()) {
                 res.status(400);
                 return StructuredResponse.ERR("Invalid request body.");
             }
 
+            // === OPERATIONS ===
             String postId = req.params("post_id");
             String commentId = req.params("comment_id");
             String authorId = db.queryCommentAuthor(postId, commentId);
@@ -448,18 +457,14 @@ class BuzzServer {
                 return StructuredResponse.LOGIN_ERR;
             }
 
-            // read request & check request validity
+            // read request
             VoteRequest request = gson.fromJson(req.body(), VoteRequest.class);
-            if (request == null) {
+            if (request == null || !request.validate()) {
                 res.status(400);
                 return StructuredResponse.ERR("Invalid request body.");
             }
 
-            if (request.upVote && request.downVote) {
-                res.status(400);
-                return StructuredResponse.ERR("Can only have 1 upvote at most.");
-            }
-
+            // === OPERATIONS ===
             // check if the target post exists
             String postId = req.params("post_id");
             String authorId = db.queryPostAuthor(postId);

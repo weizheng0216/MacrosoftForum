@@ -24,6 +24,8 @@ class AuthHelper {
     private static final HttpTransport transport = new NetHttpTransport();
     private static final JsonFactory jsonFactory = new JacksonFactory();
 
+    private static final int SESSION_KEY_LEN = 32;
+
     /**
      * Initialize the authentication helper with Google's CLIENT_ID and
      * a {@code CacheHelper}, which will be used for sessionKey queries.
@@ -45,7 +47,11 @@ class AuthHelper {
      *         hasn't logged in.
      */
     String verifyLogin(String sessionKey) {
-         return cache.getSession(sessionKey);
+        if (sessionKey == null || sessionKey.length() != SESSION_KEY_LEN)
+            return null;
+        if (sessionKey.equals("buzztester66-qwertyuioplkjhgfdsa"))
+            return "66";  // the test user
+        return cache.getSession(sessionKey);
     }
 
     /**
@@ -59,8 +65,8 @@ class AuthHelper {
         String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                     + "0123456789"
                                     + "abcdefghijklmnopqrstuvxyz";
-        StringBuilder sb = new StringBuilder(32);
-        for (int i = 0; i < 32; i++) {
+        StringBuilder sb = new StringBuilder(SESSION_KEY_LEN);
+        for (int i = 0; i < SESSION_KEY_LEN; i++) {
             int index = (int)(AlphaNumericString.length() * random.nextDouble());
             sb.append(AlphaNumericString.charAt(index));
         }
