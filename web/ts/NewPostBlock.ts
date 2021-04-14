@@ -49,13 +49,12 @@ class NewPostBlock {
         if (input.files && input.files[0]) {
       
           var reader = new FileReader();
-      
-        $('#file-upload-input').change(function() {
+
             //$('#title').val(this.value ? this.value.match(/([\w-_]+)(?=\.)/)[0] : '');
-            $('#image-title').val(this.files && this.files.length ? this.files[0].name.split('.')[0] : '');
-          NewPostBlock.imagetype = this.files && this.files.length ? this.files[0].type.split('.')[0] : '';
+        $('#image-title').val(input.files && input.files.length ? input.files[0].name.split('.')[0] : '');
+          NewPostBlock.imagetype = input.files && input.files.length ? input.files[0].type.split('.')[0] : '';
           
-          })
+       
 
          reader.readAsBinaryString(input.files[0]);
         reader.onloadend = function(){

@@ -23,7 +23,7 @@
                     <button id="my-down-vote-button{{this.mPostID}}" class="dislike-button little-button my-down-vote-button my-vote-{{this.mDownVoteCount}}"
                         data-postid="{{this.mPostID}}" data-downvotestate="{{this.mUserDownVote}}">
                         <!-- leave down vote count of this post here -->
-                        <span id="my-down-vote-count{{this.mPostID}}" class="glyphicon glyphicon-thumbs-down">{{this.mDownVote}}
+                        <span id="my-down-vote-count{{this.mPostID}}" class="glyphicon glyphicon-thumbs-down">{{this.mDownVoteCount}}
 
                         </span>    
                     </button>
@@ -37,7 +37,7 @@
                     <button id="my-up-vote-button{{this.mPostID}}" class="like-button little-button my-up-vote-button my-vote-{{this.mUpVoteCount}}" 
                         data-postid="{{this.mPostID}}" data-upvotestate="{{this.mUserUpVote}}">
                         <!-- leave up vote count of this post here -->
-                        <span id="my-up-vote-count{{this.mPostID}}" class="glyphicon glyphicon-thumbs-up">{{this.mUpVote}}
+                        <span id="my-up-vote-count{{this.mPostID}}" class="glyphicon glyphicon-thumbs-up">{{this.mUpVoteCount}}
                             
                         </span>
                         
