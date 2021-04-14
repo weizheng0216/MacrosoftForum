@@ -37,7 +37,7 @@ for improving the comprehensiveness of the design or for adapting phase3 require
 - [DELETE /api/posts/:post_id/comments/:comment_id](#markdown-header-delete-apipostspost_idcommentscomment_id)
 - [DELETE /api/posts/:post_id](#markdown-header-delete-apipostspost_id)
 
-All APIs listed above, except `POST /api/auth`, which is explicitly used for
+All APIs listed above, except `POST /api/login`, which is explicitly used for
 authentication, require a **session key** in the URL query: `?session=[session_key]`.
 If the session key is missing, or if the session key is not valid or has expired,
 the server will respond with an authentication error with code `401`.
