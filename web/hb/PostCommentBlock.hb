@@ -11,13 +11,11 @@
                     <!-- leave comment's content here -->
                     {{this.mContent}}
                 </div>
-                <div>
-                    {{#each this.mLinks}}
-                    <a id="postLink" href= "{{this}}" target="_blank" value="{{this}}" />
-                     {{/each}}
-                </div>
+                {{#each this.mLinks}}
+                <a href= "{{this}}" target="_blank" value="{{this}}" >{{this}}</a>
+                {{/each}}
                 <div class = "show-image" >
-                    <input type="hidden" id = "imgType" value="{{this.mFileInfo.mType}}"> 
+                    <input type="hidden" id = "imgType" value="{{this.mFileInfo.mType}}" /> 
                     <img src ="" id = "img" />
                 </div>
                 <div class="lower-information">

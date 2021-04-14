@@ -35,8 +35,8 @@ class PostCommentBlock {
         } 
       }  
       
-    public static showImage() {
-        let postID = $(this).data("value");
+    public static showImage(postID) {
+        //let postID = $(this).data("value");
         let imageType=$('#imgType').val();
         console.log("imageType", imageType);
         if(imageType=="image/jpg" || imageType=="image/png")
@@ -47,7 +47,7 @@ class PostCommentBlock {
             dataType: "json",
             success: function (result: any) {
                 console.log(result);
-                $('#img').attr("src","data:"+imageType+";base64,"+result);
+                $('#img').attr("src","data:"+imageType+";base64,"+result.mData.mData);
             } 
         });
         }

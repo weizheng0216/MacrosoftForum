@@ -97,7 +97,7 @@ class BriefPostsList {
         // get the specific post comment block by post id because each post comment block 
             // has a data-value={{postid}} attribute, which is unique. 
         $(".post-comment-view[data-value='"+postID+"']").show();
-        PostCommentBlock.showImage();
+        PostCommentBlock.showImage(postID);
     }
 
 }
