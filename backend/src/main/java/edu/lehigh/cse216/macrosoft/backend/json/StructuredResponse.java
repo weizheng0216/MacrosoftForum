@@ -48,7 +48,7 @@ public class StructuredResponse {
     }
 
     public final static StructuredResponse LOGIN_ERR =
-            new StructuredResponse("error",
+            new StructuredResponse("ERR",
                     "Session key is missing or invalid", null);
 }
 
