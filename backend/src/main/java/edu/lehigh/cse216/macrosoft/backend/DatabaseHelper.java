@@ -196,9 +196,9 @@ class DatabaseHelper {
         int postIdInt = Integer.parseInt(postId);
         ResultSet voteRs = db.selectVoteByIds(userIdInt, postIdInt);
         if (voteRs.next()) {  // there is an existing vote, update
-            db.updateVoteByIds(req.upVote, req.downVote, userIdInt, postIdInt);
+            db.updateVoteByIds(req.upVote(), req.downVote(), userIdInt, postIdInt);
         } else {  // user hasn't made any vote, create new
-            db.insertVote(userIdInt, postIdInt, req.upVote, req.downVote);
+            db.insertVote(userIdInt, postIdInt, req.upVote(), req.downVote());
         }
         voteRs.close();
         // update vote count under table *posts*
