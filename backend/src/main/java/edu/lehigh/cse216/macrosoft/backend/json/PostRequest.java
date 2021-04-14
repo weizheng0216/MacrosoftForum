@@ -11,13 +11,14 @@ public class PostRequest implements ValidateFormat {
     public String fileData;
 
     public boolean validate() {
+        if (title == null) title = "";
+        if (content == null) content = "";
         if (fileName == null) fileName = "";
         if (fileType == null) fileType = "";
         if (fileData == null) fileData = "";
         if (links == null) links = new ArrayList<>();
-        for (String s : links) {
-            if (s == null) return false;
-        }
-        return title != null && content != null;
+        for (int i = links.size()-1; i >= 0; i--)
+            if (links.get(i) == null) links.remove(i);
+        return true;
     }
 }
