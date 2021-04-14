@@ -4,13 +4,13 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class TestUserInfoPayload extends TestCase {
-    public TestUserInfoPayload(String testName) {
+public class UserInfoPayloadTest extends TestCase {
+    public UserInfoPayloadTest(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestUserInfoPayload.class);
+        return new TestSuite(UserInfoPayloadTest.class);
     }
 
     public void testConstructor() {

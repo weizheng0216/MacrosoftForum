@@ -6,13 +6,13 @@ import junit.framework.TestSuite;
 
 import java.util.ArrayList;
 
-public class TestCommentSubtype extends TestCase {
-    public TestCommentSubtype(String testName) {
+public class CommentSubtypeTest extends TestCase {
+    public CommentSubtypeTest(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestCommentSubtype.class);
+        return new TestSuite(CommentSubtypeTest.class);
     }
 
     public void testConstructor() {

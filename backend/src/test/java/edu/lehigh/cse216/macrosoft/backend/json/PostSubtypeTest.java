@@ -5,13 +5,13 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class TestPostSubtype  extends TestCase {
-    public TestPostSubtype(String testName) {
+public class PostSubtypeTest extends TestCase {
+    public PostSubtypeTest(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestPostSubtype.class);
+        return new TestSuite(PostSubtypeTest.class);
     }
 
     public void testConstructor() {

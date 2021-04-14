@@ -4,13 +4,13 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class TestFileInfoSubtype  extends TestCase {
-    public TestFileInfoSubtype(String testName) {
+public class FileInfoSubtypeTest extends TestCase {
+    public FileInfoSubtypeTest(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestFileInfoSubtype.class);
+        return new TestSuite(FileInfoSubtypeTest.class);
     }
 
     public void testConstructor() {

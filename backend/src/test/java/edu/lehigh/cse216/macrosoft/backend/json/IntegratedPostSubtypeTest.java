@@ -5,13 +5,13 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class TestIntegratedPostSubtype  extends TestCase {
-    public TestIntegratedPostSubtype(String testName) {
+public class IntegratedPostSubtypeTest extends TestCase {
+    public IntegratedPostSubtypeTest(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestIntegratedPostSubtype.class);
+        return new TestSuite(IntegratedPostSubtypeTest.class);
     }
 
     public void testConstructor() {
