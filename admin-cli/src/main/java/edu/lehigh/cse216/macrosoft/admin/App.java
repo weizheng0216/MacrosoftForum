@@ -121,9 +121,9 @@ import java.sql.ResultSetMetaData;
     private static Database database;
     
     public static void main(String[] argv) {
-        String dbURL = "postgres://vdtksuqjtzvetb:b7ccb5e707b07d8c8bfdf7" +
-        "badbae2048282884d6b2e8ad336a71ff5833b2abc3@ec2-52-22-16" +
-        "1-59.compute-1.amazonaws.com:5432/d9m8d6ulhh2bbk";
+        String dbURL = "postgres://hsboyipdotuvbt:9264e3e65701e062de5eb51" +
+                "da407e8c4d088c70aace88592223c13e25000f04c@ec2-18-206-20-" +
+                "102.compute-1.amazonaws.com:5432/ddcf3pkiimukje";
     
         // Get URL from command line
        if (argv.length >= 1) {
