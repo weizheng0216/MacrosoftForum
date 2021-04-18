@@ -230,7 +230,7 @@ class BuzzServer {
             }
 
             // read post request
-            PostRequest request = gson.fromJson(req.body(), PostRequest.class);
+            PostRequest request = readRequestJson(req.body(), PostRequest.class);
             if (request == null || !request.validate()) {
                 res.status(400);
                 return StructuredResponse.ERR("Invalid request body.");
@@ -270,7 +270,7 @@ class BuzzServer {
             }
 
             // read comment request
-            CommentRequest request = gson.fromJson(req.body(), CommentRequest.class);
+            CommentRequest request = readRequestJson(req.body(), CommentRequest.class);
             if (request == null || !request.validate()) {
                 res.status(400);
                 return StructuredResponse.ERR("Invalid request body.");
@@ -308,7 +308,7 @@ class BuzzServer {
             res.type("application/json");
 
             // read auth request
-            LoginRequest request = gson.fromJson(req.body(), LoginRequest.class);
+            LoginRequest request = readRequestJson(req.body(), LoginRequest.class);
             if (request == null || !request.validate()) {
                 res.status(400);
                 return StructuredResponse.ERR("Invalid request body.");
@@ -373,7 +373,7 @@ class BuzzServer {
             }
 
             // read request
-            PostRequest request = gson.fromJson(req.body(), PostRequest.class);
+            PostRequest request = readRequestJson(req.body(), PostRequest.class);
             if (request == null || !request.validate()) {
                 res.status(400);
                 return StructuredResponse.ERR("Invalid request body.");
@@ -415,7 +415,7 @@ class BuzzServer {
             }
 
             // read request
-            CommentRequest request = gson.fromJson(req.body(), CommentRequest.class);
+            CommentRequest request = readRequestJson(req.body(), CommentRequest.class);
             if (request == null || !request.validate()) {
                 res.status(400);
                 return StructuredResponse.ERR("Invalid request body.");
@@ -458,7 +458,7 @@ class BuzzServer {
             }
 
             // read request
-            VoteRequest request = gson.fromJson(req.body(), VoteRequest.class);
+            VoteRequest request = readRequestJson(req.body(), VoteRequest.class);
             if (request == null || !request.validate()) {
                 res.status(400);
                 return StructuredResponse.ERR("Invalid request body.");
@@ -570,5 +570,14 @@ class BuzzServer {
             res.status(200);
             return StructuredResponse.OK(null);
         }, gson::toJson);
+    }
+
+    // Prevent 500 error caused by invalid front-end requests
+    private static <T> T readRequestJson(String json, Class<T> type) {
+        try {
+            return gson.fromJson(json, type);
+        } catch (Exception exp) {
+            return null;
+        }
     }
 }
