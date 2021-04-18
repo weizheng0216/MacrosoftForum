@@ -416,13 +416,13 @@ Return codes:
 Submit a vote request through this API when the front-end user changes her
 vote status on a particular post. The front-end needs to provide the post on
 which the user wishes to make the update in URL and the vote status in the
-request body. In this context, `0` means `false`, and `1` means `true`.
+request body.
 
 Example request:
 ```json
 {
-  "upVote": 0,
-  "downVote": 1
+  "upVote": false,
+  "downVote": true
 }
 ```
 There is no response payload for this request.
@@ -811,8 +811,8 @@ PUT http://localhost:4567/api/posts/25/vote?session=buzztester66-qwertyuioplkjhg
 ```
 ```json
 {
-  "upVote": 0,
-  "downVote": 1
+  "upVote": false,
+  "downVote": true
 }
 ```
 Response(200):
