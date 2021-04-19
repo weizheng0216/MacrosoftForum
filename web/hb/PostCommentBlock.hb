@@ -16,7 +16,7 @@
                 {{/each}}
                 <div class = "show-image" >
                     <input type="hidden" id = "imgType" value="{{this.mFileInfo.mType}}" /> 
-                    <img src ="" id = "pcbimg" style="width:100px;height:100px;" />
+                    <img src ="#" id = "pcbimg" visibility = "visible" style="width:100px;height:100px;" />
                 </div>
                 <div class="lower-information">
 
@@ -92,26 +92,26 @@
                 Send!
             </button>
 
-            <button class= "insert-file"
-                onclick="$('.insert-file-input').trigger( 'click')">
-                <span class = "glyphicon glyphicon-file"></span>
-                File
-            </button>
-            <input class="insert-file-input" id = "insert-file-input" type='file' onchange="PostCommentBlock.readFile(this);" accept="image/*, application/pdf" />
-            <input class = "file-title" id = "file-title" />
-            <img src ="" id = "img-id" />
-     
+        </div>    
 
-            <div class = "link"> 
-                <textarea class="insert-link" id="insert-link" placeholder="Link"></textarea>
+        <div class="link">
 
-                <button class = "link-insert" id = "link-insert" onclick="PostCommentBlock.AddLink();">
+            <button class = "link-insert" id = "link-insert" onclick="PostCommentBlock.AddLink();">
                     <span class = "glyphicon glyphicon-link"> </span>
                     Link
-                </button>
+            </button> 
+            <textarea class="insert-link" id="insert-link" placeholder="Link"></textarea>
             <a href = "" id = "id-link"> </a>
-            </div>
-
         </div>
+
+         <div class = "file"> 
+            <input class="insert-file-input" id = "insert-file-input" type='file' onchange="PostCommentBlock.readFile(this);" accept="image/*, application/pdf" />   
+            <input class = "file-title" id = "file-title" placeholder="File Name" type="hidden" />
+           
+        </div>
+
+            <img src ="" id = "img-id" />
+        
+        
     </div>
 {{/each}}

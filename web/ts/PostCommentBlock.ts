@@ -50,9 +50,16 @@ class PostCommentBlock {
                 if(result.mData.mData != undefined){
                 $('#pcbimg').attr("src","data:"+imageType+";base64,"+result.mData.mData);
             }
+            // else{
+            if($('#pcbimg').src == "#"){
+                $('#pcbimg').style.visibility = 'hidden';
+            } 
+            // 
+            // }
             } 
         });
         }
+        
     }
 
     public static AddLink()
@@ -107,6 +114,7 @@ class PostCommentBlock {
                 type: "POST",
                 url: backendUrl + "/api/posts/" + postID + "/comments?session=" + BasicStructure.sessionKey,
                 dataType: "json",
+                contentType: "application/json",
                 data: JSON.stringify({
                     "postID": postID, "content": newContent, "links" : "["+newLink+"]", "fileName":newFileName, "fileType":newFileType, "fileData":newFileData
                 }),
@@ -159,6 +167,7 @@ class PostCommentBlock {
                     type: "PUT",
                     url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
                     dataType: "json",
+                    contentType: "application/json",
                     data: JSON.stringify({
                         "upVote": 0, "downVote": 0
                     }),
@@ -187,6 +196,7 @@ class PostCommentBlock {
                     type: "PUT",
                     url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
                     dataType: "json",
+                    contentType: "application/json",
                     data: JSON.stringify({
                         "upVote": 0, "downVote": 1
                     }),
@@ -225,6 +235,7 @@ class PostCommentBlock {
                     type: "PUT",
                     url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
                     dataType: "json",
+                    contentType: "application/json",
                     data: JSON.stringify({
                         "upVote": 0, "downVote": 0
                     }),
@@ -257,6 +268,7 @@ class PostCommentBlock {
                     type: "PUT",
                     url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
                     dataType: "json",
+                    contentType: "application/json",
                     data: JSON.stringify({
                         "upVote": 1, "downVote": 0
                     }),

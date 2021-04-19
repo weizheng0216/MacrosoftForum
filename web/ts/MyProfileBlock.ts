@@ -80,8 +80,9 @@ class MyProfileBlock {
             type: "PUT",
             url: backendUrl + "/api/posts/" + mID + "?session=" + BasicStructure.sessionKey,
             dataType: "json",
+            contentType: "application/json",
             data: JSON.stringify({
-                "title": newTitle, "content": newContent, "links" : "["+newLink+"]"
+                "title": newTitle, "content": newContent, "links" : [newLink]
             }),
             success: function (result: any) {
                 if (debug)
@@ -133,10 +134,11 @@ class MyProfileBlock {
             type: "PUT",
             url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID + "?session=" + BasicStructure.sessionKey,
             dataType: "json",
+            contentType: "application/json",
             data: JSON.stringify({
                 "postID": mPID,
                 "content": newContent,
-                "links" : "["+mLINK+"]",
+                "links" : [mLINK],
             }),
             success: function (result: any) {
                 if (debug)

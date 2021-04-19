@@ -92,10 +92,14 @@ class NewPostBlock {
         if(newFileData ==null){
             newFileData=null;
         }
+
+        //var links[];
+
         var newLink = $('#upload-link').val();
         if(newLink.length<=0){
             newLink=null;
         }
+
         console.log(newFileName);
         if (newTitle === "" || newContent === "") {
             alert("invalid input");
@@ -105,8 +109,9 @@ class NewPostBlock {
                 type: "POST",
                 url: backendUrl + "/api/posts?session=" + BasicStructure.sessionKey,
                 dataType: "json",
+                contentType: "application/json",
                 data: JSON.stringify({ 
-                    "title": newTitle, "content": newContent, "links": "["+newLink+"]", "fileName":newFileName, "fileType":newFileType, "fileData":newFileData
+                    "title": newTitle, "content": newContent, "links": [newLink], "fileName":newFileName, "fileType":newFileType, "fileData":newFileData
             }),
                 success: function (result: any) {
                     if (debug)
