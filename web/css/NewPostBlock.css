@@ -74,11 +74,10 @@
 
 .new-post-block  .file-upload-button{
     position: relative;
-    top: 24%;
-    left: 10%;
-    width: 40%;
     height: 40px;
-
+    top: 24%;
+    left: 12%;
+    width: 25%;
     border: 3px solid #8C0303;
     border-radius: 15px;
     box-shadow:8px 8px 0px #a12424;
@@ -91,21 +90,11 @@
     box-shadow:3px 3px 0px #a12424;
 }
 
-  
-.new-post-block .file-upload-input {
+.new-post-block .link-upload{
     position: relative;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    outline: none;
-    opacity: 0;
-    cursor: pointer;
-  }
-  .new-post-bloc .link-upload{
-    position: relative;
-    width: 40%;
-    height: 40px;
+    top: 24%;
+    left: 12%;
+    width: 25%;
 
     border: 3px solid #8C0303;
     border-radius: 15px;
@@ -119,19 +108,12 @@
     box-shadow:3px 3px 0px #a12424;
 }
 
-  .new-post-block .img {
-    max-height: 700px;
-    max-width: 700px;
-    margin: auto;
-    padding: 20px;
-  } */
-  
 .new-post-block .send-post{
 
     position: relative;
-    top:27%;
-    left: 10%;
-    width: 40%;
+    top: 24%;
+    left: 12%;
+    width: 25%;
     height: 40px;
 
     border: 3px solid #8C0303;
@@ -146,5 +128,45 @@
     background-color: #F2AA80;
     box-shadow:3px 3px 0px #a12424;
 }
+  
+.new-post-block .file-upload-input {
+    position: relative;
+    top: 24%;
+    left: 10%;
+    width: 10%;
+    height: 5px;
+    outline: none;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .new-post-block .inputs .image-title{
+    top: 27%;
+    left: 10%;
+    height:40px;
+    border: 3px solid #8C0303;
+    border-radius: 7px;
+    box-shadow:8px 8px 0px #a12424;
+  }
+  .new-post-block .upload-link{
+    top: 27%;
+    left: 10%;
+    width:30%;
+    height:40px;
+    border: 3px solid #8C0303;
+    border-radius: 7px;
+    box-shadow:8px 8px 0px #a12424;
+  }
+
+  .new-post-block .img {
+    max-height: 400px;
+    max-width: 700px;
+    border: 3px solid #8C0303;
+    border-radius: 15px;
+    box-shadow: 8px 8px 0px #a12424;
+    margin: auto;
+    padding: 20px;
+  } 
+  
+
 
 

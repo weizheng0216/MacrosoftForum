@@ -10,31 +10,36 @@
     </div>
 
     <div class = "file-upload">
-        <button class = "file-upload-button" id = "file-upload-button"
+
+        <div class = "buttons">
+            <button class = "file-upload-button" id = "file-upload-button"
         onclick="$('.file-upload-input').trigger( 'click')">
-	        <span class = "glyphicon glyphicon-upload"> </span>
-            Add File
-        </button>
-
-        <input class="file-upload-input" id = "file-upload-input" type='file' onchange="NewPostBlock.readURL(this);" accept="image/*, application/pdf" />
-        <input id = "image-title" />
-        <img src ="" id = "img" />
-     
-    
-
-        <div class = "link"> 
-            <textarea class="upload-link" id="upload-link" placeholder="write your link here"></textarea>
-
-            <button class = "link-upload" id = "link-upload" onclick="NewPostBlock.AddLink();"
+	            <span class = "glyphicon glyphicon-upload"> </span>
+                Add File
+            </button>
+        
+            <button class = "link-upload" id = "link-upload" onclick="NewPostBlock.AddLink();">
                 <span class = "glyphicon glyphicon-link"> </span>
                 Add Link
             </button>
+
+            <button class="send-post" id="my-send-new-post-button">
+                <span class="glyphicon glyphicon-send"></span>
+                Send Post
+            </button>
+        </div>
+        
+        <input class="file-upload-input" id = "file-upload-input" type='file' onchange="NewPostBlock.readURL(this);" accept="image/*, application/pdf" />
+        
+        <div class = "inputs">
+            <input id = "image-title" placeholder="File Name"/>
+            <textarea class="upload-link" id="upload-link" placeholder="write your link here"></textarea>
             <a href = "" id = "link-id"> </a>
         </div>
 
-        <button class="send-post" id="my-send-new-post-button">
-            <span class="glyphicon glyphicon-send"></span>
-            send
-        </button>
+        <img src ="" id = "img" />
+
+        
     </div>
+
 </div>

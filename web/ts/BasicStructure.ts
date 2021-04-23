@@ -28,7 +28,7 @@ class BasicStructure{
             //PostCommentBlock.refresh();
             // initial new post block
             NewPostBlock.refresh();
-            PostCommentBlock.refresh();
+            //PostCommentBlock.refresh();
             BasicStructure.isInit = true;
         }
     }

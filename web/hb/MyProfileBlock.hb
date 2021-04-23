@@ -1,11 +1,11 @@
 {{#with mData}}
 <div class="my-user-profile-block">
     <h4 style="margin-top: 30px;">First Name:</h4>
-    <p>{{this.mFirstName}}</p>
+    <p>{{this.mUser.mFirstName}}</p>
     <h4>Last Name:</h4>
-    <p>{{this.mLastName}}</p>
+    <p>{{this.mUser.mLastName}}</p>
     <h4>E-mail:</h4>
-    <p>{{this.mEmail}}</p>
+    <p>{{this.mUser.mEmail}}</p>
 
     {{#each this.mPosts}}
         <h4>Post: </h4>

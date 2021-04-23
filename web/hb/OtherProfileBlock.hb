@@ -4,11 +4,11 @@
 
     <div class="user-information">
         <h4>First Name:</h3>
-        <p>{{this.mFirstName}}</p>
+        <p>{{this.mUser.mFirstName}}</p>
         <h4>Last Name:</h3>
-        <p>{{this.mLastName}}</p>
+        <p>{{this.mUser.mLastName}}</p>
         <h4>E-mail:</h3>
-        <p>{{this.mEmail}}</p>
+        <p>{{this.mUser.mEmail}}</p>
         
         {{#each this.mPosts}}
             <h4>Post: </h4>

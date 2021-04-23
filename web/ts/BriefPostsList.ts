@@ -31,7 +31,7 @@ class BriefPostsList {
                 }
                 $.ajax({
                     type: "GET",
-                    url: backendUrl + "/api/posts/"+ BasicStructure.sessionKey,
+                    url: backendUrl + "/api/posts?session="+ BasicStructure.sessionKey,
                     dataType: "json",
                     success: function(result:any){
                         if(debug){
@@ -97,6 +97,7 @@ class BriefPostsList {
         // get the specific post comment block by post id because each post comment block 
             // has a data-value={{postid}} attribute, which is unique. 
         $(".post-comment-view[data-value='"+postID+"']").show();
+        PostCommentBlock.showImage(postID);
     }
 
 }

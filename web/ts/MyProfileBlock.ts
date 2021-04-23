@@ -14,7 +14,7 @@ class MyProfileBlock {
                 console.log("\tsession key: " + BasicStructure.sessionKey);
             $.ajax({
                 type: "GET",
-                url: backendUrl + "/api/users/my/" + BasicStructure.sessionKey,
+                url: backendUrl + "/api/users/my?session=" + BasicStructure.sessionKey,
                 dataType: "json",
                 // data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
                 success: function (result: any) {
@@ -64,6 +64,7 @@ class MyProfileBlock {
             console.log("update post: " + mID);
         var newTitle = $("#post-title" + mID).val();
         var newContent = $("#post-content" + mID).val();
+        var newLink = "";
         if (debug)
             console.log("\tnew title: " + newTitle);
         if (debug)
@@ -77,10 +78,11 @@ class MyProfileBlock {
         }
         $.ajax({
             type: "PUT",
-            url: backendUrl + "/api/posts/" + mID + "/" + BasicStructure.sessionKey,
+            url: backendUrl + "/api/posts/" + mID + "?session=" + BasicStructure.sessionKey,
             dataType: "json",
+            contentType: "application/json",
             data: JSON.stringify({
-                "title": newTitle, "content": newContent
+                "title": newTitle, "content": newContent, "links" : [newLink]
             }),
             success: function (result: any) {
                 if (debug)
@@ -101,7 +103,7 @@ class MyProfileBlock {
             console.log("delete post: " + mID);
         $.ajax({
             type: "DELETE",
-            url: backendUrl + "/api/posts/" + mID + "/" + BasicStructure.sessionKey,
+            url: backendUrl + "/api/posts/" + mID + "?session=" + BasicStructure.sessionKey,
             dataType: "json",
             success: function (result: any) {
                 if (debug)
@@ -118,6 +120,7 @@ class MyProfileBlock {
     private static updateComment() {
         var mCID = $(this).data("value");
         var mPID = $(this).data("postid");
+        var mLINK = "";
         if (debug)
             console.log("update comment: " + mCID + " under post: " + mPID);
         var newContent = $("#comment-content" + mCID).val();
@@ -129,11 +132,13 @@ class MyProfileBlock {
         }
         $.ajax({
             type: "PUT",
-            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID + "/" + BasicStructure.sessionKey,
+            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID + "?session=" + BasicStructure.sessionKey,
             dataType: "json",
+            contentType: "application/json",
             data: JSON.stringify({
                 "postID": mPID,
-                "content": newContent
+                "content": newContent,
+                "links" : [mLINK],
             }),
             success: function (result: any) {
                 if (debug)
@@ -154,7 +159,7 @@ class MyProfileBlock {
             console.log("delete comment: " + mCID + " under post: " + mPID);
         $.ajax({
             type: "DELETE",
-            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID + "/" + BasicStructure.sessionKey,
+            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID + "?session=" + BasicStructure.sessionKey,
             dataType: "json",
             success: function (result: any) {
                 if (debug)
