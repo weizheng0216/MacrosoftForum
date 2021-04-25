@@ -34,6 +34,8 @@ class DatabaseHelper {
         return authorId;
     }
 
+
+
     /**
      * Query the author of the comment from the database.
      * @param postId identifier of the comment.
@@ -173,6 +175,27 @@ class DatabaseHelper {
     }
 
     /**
+     * FLAG a post.
+     * @param postId Identify the post to flag
+     * @param req Front-end request
+     */
+
+    void flagPost(String postId, PostRequest req) throws SQLException {
+        int postIdInt = Integer.parseInt(postId);
+        db.flagPostById(req.flagged, postIdInt);
+    }  
+    
+    
+    ResultSet selectUserById(String userId) throws SQLException {
+        int userIdInt = Integer.parseInt(userId);
+        ResultSet rs = db.selectUserById(userIdInt);
+        // db.selectUserById(userIdInt);
+        // mSelectUserById.setInt(1, userIdInt);
+        return rs;
+    }
+ 
+
+    /**
      * Update a comment.
      * @param commentId Identify the comment to update
      * @param req Front-end request
@@ -182,6 +205,19 @@ class DatabaseHelper {
         int commentIdInt = Integer.parseInt(commentId);
         db.updateCommentById(req.content, commentIdInt);
     }
+
+    /**
+     * FLAG a comment.
+     * @param commentId Identify the post to flag
+     * @param req Front-end request
+     */
+
+    void flagComment(String commentId, CommentRequest req) throws SQLException {
+        int commentIdInt = Integer.parseInt(commentId);
+        db.flagCommentById(req.flagged, commentIdInt);
+    }  
+
+    
 
     /**
      * Update the vote status of the user on a particular post. If there is no
@@ -362,7 +398,7 @@ class DatabaseHelper {
                 rs.getString("date"),
                 rs.getInt("vote_up"),
                 rs.getInt("vote_down"),
-                rs.getBoolean("pinned"),
+                rs.getBoolean("flagged"), 
                 fileInfo,
                 links,
                 comments
@@ -383,7 +419,8 @@ class DatabaseHelper {
                 rs2User(userRs),
                 rs.getString("date"),
                 rs2FileInfo(rs),
-                links
+                links, 
+                rs.getBoolean("flagged")
         );
     }
 
@@ -400,7 +437,8 @@ class DatabaseHelper {
                 rs.getInt("user_id"),
                 rs.getString("email"),
                 rs.getString("first_name"),
-                rs.getString("last_name")
+                rs.getString("last_name"),
+                rs.getBoolean("blocked")
         );
     }
 }

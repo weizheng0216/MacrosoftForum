@@ -3,7 +3,8 @@ package edu.lehigh.cse216.macrosoft.backend;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.gson.Gson;
 import spark.Spark;
-
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import edu.lehigh.cse216.macrosoft.backend.json.*;
 
 import java.util.ArrayList;
@@ -229,7 +230,17 @@ class BuzzServer {
                 return StructuredResponse.LOGIN_ERR;
             }
 
-            // read post request
+            // check if the user is blocked
+            // Database database = getDatabase();
+            ResultSet rs = db.selectUserById(loginUserId);
+        
+            if(rs.getBoolean("blocked")== true)
+            {
+             res.status(406);
+             return StructuredResponse.ERR("User is blocked. ");
+            }
+           
+
             PostRequest request = readRequestJson(req.body(), PostRequest.class);
             if (request == null || !request.validate()) {
                 res.status(400);
@@ -399,6 +410,82 @@ class BuzzServer {
             res.status(200);
             return StructuredResponse.OK(null);
         }, gson::toJson);
+
+        // *****************************************************************
+        // *          PUT /api/posts/:post_id/flag
+        // *****************************************************************
+        Spark.put("/api/posts/:post_id/flag", (req, res) -> {
+            res.type("application/json");
+
+            // verify login
+            String sessionKey = req.queryParams("session");
+            String loginUserId = auth.verifyLogin(sessionKey);
+            if (loginUserId == null) {
+                res.status(401);
+                return StructuredResponse.LOGIN_ERR;
+            }
+
+            // read request
+            PostRequest request = readRequestJson(req.body(), PostRequest.class);
+            if (request == null || !request.validate()) {
+                res.status(400);
+                return StructuredResponse.ERR("Invalid request body.");
+            }
+
+            // === OPERATIONS ===
+            // check if the target post exists
+            String postId = req.params("post_id");
+            String authorId = db.queryPostAuthor(postId);
+            if (authorId == null) {
+                res.status(404);
+                return StructuredResponse.ERR("Post does not exist.");
+            }
+
+            // execute update in db
+            db.flagPost(postId, request);  // 
+
+            res.status(200);
+            return StructuredResponse.OK(null);
+        }, gson::toJson);
+    
+          // *****************************************************************
+        // *          PUT /api/posts/:post_id/comments/:comment_id/flag 
+        // *****************************************************************
+        Spark.put("/api/posts/:post_id/comments/:comment_id/flag", (req, res) -> {
+            res.type("application/json");
+
+            // verify login
+            String sessionKey = req.queryParams("session");
+            String loginUserId = auth.verifyLogin(sessionKey);
+            if (loginUserId == null) {
+                res.status(401);
+                return StructuredResponse.LOGIN_ERR;
+            }
+
+            // read request
+            CommentRequest request = readRequestJson(req.body(), CommentRequest.class);
+            if (request == null || !request.validate()) {
+                res.status(400);
+                return StructuredResponse.ERR("Invalid request body.");
+            }
+
+            // === OPERATIONS ===
+            String postId = req.params("post_id");
+            String commentId = req.params("comment_id");
+            String authorId = db.queryCommentAuthor(postId, commentId);
+
+            if (authorId == null) {
+                res.status(404);
+                return StructuredResponse.ERR("Post/Comment does not exist.");
+            }
+
+            // execute update in db
+            db.flagComment(commentId, request);  // 
+
+            res.status(200);
+            return StructuredResponse.OK(null);
+        }, gson::toJson);
+    
 
         // *****************************************************************
         // *          PUT /api/posts/:post_id/comments/:comment_id

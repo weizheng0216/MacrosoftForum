@@ -10,7 +10,7 @@ public class IntegratedPostSubtype {
     public String mDate;
     public int mUpVoteCount;
     public int mDownVoteCount;
-    public boolean mPinned;
+    public boolean mFlagged;
     public FileInfoSubtype mFileInfo;
     public ArrayList<String> mLinks;
     public ArrayList<CommentSubtype> mComments;
@@ -20,7 +20,7 @@ public class IntegratedPostSubtype {
     public IntegratedPostSubtype(int mPostID, String mTitle,
                                  String mContent, UserSubtype mAuthor,
                                  String mDate, int mUpVoteCount,
-                                 int mDownVoteCount, boolean mPinned,
+                                 int mDownVoteCount, boolean mFlagged,
                                  FileInfoSubtype mFileInfo,
                                  ArrayList<String> mLinks,
                                  ArrayList<CommentSubtype> mComments,
@@ -32,7 +32,7 @@ public class IntegratedPostSubtype {
         this.mDate = mDate;
         this.mUpVoteCount = mUpVoteCount;
         this.mDownVoteCount = mDownVoteCount;
-        this.mPinned = mPinned;
+        this.mFlagged = mFlagged;
         this.mFileInfo = mFileInfo;
         this.mLinks = mLinks;
         this.mComments = mComments;
@@ -50,7 +50,7 @@ public class IntegratedPostSubtype {
                 base.mDate,
                 base.mUpVoteCount,
                 base.mDownVoteCount,
-                base.mPinned,
+                base.mFlagged,
                 base.mFileInfo,
                 base.mLinks,
                 base.mComments,

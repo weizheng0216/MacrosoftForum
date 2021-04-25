@@ -17,13 +17,20 @@ public class CommentSubtypeTest extends TestCase {
 
     public void testConstructor() {
         CommentSubtype comment = new CommentSubtype(
-                10, 20, "Test", null,
-                "Date", null, new ArrayList<>()
+                10, 
+                20, 
+                "Test", 
+                null,
+                "Date", 
+                null, 
+                new ArrayList<>(),
+                false
         );
         assertEquals(comment.mCommentID, 10);
         assertEquals(comment.mPostID, 20);
         assertEquals(comment.mContent, "Test");
         assertNull(comment.mFileInfo);
         assertEquals(comment.mLinks.size(), 0);
+        assertEquals(comment.mFlagged, false);
     }
 }

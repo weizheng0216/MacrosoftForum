@@ -30,5 +30,6 @@ public class PostSubtypeTest extends TestCase {
         );
         assertEquals(post.mTitle, "title");
         assertEquals(post.mDate, "today");
+        assertEquals(post.mFlagged, false);
     }
 }
