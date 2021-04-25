@@ -4,6 +4,7 @@
 - Phase 1: Weihang Guo
 - Phase 2: Wei Zheng
 - Phase 3: Haocheng Gao
+- Phase 4: Siyu Chen
 
 ## Introduction
 The backend of BUZZ serves the front-end pages and provides a set of APIs
@@ -34,6 +35,8 @@ for improving the comprehensiveness of the design or for adapting phase3 require
 - [PUT /api/posts/:post_id](#markdown-header-put-apipostspost_id)
 - [PUT /api/posts/:post_id/comments/:comment_id](#markdown-header-put-apipostspost_idcommentscomment_id)
 - [PUT /api/posts/:post_id/vote](#markdown-header-put-apipostspost_idvote)
+- [PUT /api/posts/:post_id/flag](#markdown-header-put-apipostspost_idflag)
+- [PUT /api/posts/:post_id/comments/:comment_id/flag ](#markdown-header-get-apipostspost_idcommentscomment_idflag)
 - [DELETE /api/posts/:post_id/comments/:comment_id](#markdown-header-delete-apipostspost_idcommentscomment_id)
 - [DELETE /api/posts/:post_id](#markdown-header-delete-apipostspost_id)
 
@@ -280,6 +283,7 @@ Return codes:
 | :---------: | :---------- |
 | 200 | OK |
 | 401 | Session key is invalid |
+| 406 | User is blocked |
 | 507 | Server runs out of quota. File not uploaded(however post is uploaded) |
 | Other 500+ | Unexpected server error |
 
@@ -314,6 +318,7 @@ Return codes:
 | 400 | Invalid request body |
 | 401 | Session key is invalid |
 | 404 | *post_id* cannot be found |
+| 406 | User is blocked |
 | 507 | Server runs out of quota. File not uploaded(however comment is uploaded) |
 | Other 500+ | Unexpected server error |
 
@@ -434,6 +439,30 @@ Return codes:
 | 200 | OK |
 | 400 | Invalid request body |
 | 400 | Both fields of the quest are `true` |
+| 401 | Session key is invalid |
+| 404 | *post_id* cannot be found |
+| 500+ | Unexpected server error |
+
+### PUT /api/posts/:post_id/flag
+Submit a flag request through this API when the front-end user flag 
+an inappropriate post. 
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 400 | Invalid request body |
+| 401 | Session key is invalid |
+| 404 | *post_id* cannot be found |
+| 500+ | Unexpected server error |
+
+### PUT /api/posts/:post_id/comments/:comment_id
+Submit a flag request through this API when the front-end user flag 
+an inappropriate comment. 
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 400 | Invalid request body |
 | 401 | Session key is invalid |
 | 404 | *post_id* cannot be found |
 | 500+ | Unexpected server error |
