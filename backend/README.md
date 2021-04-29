@@ -80,7 +80,7 @@ Example response payload:
     "mDate": "2018-09-06 10:16:34",
     "mUpVoteCount": 10,
     "mDownVoteCount": 25,
-    "mPinned": true,
+    "mFlagged": true,
     "mFileInfo": {
       "mType": "pdf",
       "mTime": "2020-01-15 08:15:23",
@@ -188,7 +188,7 @@ Example response payload:
       "mDate": "2020-12-32 00:00:00",
       "mUpVoteCount": 0,
       "mDownVoteCount": 100,
-      "mPinned": false,
+      "mFlagged": false,
       "mFileInfo": {
         "mType": "pdf",
         "mTime": "2020-01-15 08:15:23",

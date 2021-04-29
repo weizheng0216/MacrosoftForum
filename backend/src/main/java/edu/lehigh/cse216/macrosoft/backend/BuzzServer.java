@@ -96,6 +96,27 @@ class BuzzServer {
             return StructuredResponse.OK(payload);
         }, gson::toJson);
 
+        //    // *****************************************************************
+        // // *                       GET /api/posts/:post_id
+        // // *****************************************************************
+        // Spark.get("api/posts/:post_id", (req, res) -> {
+        //     res.type("application/json");
+
+        //     // verify login
+        //     String sessionKey = req.queryParams("session");
+        //     String loginUserId = auth.verifyLogin(sessionKey);
+        //     if (loginUserId == null) {
+        //         res.status(401);
+        //         return StructuredResponse.LOGIN_ERR;
+        //     }
+
+        //     // database query
+        //     Object payload = db.queryGetAllPosts(loginUserId);
+        //     res.status(200);
+        //     return StructuredResponse.OK(payload);
+        // }, gson::toJson);
+
+
         // *****************************************************************
         // *                 GET /api/posts/:post_id/file
         // *****************************************************************
@@ -162,6 +183,40 @@ class BuzzServer {
             res.status(200);
             return StructuredResponse.OK(payload);
         }, gson::toJson);
+
+        // // *****************************************************************
+        // // *      GET /api/posts/:post_id/comments/:comment_id
+        // // *****************************************************************
+        // Spark.get("/api/posts/:post_id/comments/:comment_id", (req, res) -> {
+        //     res.type("application/json");
+
+        //     // verify login
+        //     String sessionKey = req.queryParams("session");
+        //     String loginUserId = auth.verifyLogin(sessionKey);
+        //     if (loginUserId == null) {
+        //         res.status(401);
+        //         return StructuredResponse.LOGIN_ERR;
+        //     }
+
+        //     // get file from storage
+        //     String postId = req.params("post_id");
+        //     String commentId = req.params("comment_id");
+        //     String fullpath = db.queryCommentFilePath(postId, commentId);
+        //     String str64 = null;
+        //     if (fullpath != null) {
+        //         str64 = cache.getFile(fullpath);
+        //         if (str64 == null) {
+        //             str64 = drive.getFile(fullpath);
+        //             if (str64 != null)
+        //                 cache.saveFile(fullpath, str64);
+        //         }
+        //     }
+
+        //     // respond with file in payload
+        //     Object payload = new FilePayload(str64);
+        //     res.status(200);
+        //     return StructuredResponse.OK(payload);
+        // }, gson::toJson);
 
         // *****************************************************************
         // *                       GET /api/users/my
@@ -232,9 +287,9 @@ class BuzzServer {
 
             // check if the user is blocked
             // Database database = getDatabase();
-            ResultSet rs = db.selectUserById(loginUserId);
+            //ResultSet rs = db.selectUserById(loginUserId);
         
-            if(rs.getBoolean("blocked")== true)
+            if(db.checkBlocked(loginUserId))
             {
              res.status(406);
              return StructuredResponse.ERR("User is blocked. ");

@@ -11,14 +11,15 @@ package edu.lehigh.cse216.macrosoft.backend;
 #         user_id      SERIAL PRIMARY KEY,
 #         email        VARCHAR(50),
 #         first_name   VARCHAR(50),
-#         last_name    VARCHAR(50)
+#         last_name    VARCHAR(50),
+#          blocked       BOOLEAN
 #     );
 #
 # [?] dropUserTable();
 #     DROP TABLE users;
 
 [C] insertUser(String email, String first, String last);
-    INSERT INTO users VALUES (default, ?, ?, ?);
+    INSERT INTO users VALUES (default, ?, ?, ?, false);
 
 [R] selectUserById(int userId);
     SELECT * FROM users WHERE user_id=?;
@@ -29,7 +30,8 @@ package edu.lehigh.cse216.macrosoft.backend;
 [R] selectUserByEmail(String email);
     SELECT * FROM users WHERE email=?;
 
-
+[U] blockUserByEmail(String email);
+    UPDATE users SET blocked=true WHERE email=?;
 
 #############################
 ##       Table Posts
@@ -44,7 +46,7 @@ package edu.lehigh.cse216.macrosoft.backend;
 #         vote_up     INTEGER,
 #         vote_down   INTEGER,
 #         user_id     INTEGER REFERENCES users (user_id),
-#         pinned      BOOLEAN,
+#         flagged      BOOLEAN,
 #         filetype    VARCHAR(10),
 #         filedate    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  # future PUT
 #         filepath    VARCHAR(100),
@@ -62,7 +64,7 @@ package edu.lehigh.cse216.macrosoft.backend;
     SELECT * FROM posts WHERE post_id=?;
 
 [R] selectAllPosts();
-    SELECT * FROM posts ORDER BY pinned DESC, date DESC;
+    SELECT * FROM posts ORDER BY flagged DESC, date DESC;
 
 [R] selectPostsByUserId(int userId);
     SELECT * FROM posts WHERE user_id=?;
@@ -78,6 +80,9 @@ package edu.lehigh.cse216.macrosoft.backend;
 
 [U] updatePostFilePathById(String fullpath, int postId);
     UPDATE posts SET filepath=? WHERE post_id=?;
+
+[U] flagPostById(boolean flagged, int postId);
+    UPDATE posts SET flagged =? WHERE post_id=?; 
 
 [D] deletePostById(int postId);
     DELETE FROM posts WHERE post_id=?;
@@ -98,7 +103,8 @@ package edu.lehigh.cse216.macrosoft.backend;
 #         filetype     VARCHAR(10),
 #         filedate     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 #         filepath     VARCHAR(100),
-#         links        VARCHAR(500)
+#         links        VARCHAR(500),
+#         flagged      BOOLEAN
 #     );
 #
 # [?] dropCommentTable();
@@ -106,7 +112,7 @@ package edu.lehigh.cse216.macrosoft.backend;
 
 [C] insertComment(String content, int userId, int postId,
                   String filetype, String filepath, String links);
-    INSERT INTO comments VALUES (default, ?, default, ?, ?, ?, default, ?, ?);
+    INSERT INTO comments VALUES (default, ?, default, ?, ?, ?, default, ?, ?, false);
 
 [R] selectCommentByIds(int postId, int commentId);
     SELECT * FROM comments WHERE post_id=? AND comment_id=?;
@@ -117,6 +123,9 @@ package edu.lehigh.cse216.macrosoft.backend;
 [R] selectCommentsByUserId(int userId);
     SELECT * FROM comments WHERE user_id=?;
 
+[R] SelectCommentById(int commentId); 
+    SELECT * FROM comments WHERE comment_id=?;
+
 [R] selectLatestCommentId();
     SELECT MAX(comment_id) FROM comments;
 
@@ -125,6 +134,9 @@ package edu.lehigh.cse216.macrosoft.backend;
 
 [U] updateCommentFilePathById(String fullpath, int commentId);
     UPDATE comments SET filepath=? WHERE comment_id=?;
+
+[U] flagCommentById(boolean flagged, int commentId);
+    UPDATE comments SET flagged =? WHERE comment_id=?; 
 
 [D] deleteCommentsByPostId(int postId);
     DELETE FROM comments WHERE post_id=?;

@@ -180,20 +180,36 @@ class DatabaseHelper {
      * @param req Front-end request
      */
 
-    void flagPost(String postId, PostRequest req) throws SQLException {
+    // void flagPost(String postId, PostRequest req) throws SQLException {
+    //     int postIdInt = Integer.parseInt(postId);
+
+    //     db.flagPostById(postIdInt);
+    // }  
+
+      void flagPost(String postId, PostRequest req) throws SQLException {
         int postIdInt = Integer.parseInt(postId);
+        if (req.flagged){
+            req.flagged = true;
+    }
+        else{
+            req.flagged = false;
+        }
+       
         db.flagPostById(req.flagged, postIdInt);
     }  
     
     
-    ResultSet selectUserById(String userId) throws SQLException {
+    boolean checkBlocked(String userId) throws SQLException {
         int userIdInt = Integer.parseInt(userId);
         ResultSet rs = db.selectUserById(userIdInt);
+        //ResultSet rs = db.selectUserById(loginUserId);
+        
+        boolean block = rs.getBoolean("blocked");
+            
         // db.selectUserById(userIdInt);
         // mSelectUserById.setInt(1, userIdInt);
-        return rs;
+        return block;
     }
- 
 
     /**
      * Update a comment.
@@ -214,11 +230,16 @@ class DatabaseHelper {
 
     void flagComment(String commentId, CommentRequest req) throws SQLException {
         int commentIdInt = Integer.parseInt(commentId);
+    if (req.flagged){
+        req.flagged = true;
+    }
+    else{
+        req.flagged = false;
+    }
         db.flagCommentById(req.flagged, commentIdInt);
     }  
 
     
-
     /**
      * Update the vote status of the user on a particular post. If there is no
      * existing vote record, a new one will be inserted.
