@@ -96,25 +96,26 @@ class BuzzServer {
             return StructuredResponse.OK(payload);
         }, gson::toJson);
 
-        //    // *****************************************************************
-        // // *                       GET /api/posts/:post_id
-        // // *****************************************************************
-        // Spark.get("api/posts/:post_id", (req, res) -> {
-        //     res.type("application/json");
+           // *****************************************************************
+        // *                       GET /api/posts/:post_id
+        // *****************************************************************
+        Spark.get("api/posts/:post_id", (req, res) -> {
+            res.type("application/json");
 
-        //     // verify login
-        //     String sessionKey = req.queryParams("session");
-        //     String loginUserId = auth.verifyLogin(sessionKey);
-        //     if (loginUserId == null) {
-        //         res.status(401);
-        //         return StructuredResponse.LOGIN_ERR;
-        //     }
+            // verify login
+            String sessionKey = req.queryParams("session");
+            String loginUserId = auth.verifyLogin(sessionKey);
+            if (loginUserId == null) {
+                res.status(401);
+                return StructuredResponse.LOGIN_ERR;
+            }
 
-        //     // database query
-        //     Object payload = db.queryGetAllPosts(loginUserId);
-        //     res.status(200);
-        //     return StructuredResponse.OK(payload);
-        // }, gson::toJson);
+            // database query
+            String postId = req.params("post_id");
+            Object payload = db.queryGetAPost(postId);
+            res.status(200);
+            return StructuredResponse.OK(payload);
+        }, gson::toJson);
 
 
         // *****************************************************************
