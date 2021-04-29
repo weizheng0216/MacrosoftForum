@@ -1,4 +1,4 @@
-.post-brief-block{
+.post-brief-block {
     position: relative;
     width: 94%;
     height: 85px;
@@ -13,13 +13,13 @@
     /* background-color: #D9AB9A; */
 }
 
-.post-brief-block:hover{
+.post-brief-block:hover {
     cursor:pointer;
     transform:translate(calc(3px), calc(3px));
     box-shadow: 3px 3px 0px #a12424;
 }
 
-.post-brief-block .upper-information{
+.post-brief-block .upper-information {
     position: relative;
     width: 100%;
     height:30px;
@@ -29,7 +29,7 @@
     overflow: hidden;
 }
 
-.upper-information .title{
+.upper-information .title {
     position: relative;
     width: 70%;
     height: 30px;
@@ -43,7 +43,7 @@
     text-overflow: ellipsis;
 }
 
-.upper-information .date{
+.upper-information .date {
     position: relative;
     line-height: 30px;
     width: 20%;
@@ -56,14 +56,16 @@
     text-overflow: ellipsis;
 }
 
-.upper-information .pin-icon{
+.upper-information .flag-icon {
     height: 30px;
     width: 10%;
-    text-align: center;
-
+    text-align: right;
+    text-indent: 35px;
+    line-height: 30px;
+    font-weight: 700;
 }
 
-.post-brief-block .content{
+.post-brief-block .content {
     position: relative;
     width: 90%;
     margin-top:5px;
@@ -77,4 +79,8 @@
     overflow: hidden;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+}
+
+.post-brief-block .bad {
+    font-family: sans-serif;
 }

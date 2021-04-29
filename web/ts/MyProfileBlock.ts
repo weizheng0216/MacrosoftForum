@@ -2,91 +2,80 @@ class MyProfileBlock {
 
     /**
      * This function will send a request to backend to get user's information.
-     *  then is function will call update() to load the result. 
-     * 
-     * NOTE: we should not connect to the backend when testing. 
+     * It will only be called by events originated in this class.
      */
     static refresh() {
-        if (!testing) {
-            if (debug)
-                console.log("MyProfileBlock.refresh() called");
-            if (debug)
-                console.log("\tsession key: " + BasicStructure.sessionKey);
-            $.ajax({
-                type: "GET",
-                url: backendUrl + "/api/users/my?session=" + BasicStructure.sessionKey,
-                dataType: "json",
-                // data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
-                success: function (result: any) {
-                    if (debug)
-                        console.log(result);
-                    MyProfileBlock.update(result);
-                },
-                error: function(){
-                    alert("Login timeout, please login again");
-                    window.location.replace(backendUrl+"/login.html");
-                }
-            });
-        } else {
-            MyProfileBlock.update("");
-        }
+        debugOutput("MyProfileBlock.refresh()");
+        myAjax({
+            type: "GET",
+            url: backendUrl + "/api/users/my?session=" + sessionKey,
+            dataType: "json",
+            success: function (res: any) {
+                debugOutput("[ajax] Profile Response" + res);
+                fetchImgs(res.mData.mPosts);
+                debugOutput("[ajax] Profile Response(w/img): " + res);
+                MyProfileBlock.update(res);
+            },
+            error: function() {
+                alertOutput("Login timeout, please login again");
+                redirect("login.html");
+            }
+        });
     }
 
     /**
-     * this function is only called by MyProfileBlock.refresh(). 
-     *  it will process data and add click function. 
+     * This function loads the MyProfileBlock with the data passed by refresh().
+     * This function will ONLY be called by refresh(). 
+     * 
+     * @param data StructuredResponse(with img data) from backend.
      */
     private static update(data: any) {
-        if (!testing) {
-            // we have to delete previous my info interface first, or there will be 
-            // more than one my info interface, which is not what we want. 
-            $(".my-user-profile-block").remove();
+        debugOutput("MyProfileBlock.update()");
 
-            // the following line will process the data and load the data on the right side. 
-            $("#right-part").append(Handlebars.templates['MyProfileBlock.hb'](data));
-        } else {
-            $(".my-user-profile-block").show();
-        }
+        // remove the exising outdated list
+        $(".my-user-profile-block").remove();
 
-        // the follwing line will add click functions. 
-        $(".post-update-button").click(MyProfileBlock.updatePost);
-        $(".post-delete-button").click(MyProfileBlock.deletePost);
-        $(".comment-update-button").click(MyProfileBlock.updateComment);
-        $(".comment-delete-button").click(MyProfileBlock.deleteComment);
+        // append new block using handlebar and the data passed
+        $("#right-part").append(Handlebars.templates['MyProfileBlock.hb'](data));
+
+        // register click events of the block
+        $(".post-update-button").on("click", MyProfileBlock.onClickUpdatePost);
+        $(".post-delete-button").on("click", MyProfileBlock.onClickDeletePost);
+        $(".comment-update-button").on("click", MyProfileBlock.onClickUpdateComment);
+        $(".comment-delete-button").on("click", MyProfileBlock.onClickDeleteComment);
     }
 
-    /**
-     * this function will update a post to backend database
-     */
-    private static updatePost() {
+
+
+    // ===================================================================
+    // Events
+
+    private static onClickUpdatePost() {
+        debugOutput("MyProfileBlock.updatePost()");
+
+        // pickup values
         var mID = $(this).data("value");
-        if (debug)
-            console.log("update post: " + mID);
         var newTitle = $("#post-title" + mID).val();
         var newContent = $("#post-content" + mID).val();
-        var newLink = "";
-        if (debug)
-            console.log("\tnew title: " + newTitle);
-        if (debug)
-            console.log("\tnew content: " + newContent);
 
-        // if either content or title is "", we cannot update. Just alert to 
-        // user and return. 
-        if (newContent === "" || newTitle === "") {
-            alert("invalid input");
+        // No update if either content or title is "".
+        // Alert user and return. 
+        if (!newContent || !newTitle) {
+            alertOutput("Content or Title cannot be empty");
             return;
         }
-        $.ajax({
+
+        myAjax({
             type: "PUT",
-            url: backendUrl + "/api/posts/" + mID + "?session=" + BasicStructure.sessionKey,
+            url: backendUrl + "/api/posts/" + mID + "?session=" + sessionKey,
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify({
-                "title": newTitle, "content": newContent, "links" : [newLink]
+                "title": newTitle,
+                "content": newContent
             }),
-            success: function (result: any) {
-                if (debug)
-                    console.log(result);
+            success: function (res: any) {
+                debugOutput("[ajax] Update Response: " + res);
                 // refresh all posts and comments
                 BriefPostsList.refresh();
                 MyProfileBlock.refresh();
@@ -94,79 +83,68 @@ class MyProfileBlock {
         });
     }
 
-    /**
-    * this function will delete a post to backend database
-    */
-    private static deletePost() {
+    private static onClickDeletePost() {
+        debugOutput("MyProfileBlock.deletePost()");
+
         var mID = $(this).data("value");
-        if (debug)
-            console.log("delete post: " + mID);
-        $.ajax({
+
+        myAjax({
             type: "DELETE",
-            url: backendUrl + "/api/posts/" + mID + "?session=" + BasicStructure.sessionKey,
+            url: backendUrl + "/api/posts/" + mID + "?session=" + sessionKey,
             dataType: "json",
-            success: function (result: any) {
-                if (debug)
-                    console.log(result);
+            success: function (res: any) {
+                debugOutput(res);
                 BriefPostsList.refresh();
                 MyProfileBlock.refresh();
             }
         });
     }
 
-    /**
-     * this function will update a comment to backend database
-     */
-    private static updateComment() {
+    private static onClickUpdateComment() {
+        debugOutput("MyProfileBlock.updateComment()");
+
         var mCID = $(this).data("value");
         var mPID = $(this).data("postid");
-        var mLINK = "";
-        if (debug)
-            console.log("update comment: " + mCID + " under post: " + mPID);
         var newContent = $("#comment-content" + mCID).val();
-        if (debug)
-            console.log("\tnew content: " + newContent);
-        if (newContent === "") {
-            alert("invlid input");
+
+        if (!newContent) {
+            alertOutput("Content cannot be empty");
             return;
         }
-        $.ajax({
+        myAjax({
             type: "PUT",
-            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID + "?session=" + BasicStructure.sessionKey,
+            url: format("{1}/api/posts/{2}/comments/{3}?session={4}",
+                        backendUrl, mPID, mCID, sessionKey),
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify({
-                "postID": mPID,
                 "content": newContent,
-                "links" : [mLINK],
             }),
-            success: function (result: any) {
-                if (debug)
-                    console.log(result);
+            success: function (res: any) {
+                debugOutput(res);
                 BriefPostsList.refresh();
                 MyProfileBlock.refresh();
             }
         });
     }
 
-    /**
-     * this function will delete a post to backend database
-     */
-    private static deleteComment() {
+    private static onClickDeleteComment() {
+        debugOutput("MyProfileBlock.deleteComment()");
+
         var mCID = $(this).data("value")
         var mPID = $(this).data("postid");
-        if (debug)
-            console.log("delete comment: " + mCID + " under post: " + mPID);
-        $.ajax({
+
+        myAjax({
             type: "DELETE",
-            url: backendUrl + "/api/posts/" + mPID + "/comments/" + mCID + "?session=" + BasicStructure.sessionKey,
+            url: format("{1}/api/posts/{2}/comments/{3}?session={4}",
+                        backendUrl, mPID, mCID, sessionKey),
             dataType: "json",
-            success: function (result: any) {
-                if (debug)
-                    console.log(result);
+            success: function (res: any) {
+                debugOutput(res);
                 BriefPostsList.refresh();
                 MyProfileBlock.refresh();
             }
         });
     }
+
 }

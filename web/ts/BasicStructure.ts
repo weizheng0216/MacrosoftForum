@@ -1,6 +1,4 @@
-class BasicStructure{
-
-    public static sessionKey:string;
+class BasicStructure {
 
     private static isInit = false;
 
@@ -18,12 +16,13 @@ class BasicStructure{
      *      3) it will initialize the NewPostBlock, which enable user to create a new post. 
      */
     static init() {
+        debugOutput("BasicStructure.init()");
         if (!BasicStructure.isInit) {
             // add the basix structure to the html
             $(".container").append(Handlebars.templates["BasicStructure.hb"]());
-            $(".new-post-button").click(BasicStructure.showNewPostBlock);
-            $(".my-profile-button").click(BasicStructure.showMyProfileBlock);
-            $("#sign-out").click(BasicStructure.signOut)
+            $(".new-post-button").on("click", BasicStructure.onClickNewPost);
+            $(".my-profile-button").on("click", BasicStructure.onClickMyProfile);
+            $("#sign-out").on("click", BasicStructure.onClickSignOut)
             BriefPostsList.refresh();   
             //PostCommentBlock.refresh();
             // initial new post block
@@ -33,9 +32,14 @@ class BasicStructure{
         }
     }
 
-    private static signOut(){
-        alert("sign out successfully");
-        window.location.replace(backendUrl+"/login.html");
+
+    // ===================================================================
+    // Events
+
+    private static onClickSignOut() {
+        debugOutput("BasicStructure.signOut()");
+        alertOutput("sign out successfully");
+        redirect("login.html");
     }
 
     /**
@@ -46,19 +50,16 @@ class BasicStructure{
      * 
      * Since NewPostBlock has aleady initialize in init(), we do not need to initialize it again
      */
-    private static showNewPostBlock(){
+    private static onClickNewPost() {
+        debugOutput("BasicStructure.showNewPostBlock()");
         
         $(".post-comment-view").hide();
         $("#my-new-post-block").show();
         $(".post-comment-view").hide();
         $(".my-user-profile-block").hide();
 
-        // remember to hide other user's profile, if has one
-        if(!testing){
-            $(".other-user-profile-block").remove();
-        }else{
-            $(".other-user-profile-block").hide();
-        }
+        // remember to hide other user's profile, if there is one
+        $(".other-user-profile-block").remove();
     }
 
     /**
@@ -71,14 +72,11 @@ class BasicStructure{
      * IMPORTANT: since "my profile" may different from previous call (because the user may have new posts
      *  and comments). We will call refresh() each time to ensure "my profile" is up to date.
      */
-    private static showMyProfileBlock(){
+    private static onClickMyProfile() {
+        debugOutput("BasicStructure.showMyProfileBlock()");
         $(".post-comment-view").hide();
         $("#my-new-post-block").hide();
-        if(!testing){
-            $(".other-user-profile-block").remove();
-        }else{
-            $(".other-user-profile-block").hide();
-        }
+        $(".other-user-profile-block").remove();
         
         MyProfileBlock.refresh();
     }

@@ -1,4 +1,4 @@
-.new-post-block{
+.new-post-block {
 
     position: relative;
     left:2%;
@@ -16,7 +16,7 @@
 }
 
 
-.new-post-block .title{
+.new-post-block .title {
 
     position: relative;
     top:10%;
@@ -26,7 +26,7 @@
 
 }
 
-.new-post-block .title .input-title{
+.new-post-block .title .input-title {
 
     position: relative;
     width: 100%;
@@ -39,7 +39,7 @@
 
 }
 
-.new-post-block .content{
+.new-post-block .content {
 
     position: relative;
     top:15%;
@@ -49,7 +49,7 @@
 
 }
 
-.new-post-block .content .input-content{
+.new-post-block .content .input-content {
 
     position: relative;
     width: 100%;
@@ -64,7 +64,7 @@
     font-size: 20px;
 }
 
-/* .new-post-block .file-upload {
+/* .new-post-block .file-upload  {
     position: relative;
     top: 24%;
     left: 10%;
@@ -72,7 +72,7 @@
     height: 40px;
 } */
 
-.new-post-block  .file-upload-button{
+.new-post-block  .file-upload-button {
     position: relative;
     height: 40px;
     top: 24%;
@@ -83,14 +83,14 @@
     box-shadow:8px 8px 0px #a12424;
 }
 
-.new-post-block .file-upload-button:hover{
+.new-post-block .file-upload-button:hover {
     cursor:pointer;
     background-color: #F2AA80;
     transform:translate(calc(3px), calc(3px));
     box-shadow:3px 3px 0px #a12424;
 }
 
-.new-post-block .link-upload{
+.new-post-block .link-upload {
     position: relative;
     top: 24%;
     left: 12%;
@@ -101,14 +101,14 @@
     box-shadow:8px 8px 0px #a12424;
   }
 
-  .new-post-block .link-upload:hover{
+  .new-post-block .link-upload:hover {
     cursor:pointer;
     transform:translate(calc(3px), calc(3px));
     background-color: #F2AA80;
     box-shadow:3px 3px 0px #a12424;
 }
 
-.new-post-block .send-post{
+.new-post-block .send-post {
 
     position: relative;
     top: 24%;
@@ -122,14 +122,14 @@
 
 }
 
-.new-post-block .send-post:hover{
+.new-post-block .send-post:hover {
     cursor:pointer;
     transform:translate(calc(3px), calc(3px));
     background-color: #F2AA80;
     box-shadow:3px 3px 0px #a12424;
 }
   
-.new-post-block .file-upload-input {
+.new-post-block .file-upload-input  {
     position: relative;
     top: 24%;
     left: 10%;
@@ -139,7 +139,7 @@
     opacity: 0;
     cursor: pointer;
   }
-  .new-post-block .inputs .image-title{
+  .new-post-block .inputs .image-title {
     top: 27%;
     left: 10%;
     height:40px;
@@ -147,7 +147,7 @@
     border-radius: 7px;
     box-shadow:8px 8px 0px #a12424;
   }
-  .new-post-block .upload-link{
+  .new-post-block .upload-link {
     top: 27%;
     left: 10%;
     width:30%;
@@ -157,7 +157,7 @@
     box-shadow:8px 8px 0px #a12424;
   }
 
-  .new-post-block .img {
+  .new-post-block .img  {
     max-height: 400px;
     max-width: 700px;
     border: 3px solid #8C0303;

@@ -1,10 +1,10 @@
-div{
+div {
     /* border: 1px solid; */
     font-family: sans-serif;
     color: #260101;
 }
 
-#banner{
+#banner {
     position: absolute;
     top:5px;
     bottom:92%;
@@ -17,12 +17,12 @@ div{
     box-shadow:15px 15px 0px #a12424;
 }
 
-#banner:hover{
+#banner:hover {
     transform:translate(calc(4px), calc(4px));
     box-shadow:10px 10px 0px #ac4545;
 }
 
-.banner-title{
+.banner-title {
     position: relative;
     left: 15%;
     position: auto;
@@ -32,7 +32,7 @@ div{
     color: aliceblue;
 }
 
-#main-block{
+#main-block {
     position: absolute;
     top: 10%;
     bottom: 0;
@@ -41,7 +41,7 @@ div{
     margin-top:5px;
 }
 
-#left-part{
+#left-part {
     position: absolute;
     right: 70%;
     left:0;
@@ -50,7 +50,7 @@ div{
     overflow-y: scroll;
 }
 
-#right-part{
+#right-part {
     position:absolute;
     left:30%;
     right:0;
@@ -58,7 +58,7 @@ div{
     bottom:0;
 }
 
-.new-post-button{
+.new-post-button {
     position: relative;
     width: 45%;
     height: 40px;
@@ -73,13 +73,13 @@ div{
     box-shadow:8px 8px 0px #590202;
 }
 
-.new-post-button:hover{
+.new-post-button:hover {
     background-color: #F2AA80;
     transform:translate(calc(3px), calc(3px));
     box-shadow:5px 5px 0px #a12424;
 }
 
-.my-profile-button{
+.my-profile-button {
     width: 45%;
     height: 40px;
     margin-left:5%;
@@ -92,7 +92,7 @@ div{
     box-shadow:8px 8px 0px #590202;
 }
 
-.my-profile-button:hover{
+.my-profile-button:hover {
     background-color: #F2AA80;
     transform:translate(calc(3px), calc(3px));
     box-shadow:5px 5px 0px #a12424;

@@ -1,27 +1,27 @@
-.little-button{
+.little-button {
     border: 2px solid #8C0303;
     border-radius: 5px;
     box-shadow:6px 6px 0px #a12424;
 }
 
-.little-button:hover{
+.little-button:hover {
     background-color: #F2AA80;
     transform:translate(calc(3px), calc(3px));
     box-shadow:3px 3px 0px #a12424;
 }
 
-.post-comment-view{
+.post-comment-view {
     width: 100%;
     height: 100%;
 }
-.post-comment-block{
+.post-comment-block {
     width: 100%;
     height: 80%;
     overflow-y: scroll;
 }
 
 
-.post-detail-block{
+.post-detail-block {
     position: relative;
     width: 96%;
     left: 2%;
@@ -35,7 +35,7 @@
     /* background-color: #D9AB9A; */
 }
 
-.post-detail-block .title{
+.post-detail-block .title {
     position: relative;
 
     width: 90%;
@@ -50,7 +50,7 @@
 
 }
 
-.post-detail-block .content{
+.post-detail-block .content {
     width: 90%;
     min-height: 150px;
 
@@ -62,11 +62,11 @@
     text-indent: 40px;
 }
 
-/* .post-detail-block .pcbimg[src=""]{
+/* .post-detail-block .pcbimg[src=""] {
     display:none;
 } */
 
-.post-detail-block .lower-information{
+.post-detail-block .lower-information {
     width: 90%;
     height: 50px;
 
@@ -75,43 +75,43 @@
     margin-right: 7%;
 }
 
-.post-detail-block .lower-information .date-button{
+.post-detail-block .lower-information .date-button {
     float: right;
     margin-right: 20px;
 
 }
 
-.post-detail-block .lower-information .user-button{
+.post-detail-block .lower-information .user-button {
     float: right;
     margin-right: 20px;
 
 }
 
-.post-detail-block .lower-information .like-button{
+.post-detail-block .lower-information .like-button {
     float: right;
     margin-right: 20px;
 
 
 }
 
-.post-detail-block .lower-information .dislike-button{
+.post-detail-block .lower-information .dislike-button {
     float: right;
     margin-right: 20px;
 }
 
-.post-detail-block .lower-information .upload-button{
+.post-detail-block .lower-information .upload-button {
     float: right;
     margin-right: 20px;
 }
 
 
-.my-vote-true{
+.my-vote-true {
     background-color: #F2AA80;
     transform:translate(calc(3px), calc(3px));
     box-shadow:3px 3px 0px #a12424;
 }
 
-.comment-block{
+.comment-block {
     position: relative;
     margin-top: 20px;
     width: 92%;
@@ -126,7 +126,7 @@
     /* background-color: #D9AB9A; */
 }
 
-.comment-block .content{
+.comment-block .content {
     width: 90%;
     min-height: 60px;
 
@@ -138,7 +138,7 @@
     text-indent: 20px;
 }
 
-.comment-block .lower-information{
+.comment-block .lower-information {
     width: 90%;
     height: 40px;
 
@@ -147,24 +147,24 @@
     margin-right: 7%;
 }
 
-.comment-block .lower-information .user-button{
+.comment-block .lower-information .user-button {
     float: right;
     margin-right: 20px;
 }
 
-.comment-block .lower-information .date-button{
+.comment-block .lower-information .date-button {
     float: right;
     margin-right: 20px;
 }
 
-.add-comment-block{
+.add-comment-block {
     margin-top: 20px;
     position: relative;
     width: 100%;
     height: 15%;
 }
 
-.add-comment-block .comment-input{
+.add-comment-block .comment-input {
     font-size: 20px;
     position: relative;
     top: 20%;
@@ -178,7 +178,7 @@
     box-shadow:3px 3px 0px #a12424;
 }
 
-.add-comment-block .send-comment{
+.add-comment-block .send-comment {
     position: relative;
     font-weight: 700;
     right:-5%;
@@ -190,13 +190,13 @@
     box-shadow:6px 6px 0px #a12424;
 }
 
-.add-comment-block .send-comment:hover{
+.add-comment-block .send-comment:hover {
     background-color: #F2AA80;
     transform:translate(calc(3px), calc(3px));
     box-shadow:3px 3px 0px #a12424;
 }
 
-/* .add-comment-block .insert-file{
+/* .add-comment-block .insert-file {
     position: relative;
     font-weight: 700;
     right:-5%;
@@ -208,13 +208,13 @@
     box-shadow:6px 6px 0px #a12424;
 } */
 
-/* .add-comment-block .insert-file:hover{
+/* .add-comment-block .insert-file:hover {
     background-color: #F2AA80;
     transform:translate(calc(3px), calc(3px));
     box-shadow:3px 3px 0px #a12424;
 } */
 
-/* .post-detail-block{
+/* .post-detail-block {
     position: relative;
     width: 96%;
     left: 2%;
@@ -228,7 +228,7 @@
     /* background-color: #D9AB9A; */
 } */
 
-.file .insert-file-input{
+.file .insert-file-input {
     right: 200px;
     border: 3px solid #8C0303;
     border-radius: 15px;
@@ -239,7 +239,7 @@
     width: 30%;
 }
 
-.link .link-insert{
+.link .link-insert {
     position: relative;
     font-weight: 700;
     right: -55%;
@@ -250,13 +250,13 @@
     box-shadow:6px 6px 0px #a12424;
 }
 
-.link .link-insert:hover{
+.link .link-insert:hover {
     background-color: #F2AA80;
     transform:translate(calc(3px), calc(3px));
     box-shadow:3px 3px 0px #a12424;
 }
 
-.file .file-title{
+.file .file-title {
     border: 3px solid #8C0303;
     border-radius: 10px;
     box-shadow:6px 6px 0px #a12424;
@@ -264,7 +264,7 @@
     height: 30px;
 }
 
-.link .insert-link{
+.link .insert-link {
     border: 3px solid #8C0303;
     border-radius: 10px;
     box-shadow:6px 6px 0px #a12424;
@@ -272,7 +272,7 @@
     height: 30px;
 }
 
-.add-comment-block .img-id{
+.add-comment-block .img-id {
     max-width: 450px;
     
 }
