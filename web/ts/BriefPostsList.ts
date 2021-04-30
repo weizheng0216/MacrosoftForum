@@ -19,9 +19,8 @@ class BriefPostsList {
             url: backendUrl + "/api/posts?session=" + sessionKey,
             dataType: "json",
             success: function(res: any) {
-                debugOutput("[ajax] All Posts Response: " + res);
+                debugOutput("[ajax] All Posts Response: " + JSON.stringify(res));
                 fetchImgs(res.mData);
-                debugOutput("[ajax] All Posts Response(w/img): " + res);
                 BriefPostsList.update(res);
                 PostCommentBlock.update(res);
             },
@@ -45,7 +44,7 @@ class BriefPostsList {
         $(".post-brief-block").remove();
 
         // append new list using handlebar and the data passed
-        $("#left-part").append(Handlebars.templates['BriefPostsList.hb'](data));
+        $("#left-part").append(templatedHTML("BriefPostsList", data));
         
         // register click events on the list
         $(".post-brief-block").on("click", BriefPostsList.onClickBriefPost);

@@ -5,6 +5,8 @@
 
     width: 70%;
     max-height: 300px;
+
+    padding-left: 30px;
     
 
     filter:alpha(opacity=50);
@@ -34,20 +36,29 @@
 
 .other-user-profile-block h4 {
     font-weight: 700;
-    text-indent: 20px;
 }
 
 .other-user-profile-block p {
-    text-indent: 40px;
+    text-indent: 20px;
 }
 
 
 .other-user-profile-block h5 {
     font-weight: 700;
-    text-indent: 60px;
 }
 
 .other-user-profile-block .user-information {
     overflow-y: scroll;
     max-height: 270px;
+}
+
+.other-user-profile-block .img-preview {
+    width: auto;
+    max-height: 100;
+    display: inline-block;
+}
+
+.other-user-profile-block .file-preview {
+    font-size: 30pt;
+    display: inline-block;
 }

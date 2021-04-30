@@ -59,5 +59,11 @@
 
 .my-user-profile-block .img-preview {
     width: auto;
-    height: auto;
+    max-height: 200px;
+    display: inline-block;
+}
+
+.my-user-profile-block .file-preview {
+    font-size: 50pt;
+    display: inline-block;
 }

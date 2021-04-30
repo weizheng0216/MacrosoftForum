@@ -11,9 +11,8 @@ class MyProfileBlock {
             url: backendUrl + "/api/users/my?session=" + sessionKey,
             dataType: "json",
             success: function (res: any) {
-                debugOutput("[ajax] Profile Response" + res);
+                debugOutput("[ajax] MyProfile Response: " + JSON.stringify(res));
                 fetchImgs(res.mData.mPosts);
-                debugOutput("[ajax] Profile Response(w/img): " + res);
                 MyProfileBlock.update(res);
             },
             error: function() {
@@ -36,7 +35,7 @@ class MyProfileBlock {
         $(".my-user-profile-block").remove();
 
         // append new block using handlebar and the data passed
-        $("#right-part").append(Handlebars.templates['MyProfileBlock.hb'](data));
+        $("#right-part").append(templatedHTML("MyProfileBlock", data));
 
         // register click events of the block
         $(".post-update-button").on("click", MyProfileBlock.onClickUpdatePost);
@@ -75,7 +74,7 @@ class MyProfileBlock {
                 "content": newContent
             }),
             success: function (res: any) {
-                debugOutput("[ajax] Update Response: " + res);
+                debugOutput("[ajax] UpdatePost Response: " + JSON.stringify(res));
                 // refresh all posts and comments
                 BriefPostsList.refresh();
                 MyProfileBlock.refresh();
@@ -93,7 +92,7 @@ class MyProfileBlock {
             url: backendUrl + "/api/posts/" + mID + "?session=" + sessionKey,
             dataType: "json",
             success: function (res: any) {
-                debugOutput(res);
+                debugOutput("[ajax] DelPost Response: " + JSON.stringify(res));
                 BriefPostsList.refresh();
                 MyProfileBlock.refresh();
             }
@@ -121,7 +120,7 @@ class MyProfileBlock {
                 "content": newContent,
             }),
             success: function (res: any) {
-                debugOutput(res);
+                debugOutput("[ajax] UpdateComment Response: " + JSON.stringify(res));
                 BriefPostsList.refresh();
                 MyProfileBlock.refresh();
             }
@@ -140,7 +139,7 @@ class MyProfileBlock {
                         backendUrl, mPID, mCID, sessionKey),
             dataType: "json",
             success: function (res: any) {
-                debugOutput(res);
+                debugOutput("[ajax] DelComment Response: " + JSON.stringify(res));
                 BriefPostsList.refresh();
                 MyProfileBlock.refresh();
             }

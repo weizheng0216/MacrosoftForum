@@ -11,15 +11,8 @@
                     <!-- leave comment's content here -->
                     {{this.mContent}}
                 </div>
-                {{#each this.mLinks}}
-                <a href= "{{this}}" target="_blank" value="{{this}}" >{{this}}</a>
-                {{/each}}
-                <div class = "show-image" >
-                    <input type="hidden" id = "imgType" value="{{this.mFileInfo.mType}}" /> 
-                    <img src ="#" id = "pcbimg-post{{this.mPostID}}" visibility = "visible" style="width:100px;height:100px;" />
-                </div>
-                <div class="lower-information">
 
+                <div class="lower-information">
                     <button id="my-down-vote-button{{this.mPostID}}" class="dislike-button little-button my-down-vote-button my-vote-{{this.mDownVoteCount}}"
                         data-postid="{{this.mPostID}}" data-downvotestate="{{this.mUserDownVote}}">
                         <!-- leave down vote count of this post here -->
@@ -54,11 +47,8 @@
                         <!-- leave post's date here -->
                         {{this.mDate}}
                     </button>
-
-
-
-                </div>
-            </div>
+                </div> <!-- End lower information -->
+            </div> <!-- End post-detail block -->
 
             {{#each this.mComments}}
                 <div class="comment-block" data-value="{{this.mCommentID}}">
@@ -84,7 +74,8 @@
                     </div>
                 </div>
             {{/each}}
-        </div>
+        </div>  <!-- End post-comment block -->
+
         <div class="add-comment-block">
             <textarea id="my-new-comment-content{{this.mPostID}}" class="comment-input" placeholder="add a comment"></textarea>
             <button class="send-comment" data-value="{{this.mPostID}}">
@@ -109,9 +100,6 @@
             <input class = "file-title" id = "file-title" placeholder="File Name" type="hidden" />
            
         </div>
-
-            <img src ="" id = "img-id" />
         
-        
-    </div>
+    </div> <!-- End post-comment view -->
 {{/each}}

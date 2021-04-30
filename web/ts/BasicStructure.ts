@@ -19,7 +19,7 @@ class BasicStructure {
         debugOutput("BasicStructure.init()");
         if (!BasicStructure.isInit) {
             // add the basix structure to the html
-            $(".container").append(Handlebars.templates["BasicStructure.hb"]());
+            $(".container").append(templatedHTML("BasicStructure"));
             $(".new-post-button").on("click", BasicStructure.onClickNewPost);
             $(".my-profile-button").on("click", BasicStructure.onClickMyProfile);
             $("#sign-out").on("click", BasicStructure.onClickSignOut)

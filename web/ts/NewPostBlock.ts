@@ -15,7 +15,7 @@ class NewPostBlock {
     private static init() {
         debugOutput("NewPostBlock.init()");
         if (!NewPostBlock.isInit) {
-            $("#right-part").append(Handlebars.templates["NewPostBlock.hb"]());
+            $("#right-part").append(templatedHTML("NewPostBlock"));
             //$("#file-upload-btn").on("click", NewPostBlock.readURL);
             $("#my-send-new-post-button").on("click", NewPostBlock.sendPost);
             $("#my-new-post-block").hide();

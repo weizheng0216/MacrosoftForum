@@ -1,0 +1,59 @@
+{{#with mData}}
+<div class="other-user-profile-block">
+    <span class="glyphicon glyphicon-remove close-button"></span>
+
+    <div class="user-information">
+        <h4>First Name:</h3>
+        <p>{{this.mUser.mFirstName}}</p>
+        <h4>Last Name:</h3>
+        <p>{{this.mUser.mLastName}}</p>
+        <h4>E-mail:</h3>
+        <p>{{this.mUser.mEmail}}</p>
+        
+        {{#each this.mPosts}}
+            <h4>Post: </h4>
+
+            <h5>Title: </h5>
+            <p>{{this.mTitle}}</p>
+
+            <h5>Content: </h5>
+            <p>{{this.mContent}}</p>
+
+            <h5>File: {{this.mFileInfo.mName}}</h5>
+            {{#if this.mFileInfo.mIsImg}}
+                <img class="img-preview" src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"/>
+            {{else}}
+                <span class="glyphicon glyphicon-file file-preview"></span>
+            {{/if}}
+
+            <h5>Links:</h5>
+            <ur>
+                {{#each this.mLinks}}
+                    <li><a href="{{this}}">{{this}}</a></li>
+                {{/each}}
+            </ur>
+        {{/each}}
+
+        {{#each this.mComments}}
+            <br/>
+            <h5>Comment: </h5>
+            <p>{{this.mContent}}</p>
+
+            <h5>File: {{this.mFileInfo.mName}}</h5>
+            {{#if this.mFileInfo.mIsImg}}
+                <img class="img-preview" src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"/>
+            {{else}}
+                <span class="glyphicon glyphicon-file file-preview"></span>
+            {{/if}}
+
+            <h5>Links:</h5>
+            <ur>
+                {{#each this.mLinks}}
+                    <li><a href="{{this}}">{{this}}</a></li>
+                {{/each}}
+            </ur>
+        {{/each}}
+
+    </div>
+</div>
+{{/with}}

@@ -31,6 +31,11 @@ jQuery(function () {
 // ===================================================
 // Utility Functions
 
+function templatedHTML(name: string, data?: any) {
+    data = data || {};
+    return Handlebars.templates[name + 'hbr'](data);
+}
+
 function format(s: string, ...objs: any[]) {
     if (!s) return "";
     return s.replace(/\{(\d+)\}/g, (m, i) => objs[i-1]);
@@ -48,7 +53,8 @@ function alertOutput(msg: string) {
 
 function myAjax(settings: JQuery.AjaxSettings) {
     if (!settings) return;
-    debugOutput("[ajax] Sending request: " + settings);
+    let msg = JSON.stringify(settings);
+    debugOutput("[ajax] Sending request: " + msg);
     if (test) {
         // Simulate backend response during tests
         let callback: any = settings.success;
@@ -68,30 +74,37 @@ function redirect(name: string) {
  * the json so that it could later be fed into Handlebars and be displayed.
  * 
  * The file data will be appended to the "mData" field of mFileInfo.
+ * The isImg boolean will be appended to mIsImg field of mFileInfo.
  * 
  * @param posts An array of "PostSubType"
  */
 function fetchImgs(posts: any) {
     for (let i = 0; i < posts.length; i++) {
         let p = posts[i];
+        p.mFileInfo.mIsImg = false;
         // the file attached to the post
         if (/image\/.+/.test(p.mFileInfo.mType)) {
+            p.mFileInfo.mIsImg = true;
             myAjax({
                 async: false,
                 type: "GET",
                 dataType: "json",
                 url: format("{1}/api/posts/{2}/file?session={3}",
                             backendUrl, p.mPostID, sessionKey),
-                success: function(data: any) {
-                    debugOutput("[ajax] File downloaded: " + data);
-                    p.mFileInfo.mData = data.mData.mData;
+                success: function(res: any) {
+                    let msg = JSON.stringify(res);
+                    debugOutput("[ajax] File downloaded: " + msg);
+                    p.mFileInfo.mData = res.mData.mData;
                 }
             });
         }
         // the files attached to the comments
+        if (!p.mComments) continue;
         for (let j = 0; j < p.mComments.length; j++) {
             let c = p.mComments[j];
+            c.mFileInfo.mIsImg = false;
             if (/image\/.+/.test(c.mFileInfo.mType)) {
+                c.mFileInfo.mIsImg = true;
                 myAjax({
                     async: false,
                     type: "GET",
@@ -99,7 +112,8 @@ function fetchImgs(posts: any) {
                     url: format("{1}/api/posts/{2}/comments/{3}/file?session={4}",
                                 backendUrl, p.mPostID, c.mCommentID, sessionKey),
                     success: function(res: any) {
-                        debugOutput("[ajax] File downloaded: " + res);
+                        let msg = JSON.stringify(res);
+                        debugOutput("[ajax] File downloaded: " + msg);
                         c.mFileInfo.mData = res.mData.mData;
                     }
                 });
@@ -138,7 +152,8 @@ let backend = test && (function () {
                     "mName": ""
                 },
                 "mLinks": [
-                    ""
+                    "www.lehigh.edu",
+                    "www.baidu.com"
                 ],
                 "mComments": [],
                 "mUserUpVote": false,
@@ -164,12 +179,56 @@ let backend = test && (function () {
                     "mName": ""
                 },
                 "mLinks": [
-                    ""
+                    "www.lehigh.edu",
+                    "www.baidu.com"
                 ],
-                "mComments": [],
+                "mComments": [
+                    {
+                        "mCommentID": 555,
+                        "mPostID": 123,
+                        "mContent": "My comment 1",
+                        "mAuthor": {
+                            "mUserID": 201,
+                            "mEmail": "example@lehigh.edu",
+                            "mFirstName": "first",
+                            "mLastName": "last"
+                        },
+                        "mDate": "2018-02-18 14:00:06",
+                        "mFileInfo": {
+                            "mType": "pdf",
+                            "mTime": "2020-01-15 08:15:23",
+                            "mName": "MyPDF"
+                        },
+                        "mLinks": [
+                            "https://www.examples.com",
+                            "https://www.lehigh.edu"
+                        ]
+                    },
+                    {
+                        "mCommentID": 555,
+                        "mPostID": 123,
+                        "mContent": "My comment 1",
+                        "mAuthor": {
+                            "mUserID": 201,
+                            "mEmail": "example@lehigh.edu",
+                            "mFirstName": "first",
+                            "mLastName": "last"
+                        },
+                        "mDate": "2018-02-18 14:00:06",
+                        "mFileInfo": {
+                            "mType": "pdf",
+                            "mTime": "2020-01-15 08:15:23",
+                            "mName": "MyPDF"
+                        },
+                        "mLinks": [
+                            "https://www.examples.com",
+                            "https://www.lehigh.edu"
+                        ]
+                    }
+                ],
                 "mUserUpVote": false,
                 "mUserDownVote": false
-            },
+            }
         ]
     };  // end of response
 
@@ -204,9 +263,53 @@ let backend = test && (function () {
                         "mName": ""
                     },
                     "mLinks": [
-                        ""
-                    ],
-                    "mComments": []
+                        "www.lehigh.edu",
+                        "www.baidu.com"
+                    ]
+                }
+            ],
+            "mComments": [
+                {
+                    "mCommentID": 555,
+                    "mPostID": 123,
+                    "mContent": "My comment 1",
+                    "mAuthor": {
+                        "mUserID": 201,
+                        "mEmail": "example@lehigh.edu",
+                        "mFirstName": "first",
+                        "mLastName": "last"
+                    },
+                    "mDate": "2018-02-18 14:00:06",
+                    "mFileInfo": {
+                        "mType": "pdf",
+                        "mTime": "2020-01-15 08:15:23",
+                        "mName": "MyPDF"
+                    },
+                    "mLinks": [
+                        "https://www.examples.com",
+                        "https://www.lehigh.edu"
+                    ]
+                },
+                {
+                    "mCommentID": 555,
+                    "mPostID": 123,
+                    "mContent": "My comment 1",
+                    "mAuthor": {
+                        "mUserID": 201,
+                        "mEmail": "example@lehigh.edu",
+                        "mFirstName": "first",
+                        "mLastName": "last"
+                    },
+                    "mDate": "2018-02-18 14:00:06",
+                    "mFileInfo": {
+                        "mType": "pdf",
+                        "mTime": "2020-01-15 08:15:23",
+                        "mName": "MyPDF"
+                    },
+                    "mLinks": [
+                        "https://www.examples.com",
+                        "https://www.lehigh.edu"
+                    ]
                 }
             ]
         }
@@ -228,40 +331,34 @@ let backend = test && (function () {
             // PostCommentBlock Get file under post
             regex = /\/api\/posts\/[0-9]+\/file(\?.*)?/;
             if (settings.type == "GET" && regex.test(settings.url)) {
-                debugOutput("Backend response: Get file under post");
                 return json3;
             }
 
             // PostCommentBlock Get file under comment
             regex = /\/api\/posts\/[0-9]+\/comments\/[0-9]+\/file(\?.*)?/;
             if (settings.type == "GET" && regex.test(settings.url)) {
-                debugOutput("Backend response: Get file under comment");
                 return json3;
             }
 
             // BriefPostsList Get all
             regex = /\/api\/posts(\?.*)?/;
             if (settings.type == "GET" && regex.test(settings.url)) {
-                debugOutput("Backend response: get all posts");
                 return json1;
             }
 
             // MyProfileBlock Get my profile
             regex = /\/api\/users\/my(\?.*)?/;
             if (settings.type == "GET" && regex.test(settings.url)) {
-                debugOutput("Backend response: Get my profile");
                 return json2;
             }
 
             // PostCommentBlock Get others' profile
             regex = /\/api\/users\/[0-9]+(\?.*)?/;
             if (settings.type == "GET" && regex.test(settings.url)) {
-                debugOutput("Backend response: Get others' profile");
                 return json2;
             }
 
             // Trivial reponses
-            debugOutput("Backend response: default");
             return {
                 "mStatus": "OK",
                 "mMessage": "",

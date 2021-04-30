@@ -37,8 +37,8 @@ cat css/*.css> $TARGETFOLDER/app.css
 cp login.css $TARGETFOLDER
 
 # step 6: compile handlebars templates to the deploy folder
-for hb in $(ls hb/); do
-    node_modules/handlebars/bin/handlebars hb/$hb >> $TARGETFOLDER/templates.js
+for hbr in $(ls hbr/); do
+    node_modules/handlebars/bin/handlebars hbr/$hb >> $TARGETFOLDER/templates.js
 done
 
 
