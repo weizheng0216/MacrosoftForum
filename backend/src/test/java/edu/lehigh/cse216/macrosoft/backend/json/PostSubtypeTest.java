@@ -26,6 +26,7 @@ public class PostSubtypeTest extends TestCase {
                 false,
                 null,
                 null,
+                null, 
                 null
         );
         assertEquals(post.mTitle, "title");

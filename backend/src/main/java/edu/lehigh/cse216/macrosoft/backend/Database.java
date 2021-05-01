@@ -133,7 +133,7 @@ class Database {
         mSelectLatestUserId = mConnection.prepareStatement("SELECT MAX(user_id) FROM users");
         mSelectUserByEmail = mConnection.prepareStatement("SELECT * FROM users WHERE email=?");
         mBlockUserByEmail = mConnection.prepareStatement("UPDATE users SET blocked=true WHERE email=?");
-        mInsertPost = mConnection.prepareStatement("INSERT INTO posts VALUES (default, ?, ?, default, 0, 0, ?, false, ?, default, ?, ?)");
+        mInsertPost = mConnection.prepareStatement("INSERT INTO posts VALUES (default, ?, ?, default, 0, 0, ?, false, ?, default, ?, ?, ?)");
         mSelectPostById = mConnection.prepareStatement("SELECT * FROM posts WHERE post_id=?");
         mSelectAllPosts = mConnection.prepareStatement("SELECT * FROM posts ORDER BY flagged DESC, date DESC");
         mSelectPostsByUserId = mConnection.prepareStatement("SELECT * FROM posts WHERE user_id=?");
@@ -192,13 +192,14 @@ class Database {
         mBlockUserByEmail.executeUpdate();
     }
 
-    void insertPost(String title, String content, int userId, String filetype, String filepath, String links) throws SQLException {
+    void insertPost(String title, String content, int userId, String filetype, String filepath, String links, String videos) throws SQLException {
         mInsertPost.setString(1, title);
         mInsertPost.setString(2, content);
         mInsertPost.setInt(3, userId);
         mInsertPost.setString(4, filetype);
         mInsertPost.setString(5, filepath);
         mInsertPost.setString(6, links);
+        mInsertPost.setString(7, videos);
         mInsertPost.executeUpdate();
     }
 

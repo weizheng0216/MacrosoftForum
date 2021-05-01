@@ -79,6 +79,76 @@ class DatabaseHelper {
         return resPayload;
     }
 
+
+        /**
+     * Try to get information about
+     * a post and the vote status of certain post id.
+     * @param postIdInt ID of the requesting user.
+     * @return Response payload.
+     */
+    AllPostsPayload queryGetAPost(String postId) throws SQLException {
+        AllPostsPayload resPayload = new AllPostsPayload();
+        int postIdInt = Integer.parseInt(postId);
+        ResultSet aPostRs = db.selectPostById(postIdInt);
+       // while (!aPostRs.next()) {
+        PostSubtype post = null;
+            
+        if (aPostRs.next()){
+             post = rs2Post(aPostRs);}
+        aPostRs.close();
+        
+        ResultSet rs = db.selectPostById(postIdInt);
+        String authorId = rs.next() ?
+                Integer.toString(rs.getInt("user_id")) : null;
+        rs.close();
+
+
+            int userIdInt = Integer.parseInt(authorId);;
+            boolean userUpVote = false;
+            boolean userDownVote = false;
+            ResultSet userVoteRs = db.selectVoteByIds(userIdInt, postIdInt);
+            if (userVoteRs.next()) {
+                userUpVote = userVoteRs.getBoolean("vote_up");
+                userDownVote = userVoteRs.getBoolean("vote_down");
+            }
+            userVoteRs.close();
+            resPayload.add(IntegratedPostSubtype
+                    .fromBasicPost(post, userUpVote, userDownVote));
+        //}
+        
+        return resPayload;
+    }
+
+    //    /**
+    //  * The largest query to the database. Attempt to get all information about
+    //  * all posts and the vote status of the requesting user.
+    //  * @param commentIdInt ID of the requesting comment.
+    //  * @return Response payload.
+    //  */
+    CommentPayload queryGetAComment(String commentId) throws SQLException {
+        CommentPayload resPayload = new CommentPayload();
+        int commentIdInt = Integer.parseInt(commentId);
+        ResultSet aCommentRs = db.SelectCommentById(commentIdInt);
+       // while (!aCommentRs.next()) {
+        CommentSubtype comment = null;
+            
+        if (aCommentRs.next()){
+             comment = rs2Comment(aCommentRs);}
+        aCommentRs.close();
+         
+        // ResultSet rs = db.selectCommentById(commentIdInt);
+        // String authorId = rs.next() ?
+        //         Integer.toString(rs.getInt("user_id")) : null;
+        // rs.close();
+
+        //     int userIdInt = Integer.parseInt(authorId);;
+           
+            resPayload.add(comment);
+        
+        
+        return resPayload;
+    }
+
     /**
      * Get a user's profile information.
      * @param userId ID of the target user.
@@ -304,10 +374,11 @@ class DatabaseHelper {
     String addPost(String userId, PostRequest req) throws SQLException {
         int userIdInt = Integer.parseInt(userId);
         StringBuilder linksSB = new StringBuilder();
+        String video = req.videos;
         for (String link : req.links)
             linksSB.append(link).append(" ");
         db.insertPost(req.title, req.content, userIdInt, req.fileType,
-                "", linksSB.toString());
+                "", linksSB.toString(), video);
         // get the id of newly added post
         ResultSet rs = db.selectLatestPostId();
         rs.next();
@@ -403,6 +474,9 @@ class DatabaseHelper {
         if (linksStr != null)
             links.addAll(Arrays.asList(linksStr.split("\\s")));
 
+        // Attached video of the post
+        String video = rs.getString("videos");
+
         // Comments under the post
         ArrayList<CommentSubtype> comments = new ArrayList<>();
         ResultSet commentsRs = db.selectCommentsByPostId(
@@ -422,6 +496,7 @@ class DatabaseHelper {
                 rs.getBoolean("flagged"), 
                 fileInfo,
                 links,
+                video,
                 comments
         );
     }

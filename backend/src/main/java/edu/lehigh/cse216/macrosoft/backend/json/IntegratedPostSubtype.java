@@ -13,6 +13,7 @@ public class IntegratedPostSubtype {
     public boolean mFlagged;
     public FileInfoSubtype mFileInfo;
     public ArrayList<String> mLinks;
+    public String mVideos;
     public ArrayList<CommentSubtype> mComments;
     public boolean mUserUpVote;
     public boolean mUserDownVote;
@@ -23,6 +24,7 @@ public class IntegratedPostSubtype {
                                  int mDownVoteCount, boolean mFlagged,
                                  FileInfoSubtype mFileInfo,
                                  ArrayList<String> mLinks,
+                                 String mVideos,
                                  ArrayList<CommentSubtype> mComments,
                                  boolean mUserUpVote, boolean mUserDownVote) {
         this.mPostID = mPostID;
@@ -35,6 +37,7 @@ public class IntegratedPostSubtype {
         this.mFlagged = mFlagged;
         this.mFileInfo = mFileInfo;
         this.mLinks = mLinks;
+        this.mVideos = mVideos;
         this.mComments = mComments;
         this.mUserUpVote = mUserUpVote;
         this.mUserDownVote = mUserDownVote;
@@ -53,6 +56,7 @@ public class IntegratedPostSubtype {
                 base.mFlagged,
                 base.mFileInfo,
                 base.mLinks,
+                base.mVideos,
                 base.mComments,
                 mUserUpVote,
                 mUserDownVote

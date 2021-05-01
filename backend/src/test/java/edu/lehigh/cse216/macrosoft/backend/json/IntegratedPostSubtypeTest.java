@@ -26,6 +26,7 @@ public class IntegratedPostSubtypeTest extends TestCase {
                 false,
                 null,
                 null,
+                null,
                 null
         );
         IntegratedPostSubtype intPost = IntegratedPostSubtype.fromBasicPost(

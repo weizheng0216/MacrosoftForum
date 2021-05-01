@@ -186,9 +186,9 @@ class BuzzServer {
         }, gson::toJson);
 
         // // *****************************************************************
-        // // *      GET /api/posts/:post_id/comments/:comment_id
+        // // *      GET /api/comments/:comment_id
         // // *****************************************************************
-        // Spark.get("/api/posts/:post_id/comments/:comment_id", (req, res) -> {
+        // Spark.get("/api/comments/:comment_id", (req, res) -> {
         //     res.type("application/json");
 
         //     // verify login
@@ -199,24 +199,17 @@ class BuzzServer {
         //         return StructuredResponse.LOGIN_ERR;
         //     }
 
-        //     // get file from storage
-        //     String postId = req.params("post_id");
+        //     // get comment from storage
         //     String commentId = req.params("comment_id");
-        //     String fullpath = db.queryCommentFilePath(postId, commentId);
-        //     String str64 = null;
-        //     if (fullpath != null) {
-        //         str64 = cache.getFile(fullpath);
-        //         if (str64 == null) {
-        //             str64 = drive.getFile(fullpath);
-        //             if (str64 != null)
-        //                 cache.saveFile(fullpath, str64);
-        //         }
+        //     Object payload = db.queryGetAComment(commentId);
+        //     if (payload == null) {
+        //         res.status(404);
+        //         return StructuredResponse.ERR("Comment does not exist.");
         //     }
 
-        //     // respond with file in payload
-        //     Object payload = new FilePayload(str64);
         //     res.status(200);
         //     return StructuredResponse.OK(payload);
+
         // }, gson::toJson);
 
         // *****************************************************************
@@ -504,7 +497,7 @@ class BuzzServer {
             return StructuredResponse.OK(null);
         }, gson::toJson);
     
-          // *****************************************************************
+        // *****************************************************************
         // *          PUT /api/posts/:post_id/comments/:comment_id/flag 
         // *****************************************************************
         Spark.put("/api/posts/:post_id/comments/:comment_id/flag", (req, res) -> {
@@ -536,7 +529,7 @@ class BuzzServer {
             }
 
             // execute update in db
-            db.flagComment(commentId, request);  // 
+            db.flagComment(commentId, request);  
 
             res.status(200);
             return StructuredResponse.OK(null);
