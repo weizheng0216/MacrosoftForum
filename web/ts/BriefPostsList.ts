@@ -50,9 +50,6 @@ class BriefPostsList {
         $(".post-brief-block").on("click", BriefPostsList.onClickBriefPost);
     }
 
-
-
-
     // ===================================================================
     // Events
 
@@ -64,16 +61,15 @@ class BriefPostsList {
 
         // The postId is stored in data-value attribute of the button.
         let postID = $(this).data("value");
-        debugOutput("User clicked post with id=" + postID);
 
-        // Only show the specific PostCommentBlock
         // Hide all other blocks:
         $("#my-new-post-block").hide();
-        $(".post-comment-view").hide();
         $(".my-user-profile-block").hide();
-        // Show the specific post comment block by postId:
-        // (each PostCommentBlock has a unique data-value={{postid}} attribute)
-        $(format(".post-comment-view[data-value='{1}']", postID)).show();
+        $(".my-user-profile-view").hide();
+
+        // Only show the specific PostCommentView
+        $(".post-comment-block").show();
+        PostCommentBlock.showPost(postID);
     }
 
 }

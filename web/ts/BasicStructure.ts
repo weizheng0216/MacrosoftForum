@@ -11,8 +11,8 @@ class BasicStructure {
      * This function initialize all basic structure and block of the index.html page. 
      *      1) it will initialize the banner, add functions to button
      *      2) it will refresh the BriefPostList. Note that BriefPostList have not been initalized, 
-     *              this funciton will send "GET api/posts" request to the backend and get all lists
-     *              and load the response to the screen etc. 
+     *         this funciton will send "GET api/posts" request to the backend and get all lists
+     *         and load the response to the screen etc. 
      *      3) it will initialize the NewPostBlock, which enable user to create a new post. 
      */
     private static init() {
@@ -24,14 +24,15 @@ class BasicStructure {
             $(".my-profile-button").on("click", BasicStructure.onClickMyProfile);
             $("#sign-out").on("click", BasicStructure.onClickSignOut)
             BriefPostsList.refresh();   
-            //PostCommentBlock.refresh();
-            // initial new post block
             NewPostBlock.refresh();
-            //PostCommentBlock.refresh();
             BasicStructure.isInit = true;
         }
     }
 
+    public static refresh() {
+        debugOutput("BasicStructure.refresh()");
+        BasicStructure.init();
+    }
 
     // ===================================================================
     // Events
@@ -53,9 +54,8 @@ class BasicStructure {
     private static onClickNewPost() {
         debugOutput("BasicStructure.showNewPostBlock()");
         
-        $(".post-comment-view").hide();
         $("#my-new-post-block").show();
-        $(".post-comment-view").hide();
+        $(".post-comment-block").hide();
         $(".my-user-profile-block").hide();
 
         // remember to hide other user's profile, if there is one
@@ -74,15 +74,11 @@ class BasicStructure {
      */
     private static onClickMyProfile() {
         debugOutput("BasicStructure.showMyProfileBlock()");
-        $(".post-comment-view").hide();
+        $(".post-comment-block").hide();
         $("#my-new-post-block").hide();
         $(".other-user-profile-block").remove();
         
         MyProfileBlock.refresh();
-    }
-
-    public static refresh() {
-        BasicStructure.init();
     }
 
 }

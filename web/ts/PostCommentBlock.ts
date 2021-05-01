@@ -1,55 +1,6 @@
 class PostCommentBlock {
 
-    /**
-     * 
-     * @param data 
-     * NOTE: during testing, we do not need Handlebars to append div to html
-     */
-
-    private static filedata = null;
-    private static filetype = null;
-
-    // Handler installed on HTML
-    public static readFile(input: any) {
-        debugOutput("PostCommentBlock.readFile()");
-
-        if (input.files && input.files[0]) {
-            $('#file-title').val(input.files[0].name.split('.')[0]);
-            var reader = new FileReader();
-            PostCommentBlock.filetype = input.files[0].type.split('.')[0];
-            reader.readAsBinaryString(input.files[0]);
-            reader.onloadend = function () {
-                debugOutput(reader.result);
-                var encodedStr = btoa(reader.result.toString());
-                $('#img-id').attr("src", "data:" + PostCommentBlock.filetype + ";base64," + encodedStr);
-                PostCommentBlock.filedata = encodedStr;
-                debugOutput(encodedStr);
-            }
-        }
-    }
-
-    public static showImage(postID) {
-        debugOutput("PostCommentBlock.showImage()");
-        let imageType = $('#imgType').val();
-        debugOutput("imageType: " + imageType);
-        if (imageType == "image/jpg" || imageType == "image/png") {
-            myAjax({
-                type: "GET",
-                url: backendUrl + "/api/posts/" + postID + "/file?session=" + sessionKey,
-                dataType: "json",
-                success: function (result: any) {
-                    debugOutput(result);
-                    if (result.mData.mData) {
-                        $('#pcbimg-post'+postID).attr("src", "data:" + imageType + ";base64," + result.mData.mData);
-                    }
-                    if ($('#pcbimg').attr("src") == "#") {
-                        $('#pcbimg').hide();
-                    }
-                }
-            });
-        }
-
-    }
+    private static currPostId = -1;
 
     /**
      * Called by BreifPostsList.refresh().
@@ -59,81 +10,23 @@ class PostCommentBlock {
     public static update(data: any) {
         debugOutput("PostCommentBlock.update()");
 
-        // Remove old containers from DOM
-        $(".post-comment-view").remove();
+        // Remove old container from DOM
+        $(".post-comment-block").remove();
 
-        // Add new ones & hide
+        // Append the updated template
         $("#right-part").append(templatedHTML("PostCommentBlock", data));
-        $(".post-comment-view").hide()
+        if (PostCommentBlock.currPostId == -1)
+            $(".post-comment-block").hide();
 
         // Register events
-        $(".send-comment").on("click", PostCommentBlock.addnewComment);
         $(".my-down-vote-button").on("click", PostCommentBlock.onClickDownVote);
         $(".my-up-vote-button").on("click", PostCommentBlock.onClickUpVote);
         $(".user-button").on("click", PostCommentBlock.onClickOthersProfile);
+
+        $("#send-comment").on("click", PostCommentBlock.onClickSendComment);
+        $("#comment-fileupload-input").on("change", PostCommentBlock.onChangeCommentAddFile);
+        $("#comment-fileupload-remove").on("click", PostCommentBlock.onClickCommentRemoveFile);
     }
-
-    private static addnewComment() {
-        debugOutput("PostCommentBlock.addnewComment()");
-
-        let postID = $(this).data("value");
-        let newContent = $("#my-new-comment-content" + postID).val();
-        var newFileName = $("#file-title").val();
-        if (newFileName.length <= 0) {
-            newFileName = "";
-        }
-        var newFileType = PostCommentBlock.filetype;
-        if (newFileType == null) {
-            //if(newFileType.length<=0){
-            newFileType = "";
-        }
-        var newFileData = PostCommentBlock.filedata;
-        if (newFileData == null) {
-            newFileData = "";
-        }
-        var newLink = $('#id-link').text();
-        if (newLink.length <= 0) {
-            newLink = "";
-        }
-        debugOutput(newFileName);
-        // link and file
-        if (!newContent) {
-            alertOutput("invalid input")
-            return;
-        } else {
-            sessionStorage.setItem("currentPost", postID);
-            myAjax({
-                type: "POST",
-                url: backendUrl + "/api/posts/" + postID + "/comments?session=" + sessionKey,
-                dataType: "json",
-                contentType: "application/json",
-                data: JSON.stringify({
-                    "postID": postID,
-                    "content": newContent,
-                    "links": "[" + newLink + "]",
-                    "fileName": newFileName,
-                    "fileType": newFileType,
-                    "fileData": newFileData
-                }),
-                success: function (result: any) {
-                    debugOutput(result);
-                    BriefPostsList.refresh()
-                    let postID = sessionStorage.getItem("currentPost");
-                    sessionStorage.removeItem("currentPost");
-                    debugOutput("this postID: " + postID, "this postID2: " + postID);
-                    $("#my-new-comment-content" + postID).val("");
-                    debugOutput("length: " + $(".post-comment-view[data-value='" + postID + "']").length);
-                    $(".post-comment-view[data-value='" + postID + "']").show();
-
-                }
-            });
-        }
-        debugOutput("user add new comment under post: " + postID,
-            "user send new comment: " + newContent);
-    }
-
-
-
 
     /**
      * Profile click event handler.
@@ -146,6 +39,24 @@ class PostCommentBlock {
         $(".close-button").on("click", function () {
             $(".other-user-profile-block").remove();
         })
+    }
+
+    /**
+     * Show the post with specific ID. However this function does not set
+     * the visibility of "post-comment-block", i.e. caller should set the
+     * "post-comment-block" to be the only visible block before calling this
+     * function.
+     * @param postId ID of the post to show.
+     */
+    public static showPost(postId: number) {
+        PostCommentBlock.currPostId = postId;
+        $(".post-comment-view").hide();
+        let targetView = $(format(".post-comment-view[data-value='{1}']", postId));
+        if (targetView) {  // only show when the view exists
+            targetView.show();
+        } else {  // otherwise hide the entire block again.
+            $(".post-comment-block").hide();
+        }
     }
 
     // ===================================================================
@@ -251,15 +162,78 @@ class PostCommentBlock {
         });
     }
 
-    private static onClickCommentAddFile() {
+    private static onClickDownloadFile() {
+        debugOutput("PostCommentBlock.onClickDownloadFile()");
 
+    }
+
+    private static onChangeCommentAddFile() {
+        debugOutput("PostCommentBlock.onChangeCommentAddFile()");
+
+        let htmFileInput: any = document.getElementById("comment-fileupload-input");
+        let htmName: any = document.getElementById("comment-fileupload-name");
+        htmName.innerHTML = "<b>" + htmFileInput.files[0].name + "</b>";
     }
 
     private static onClickCommentRemoveFile() {
+        debugOutput("PostCommentBlock.onClickCommentRemoveFile()");
 
+        let htmInput: any = document.getElementById("comment-fileupload-input");
+        let htmName: any = document.getElementById("comment-fileupload-name");
+        htmInput.value = null;  // clear selection
+        htmName.innerHTML = "No file selected";  // reset filename entry
     }
 
     private static onClickSendComment() {
+        debugOutput("PostCommentBlock.onClickSendComment()");
+        let htmFileInput: any = document.getElementById("comment-fileupload-input");
+        let file = htmFileInput.files ? htmFileInput.files[0] : null;
 
+        // Data to be included in request Json
+        let content = $("#comment-content-input").val();
+        let rawLinks: any = $("#comment-links").val();  // any: avoid compiler error
+        let fileName = file ? file.name : "";
+        let fileType = file ? file.type : "";
+        let fileData = "";  // base64 string for file content
+
+        // Comment must have content.
+        if (!content) {
+            alertOutput("Missing comment body.");
+            return;
+        }
+
+        (async function () {
+            // Load fileData
+            fileData = await new Promise(function (resolve) {
+                let reader = new FileReader();
+                reader.onloadend = e => resolve(btoa(e.target.result.toString()));
+                if (!file) resolve("");
+                reader.readAsBinaryString(file);
+            });
+            // Send request
+            myAjax({
+                type: "POST",
+                url: format("{1}/api/posts/{2}/comments?session={3}",
+                    backendUrl, PostCommentBlock.currPostId, sessionKey),
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    "content": content,
+                    "links": rawLinks.split(/\s+/),
+                    "fileName": fileName,
+                    "fileType": fileType,
+                    "fileData": fileData
+                }),
+                success: function (res: any) {
+                    debugOutput("[ajax] New Comment Response: " + JSON.stringify(res));
+
+                    // Refresh DOM upon success
+                    $("#comment-content-input").val("");
+                    $("#comment-links").val("");
+                    BriefPostsList.refresh();  // the entire PostCommentBlock will be reset here
+                    PostCommentBlock.showPost(PostCommentBlock.currPostId);
+                }
+            });
+        })();
     }
 }

@@ -10,16 +10,15 @@
     box-shadow:3px 3px 0px #a12424;
 }
 
-.post-comment-view {
+.post-comment-block {
     width: 100%;
     height: 100%;
 }
-.post-comment-block {
+.post-comment-view {
     width: 100%;
     height: 75%;
     overflow-y: scroll;
 }
-
 
 .post-detail-block {
     position: relative;
@@ -96,7 +95,6 @@
     margin: 10px;
 }
 
-
 .post-comment-view .file-panel .img-preview {
     min-height: 90px;
     max-height: 300px;
@@ -145,8 +143,6 @@
 .post-detail-block .lower-information .like-button {
     float: right;
     margin-right: 20px;
-
-
 }
 
 .post-detail-block .lower-information .dislike-button {
@@ -158,7 +154,6 @@
     float: right;
     margin-right: 20px;
 }
-
 
 .my-vote-true {
     background-color: #F2AA80;
@@ -224,7 +219,7 @@
     display: flex;
 }
 
-.add-comment-block .comment-input {
+#comment-content-input {
     font-size: 20px;
     margin-left: 5%;
     width: 75%;
@@ -236,7 +231,7 @@
     box-shadow:3px 3px 0px #a12424;
 }
 
-.add-comment-block .send-comment {
+#send-comment {
     position: relative;
     margin-left: 2%;
     font-weight: 700;
@@ -254,12 +249,12 @@
     box-shadow:3px 3px 0px #a12424;
 }
 
-.comment-attachments {
+#comment-attachments {
     height: 50px;
     display: flex;
 }
 
-.comment-attachments textarea {
+#comment-links {
     margin-left: 5%;
     height: 40px;
     width: 40%;
@@ -270,7 +265,7 @@
     box-shadow:3px 3px 0px #a12424;
 }
 
-.comment-attachments label {
+#comment-fileupload-label {
     margin-left: 2%;
     font-size: medium;
     text-align: center;
@@ -279,7 +274,7 @@
     line-height: 40px;
 }
 
-.comment-attachments button {
+#comment-fileupload-remove {
     height: 40px;
     width: 40px;
     margin-left: 10px;
@@ -287,7 +282,7 @@
     font-size: 8pt;
 }
 
-.comment-attachments nobr {
+#comment-fileupload-name {
     margin-top: 12px;
     margin-left: 10px;
     height: 50px;

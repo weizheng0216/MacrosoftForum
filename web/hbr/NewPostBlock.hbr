@@ -33,7 +33,7 @@
     <div class="links-block">
         Links
         <textarea class="text-input" id="input-links"
-            placeholder="optional links (separate by semicolon or newline)"></textarea>
+            placeholder="optional links (separate by space or newline)"></textarea>
     </div>
 
     <br/>
