@@ -4,47 +4,61 @@
         <div class="post-comment-block">
             <div class="post-detail-block" value-postid="">
                 <div class="title">
-                    <!-- leave comment's title here -->
                     {{this.mTitle}}
                 </div>
                 <div class="content">
-                    <!-- leave comment's content here -->
                     {{this.mContent}}
                 </div>
-
+                <div class="attachments-panel">
+                    {{#if this.mFileInfo.mType}}
+                        <div class="file-panel">
+                            {{#if this.mFileInfo.mIsImg}}
+                                <img src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"
+                                     class="img-preview img-thumbnail rounded mx-auto d-block"
+                                     alt="Preview not available">
+                            {{else}}
+                                <span class="glyphicon glyphicon-file file-preview"></span>
+                            {{/if}}
+                            <div class="file-info">
+                                <div>{{this.mFileInfo.mName}}</div>
+                                <button class="file-down-btn little-button">Download</button>
+                            </div>
+                        </div>
+                    {{/if}}
+                    {{#if this.mLinks.length}}
+                        <div class="links-panel">
+                            <h5>Links: </h5>
+                            <ul>
+                                {{#each this.mLinks}}
+                                    <li><a href="{{this}}">{{this}}</a></li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    {{/if}}
+                </div> <!-- End attachments -->
+                
                 <div class="lower-information">
-                    <button id="my-down-vote-button{{this.mPostID}}" class="dislike-button little-button my-down-vote-button my-vote-{{this.mDownVoteCount}}"
-                        data-postid="{{this.mPostID}}" data-downvotestate="{{this.mUserDownVote}}">
-                        <!-- leave down vote count of this post here -->
-                        <span id="my-down-vote-count{{this.mPostID}}" class="glyphicon glyphicon-thumbs-down">{{this.mDownVoteCount}}
-
-                        </span>    
+                    <button id="my-down-vote-button{{this.mPostID}}"
+                            class="dislike-button little-button my-down-vote-button my-vote-{{this.mDownVoteCount}}"
+                            data-postid="{{this.mPostID}}"
+                            data-downvotestate="{{this.mUserDownVote}}">
+                        <span id="my-down-vote-count{{this.mPostID}}" class="glyphicon glyphicon-thumbs-down">{{this.mDownVoteCount}}</span>
                     </button>
 
-                    <button id="upload-button" class = "upload-button little-button"
-                        onclick="$('.file-upload-input').trigger( 'click')">
-                        <span     class = "glyphicon glyphicon-link">
-                        </span>
-                    </button>
-
-                    <button id="my-up-vote-button{{this.mPostID}}" class="like-button little-button my-up-vote-button my-vote-{{this.mUpVoteCount}}" 
-                        data-postid="{{this.mPostID}}" data-upvotestate="{{this.mUserUpVote}}">
-                        <!-- leave up vote count of this post here -->
-                        <span id="my-up-vote-count{{this.mPostID}}" class="glyphicon glyphicon-thumbs-up">{{this.mUpVoteCount}}
-                            
-                        </span>
-                        
+                    <button id="my-up-vote-button{{this.mPostID}}"
+                            class="like-button little-button my-up-vote-button my-vote-{{this.mUpVoteCount}}" 
+                            data-postid="{{this.mPostID}}"
+                            data-upvotestate="{{this.mUserUpVote}}">
+                        <span id="my-up-vote-count{{this.mPostID}}" class="glyphicon glyphicon-thumbs-up">{{this.mUpVoteCount}}</span>
                     </button>
 
                     <button class="user-button little-button" data-value="{{this.mAuthor.mUserID}}">
                         <span class="glyphicon glyphicon-user"></span>
-                        <!-- leave post's user here -->
                         {{this.mAuthor.mFirstName}} {{this.mAuthor.mLastName}}
                     </button>
 
                     <button class="date-button little-button">
                         <span class="glyphicon glyphicon-calendar"></span>
-                        <!-- leave post's date here -->
                         {{this.mDate}}
                     </button>
                 </div> <!-- End lower information -->
@@ -53,53 +67,68 @@
             {{#each this.mComments}}
                 <div class="comment-block" data-value="{{this.mCommentID}}">
                     <div class="content">
-                        <!-- leave comment's content here -->
                         {{this.mContent}}
                     </div>
+                    <div class="attachments-panel">
+                        {{#if this.mFileInfo.mType}}
+                            <div class="file-panel">
+                                {{#if this.mFileInfo.mIsImg}}
+                                    <img src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"
+                                        class="img-preview img-thumbnail rounded mx-auto d-block"
+                                        alt="Preview not available">
+                                {{else}}
+                                    <span class="glyphicon glyphicon-file file-preview"></span>
+                                {{/if}}
+                                <div class="file-info">
+                                    <div>{{this.mFileInfo.mName}}</div>
+                                    <button class="file-down-btn little-button">Download</button>
+                                </div>
+                            </div>
+                        {{/if}}
+                        {{#if this.mLinks.length}}
+                            <div class="links-panel">
+                                <h5>Links: </h5>
+                                <ul>
+                                    {{#each this.mLinks}}
+                                        <li><a href="{{this}}">{{this}}</a></li>
+                                    {{/each}}
+                                </ul>
+                            </div>
+                        {{/if}}
+                    </div> <!-- End attachments -->
 
                     <div class="lower-information">
-
                         <button class="user-button little-button" data-value="{{this.mAuthor.mUserID}}">
                             <span class="glyphicon glyphicon-user"></span>
-                            <!-- leave comment's user here -->
                             {{this.mAuthor.mFirstName}} {{this.mAuthor.mLastName}}
                         </button>
 
                         <button class="date-button little-button">
                             <span class="glyphicon glyphicon-calendar"></span>
-                            <!-- leave commnet's post date here -->
                             {{this.mDate}}
                         </button>
-
                     </div>
                 </div>
             {{/each}}
         </div>  <!-- End post-comment block -->
 
         <div class="add-comment-block">
-            <textarea id="my-new-comment-content{{this.mPostID}}" class="comment-input" placeholder="add a comment"></textarea>
-            <button class="send-comment" data-value="{{this.mPostID}}">
-                <span class="glyphicon glyphicon-send"></span>
-                Send!
-            </button>
-
+            <div class="comment-main">
+                <textarea id="my-new-comment-content{{this.mPostID}}" class="comment-input" placeholder="add a comment"></textarea>
+                <button class="send-comment" data-value="{{this.mPostID}}">
+                    <span class="glyphicon glyphicon-send"></span>
+                    Send!
+                </button>
+            </div>
+            <div class="comment-attachments">
+                <textarea id="comment-links{{this.mPostID}}" placeholder="links (separate by semicolon)"></textarea>
+                <input style="display:none;" type="file" id="comment-fileupload-input{{this.mPostID}}" data-value="{{this.mPostID}}" accept="image/*, application/pdf"/>
+                <label for="comment-fileupload-input{{this.mPostID}}" class="mybtn" id="comment-fileupload-label{{this.mPostID}}">Upload File</label>
+                <button data-value="{{this.mPostID}}" class="mybtn">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+                <nobr id="comment-fileupload-name{{this.mPostID}}">No file selected</nobr>
+            </div>
         </div>    
-
-        <div class="link">
-
-            <button class = "link-insert" id = "link-insert" onclick="PostCommentBlock.AddLink();">
-                    <span class = "glyphicon glyphicon-link"> </span>
-                    Link
-            </button> 
-            <textarea class="insert-link" id="insert-link" placeholder="Link"></textarea>
-            <a href = "" id = "id-link"> </a>
-        </div>
-
-         <div class = "file"> 
-            <input class="insert-file-input" id = "insert-file-input" type='file' onchange="PostCommentBlock.readFile(this);" accept="image/*, application/pdf" />   
-            <input class = "file-title" id = "file-title" placeholder="File Name" type="hidden" />
-           
-        </div>
-        
     </div> <!-- End post-comment view -->
 {{/each}}

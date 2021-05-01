@@ -4,9 +4,6 @@
 /// <reference path="ts/NewPostBlock.ts"/>
 /// <reference path="ts/MyProfileBlock.ts"/>
 
-// Prevent compiler errors when using Handlebars
-let Handlebars: any;
-
 const backendUrl = "https://cse216-macrosoft.herokuapp.com";
 
 const alertOn = true;
@@ -33,7 +30,7 @@ jQuery(function () {
 
 function templatedHTML(name: string, data?: any) {
     data = data || {};
-    return Handlebars.templates[name + 'hbr'](data);
+    return Handlebars.templates[name + '.hbr'](data);
 }
 
 function format(s: string, ...objs: any[]) {
@@ -148,8 +145,8 @@ let backend = test && (function () {
                 "mFlagged": true,
                 "mFileInfo": {
                     "mType": "image/png",
-                    "mTime": "",
-                    "mName": ""
+                    "mTime": "2020-05-01 55:55:55 234145134",
+                    "mName": "Reddot.png"
                 },
                 "mLinks": [
                     "www.lehigh.edu",
@@ -175,8 +172,8 @@ let backend = test && (function () {
                 "mFlagged": false,
                 "mFileInfo": {
                     "mType": "image/png",
-                    "mTime": "",
-                    "mName": ""
+                    "mTime": "2020-05-01 55:55:55 234145134",
+                    "mName": "Reddot.png"
                 },
                 "mLinks": [
                     "www.lehigh.edu",
@@ -197,7 +194,7 @@ let backend = test && (function () {
                         "mFileInfo": {
                             "mType": "pdf",
                             "mTime": "2020-01-15 08:15:23",
-                            "mName": "MyPDF"
+                            "mName": "MyPDFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFffF"
                         },
                         "mLinks": [
                             "https://www.examples.com",
@@ -258,13 +255,11 @@ let backend = test && (function () {
                     "mDownVoteCount": 0,
                     "mFlagged": false,
                     "mFileInfo": {
-                        "mType": "image/png",
+                        "mType": "",
                         "mTime": "",
                         "mName": ""
                     },
                     "mLinks": [
-                        "www.lehigh.edu",
-                        "www.baidu.com"
                     ]
                 }
             ],

@@ -9,26 +9,30 @@
 
     {{#each this.mPosts}}
         <h4>Post: </h4>
-        <h5>title: </h5>
+        <h5>Title: </h5>
         <textarea name="" id="post-title{{this.mPostID}}" cols="30" rows="3" class="edit-place">{{this.mTitle}}</textarea>
-        <h5>content: </h5>
+        <h5>Content: </h5>
         <textarea name="" id="post-content{{this.mPostID}}" cols="30" rows="5" class="edit-place">{{this.mContent}}</textarea>
-        <h5>file: {{this.mFileInfo.mName}}</h5>
-        <div name="" id="post-file{{this.mPostID}}" cols="30" rows="5" class="edit-place">
-            {{#if this.mFileInfo.mIsImg}}
-                <img class="img-preview" src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"/>
-            {{else}}
-                <span class="glyphicon glyphicon-file file-preview"></span>
-            {{/if}}
-        </div>
-        <h5>links: </h5>
-        <div name="" id="post-links{{this.mPostID}}" cols="30" rows="5" class="edit-place">
-            <ul>
-                {{#each this.mLinks}}
-                    <li><a href="{{this}}">{{this}}</a></li>
-                {{/each}}
-            </ul>
-        </div>
+        {{#if this.mFileInfo.mType}}
+            <h5>File: {{this.mFileInfo.mName}}</h5>
+            <div name="" id="post-file{{this.mPostID}}" cols="30" rows="5" class="edit-place">
+                {{#if this.mFileInfo.mIsImg}}
+                    <img class="img-preview" src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"/>
+                {{else}}
+                    <span class="glyphicon glyphicon-file file-preview"></span>
+                {{/if}}
+            </div>
+        {{/if}}
+        {{#if this.mLinks.length}}
+            <h5>Links: </h5>
+            <div name="" id="post-links{{this.mPostID}}" cols="30" rows="5" class="edit-place">
+                <ul>
+                    {{#each this.mLinks}}
+                        <li><a href="{{this}}">{{this}}</a></li>
+                    {{/each}}
+                </ul>
+            </div>
+        {{/if}}
         <div>
             <button class="post-update-button edit-button" data-value="{{this.mPostID}}">
                 <span class="glyphicon glyphicon-upload"></span>
@@ -44,25 +48,29 @@
      
     {{#each this.mComments}}
         <h4>Comment: </h4>
-        <h5>content: </h5>
+        <h5>Content: </h5>
         <textarea name="" id="comment-content{{this.mCommentID}}" cols="30" rows="5" class="edit-place">{{this.mContent}}</textarea>
         <img class="img-preview" src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"/>
-        <h5>file: {{this.mFileInfo.mName}}</h5>
-        <div name="" id="comment-file{{this.mPostID}}" cols="30" rows="5" class="edit-place">
-            {{#if this.mFileInfo.mIsImg}}
-                <img class="img-preview" src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"/>
-            {{else}}
-                <span class="glyphicon glyphicon-file file-preview"></span>
-            {{/if}}
-        </div>
-        <h5>links: </h5>
-        <div name="" id="comment-links{{this.mPostID}}" cols="30" rows="5" class="edit-place">
-            <ul>
-                {{#each this.mLinks}}
-                    <li><a href="{{this}}">{{this}}</a></li>
-                {{/each}}
-            </ul>
-        </div>
+        {{#if this.mFileInfo.mType}}
+            <h5>File: {{this.mFileInfo.mName}}</h5>
+            <div name="" id="comment-file{{this.mPostID}}" cols="30" rows="5" class="edit-place">
+                {{#if this.mFileInfo.mIsImg}}
+                    <img class="img-preview" src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"/>
+                {{else}}
+                    <span class="glyphicon glyphicon-file file-preview"></span>
+                {{/if}}
+            </div>
+        {{/if}}
+        {{#if this.mLinks.length}}
+            <h5>Links: </h5>
+            <div name="" id="comment-links{{this.mPostID}}" cols="30" rows="5" class="edit-place">
+                <ul>
+                    {{#each this.mLinks}}
+                        <li><a href="{{this}}">{{this}}</a></li>
+                    {{/each}}
+                </ul>
+            </div>
+        {{/if}}
         <div>
             <button class="comment-update-button edit-button" data-value="{{this.mCommentID}}" data-postid="{{this.mPostID}}">
                 <span class="glyphicon glyphicon-upload"></span>

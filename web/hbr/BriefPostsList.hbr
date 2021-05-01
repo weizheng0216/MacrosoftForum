@@ -7,9 +7,7 @@
         </div>
 
         {{#if this.mFlagged}}
-            <div class="glyphicon glyphicon-exclamation-sign flag-icon">
-                <span class="bad">BAD</span>
-            </div>
+            <div class="glyphicon glyphicon-exclamation-sign flag-icon"></div>
         {{/if}}
     </div>
 

@@ -38,7 +38,7 @@ cp login.css $TARGETFOLDER
 
 # step 6: compile handlebars templates to the deploy folder
 for hbr in $(ls hbr/); do
-    node_modules/handlebars/bin/handlebars hbr/$hb >> $TARGETFOLDER/templates.js
+    node_modules/handlebars/bin/handlebars hbr/$hbr >> $TARGETFOLDER/templates.js
 done
 
 

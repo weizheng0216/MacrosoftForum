@@ -1,12 +1,10 @@
 .new-post-block {
+    padding: 20px;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
 
-    position: relative;
-    left:2%;
-    right: 2%;
-    width: 96%;
-    min-height: 90%;
-
-    overflow: scroll;
     border: 3px solid #8C0303;
     border-radius: 15px;
     box-shadow:8px 8px 0px #a12424;
@@ -15,158 +13,68 @@
     font-weight: 700;
 }
 
-
-.new-post-block .title {
-
-    position: relative;
-    top:10%;
-    left: 10%;
-    width: 80%;
-    height: 80px;
-
-}
-
-.new-post-block .title .input-title {
-
-    position: relative;
+.new-post-block .text-input {
     width: 100%;
-    height: 50px;
-
+    height: 100%;
     resize: none;
-    border: 3px solid #8C0303;
-    border-radius: 15px;
-    box-shadow:8px 8px 0px #a12424;
-
-}
-
-.new-post-block .content {
-
-    position: relative;
-    top:15%;
-    left: 10%;
-    width: 80%;
-    height: 300px;
-
-}
-
-.new-post-block .content .input-content {
-
-    position: relative;
-    width: 100%;
-    height: 270px;
-
-    resize: none;
-    border: 3px solid #8C0303;
-    border-radius: 15px;
-    box-shadow:8px 8px 0px #a12424;
-
     font-weight: 500;
-    font-size: 20px;
-}
-
-/* .new-post-block .file-upload  {
-    position: relative;
-    top: 24%;
-    left: 10%;
-    width: 80%;
-    height: 40px;
-} */
-
-.new-post-block  .file-upload-button {
-    position: relative;
-    height: 40px;
-    top: 24%;
-    left: 12%;
-    width: 25%;
     border: 3px solid #8C0303;
     border-radius: 15px;
     box-shadow:8px 8px 0px #a12424;
 }
 
-.new-post-block .file-upload-button:hover {
-    cursor:pointer;
-    background-color: #F2AA80;
-    transform:translate(calc(3px), calc(3px));
-    box-shadow:3px 3px 0px #a12424;
+.new-post-block .title-block {
+    height: 80px;
 }
 
-.new-post-block .link-upload {
+.new-post-block .content-block {
+    height: 300px;
+}
+
+.new-post-block .file-block {
+    height: 100px;
+}
+
+#post-fileupload {
+    height: 50px;
+    display: flex;
+}
+
+#post-fileupload-label {
+    font-size: medium;
+    text-align: center;
+    width: 160px;
+    height: 40px;
+    line-height: 40px;
+}
+
+#post-fileupload-name {
     position: relative;
-    top: 24%;
-    left: 12%;
-    width: 25%;
+    top: 6px;
+    left: 15px;
+    height: 50px;
+    width: 70%;
+    overflow: hidden;
+    word-break : break-all;
+}
 
-    border: 3px solid #8C0303;
-    border-radius: 15px;
-    box-shadow:8px 8px 0px #a12424;
-  }
+#post-fileupload-remove {
+    height: 40px;
+    width: 40px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 8pt;
+}
 
-  .new-post-block .link-upload:hover {
-    cursor:pointer;
-    transform:translate(calc(3px), calc(3px));
-    background-color: #F2AA80;
-    box-shadow:3px 3px 0px #a12424;
+.new-post-block .links-block {
+    height: 150px;
 }
 
 .new-post-block .send-post {
-
+    margin-left: 50%;
     position: relative;
-    top: 24%;
-    left: 12%;
-    width: 25%;
+    top: 15px;
+    left: -35%;
+    width: 70%;
     height: 40px;
-
-    border: 3px solid #8C0303;
-    border-radius: 15px;
-    box-shadow:8px 8px 0px #a12424;
-
 }
-
-.new-post-block .send-post:hover {
-    cursor:pointer;
-    transform:translate(calc(3px), calc(3px));
-    background-color: #F2AA80;
-    box-shadow:3px 3px 0px #a12424;
-}
-  
-.new-post-block .file-upload-input  {
-    position: relative;
-    top: 24%;
-    left: 10%;
-    width: 10%;
-    height: 5px;
-    outline: none;
-    opacity: 0;
-    cursor: pointer;
-  }
-  .new-post-block .inputs .image-title {
-    top: 27%;
-    left: 10%;
-    height:40px;
-    border: 3px solid #8C0303;
-    border-radius: 7px;
-    box-shadow:8px 8px 0px #a12424;
-  }
-  .new-post-block .upload-link {
-    top: 27%;
-    left: 10%;
-    width:30%;
-    height:40px;
-    border: 3px solid #8C0303;
-    border-radius: 7px;
-    box-shadow:8px 8px 0px #a12424;
-  }
-
-  .new-post-block .img  {
-    max-height: 400px;
-    max-width: 700px;
-    border: 3px solid #8C0303;
-    border-radius: 15px;
-    box-shadow: 8px 8px 0px #a12424;
-    margin: auto;
-    padding: 20px;
-  } 
-  
-
-
-

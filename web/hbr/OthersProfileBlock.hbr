@@ -19,19 +19,23 @@
             <h5>Content: </h5>
             <p>{{this.mContent}}</p>
 
-            <h5>File: {{this.mFileInfo.mName}}</h5>
-            {{#if this.mFileInfo.mIsImg}}
-                <img class="img-preview" src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"/>
-            {{else}}
-                <span class="glyphicon glyphicon-file file-preview"></span>
+            {{#if this.mFileInfo.mType}}
+                <h5>File: {{this.mFileInfo.mName}}</h5>
+                {{#if this.mFileInfo.mIsImg}}
+                    <img class="img-preview" src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"/>
+                {{else}}
+                    <span class="glyphicon glyphicon-file file-preview"></span>
+                {{/if}}
+            {{/if}}
+            {{#if this.mLinks.length}}
+                <h5>Links:</h5>
+                <ur>
+                    {{#each this.mLinks}}
+                        <li><a href="{{this}}">{{this}}</a></li>
+                    {{/each}}
+                </ur>
             {{/if}}
 
-            <h5>Links:</h5>
-            <ur>
-                {{#each this.mLinks}}
-                    <li><a href="{{this}}">{{this}}</a></li>
-                {{/each}}
-            </ur>
         {{/each}}
 
         {{#each this.mComments}}
@@ -39,19 +43,22 @@
             <h5>Comment: </h5>
             <p>{{this.mContent}}</p>
 
-            <h5>File: {{this.mFileInfo.mName}}</h5>
-            {{#if this.mFileInfo.mIsImg}}
-                <img class="img-preview" src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"/>
-            {{else}}
-                <span class="glyphicon glyphicon-file file-preview"></span>
+            {{#if this.mFileInfo.mType}}
+                <h5>File: {{this.mFileInfo.mName}}</h5>
+                {{#if this.mFileInfo.mIsImg}}
+                    <img class="img-preview" src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"/>
+                {{else}}
+                    <span class="glyphicon glyphicon-file file-preview"></span>
+                {{/if}}
             {{/if}}
-
-            <h5>Links:</h5>
-            <ur>
-                {{#each this.mLinks}}
-                    <li><a href="{{this}}">{{this}}</a></li>
-                {{/each}}
-            </ur>
+            {{#if this.mLinks.length}}
+                <h5>Links:</h5>
+                <ur>
+                    {{#each this.mLinks}}
+                        <li><a href="{{this}}">{{this}}</a></li>
+                    {{/each}}
+                </ur>
+            {{/if}}
         {{/each}}
 
     </div>

@@ -97,3 +97,16 @@ div {
     transform:translate(calc(3px), calc(3px));
     box-shadow:5px 5px 0px #a12424;
 }
+
+.mybtn {
+    border: 3px solid #8C0303;
+    border-radius: 15px;
+    box-shadow:8px 8px 0px #a12424;
+}
+
+.mybtn:hover {
+    cursor:pointer;
+    transform:translate(calc(3px), calc(3px));
+    background-color: #F2AA80;
+    box-shadow:3px 3px 0px #a12424;
+}
