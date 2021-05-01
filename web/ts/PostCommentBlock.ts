@@ -20,6 +20,8 @@ class PostCommentBlock {
         $(".my-down-vote-button").on("click", PostCommentBlock.onClickDownVote);
         $(".my-up-vote-button").on("click", PostCommentBlock.onClickUpVote);
         $(".user-button").on("click", PostCommentBlock.onClickOthersProfile);
+        $(".post-file-down-btn").on("click", PostCommentBlock.onClickPostDownloadFile);
+        $(".comment-file-down-btn").on("click", PostCommentBlock.onClickCommentDownloadFile);
 
         $("#send-comment").on("click", PostCommentBlock.onClickSendComment);
         $("#comment-fileupload-input").on("change", PostCommentBlock.onChangeCommentAddFile);
@@ -169,9 +171,39 @@ class PostCommentBlock {
         });
     }
 
-    private static onClickDownloadFile() {
-        debugOutput("PostCommentBlock.onClickDownloadFile()");
+    private static onClickPostDownloadFile() {
+        debugOutput("PostCommentBlock.onClickPostDownloadFile()");
 
+        let id = PostCommentBlock.currPostId;
+        let type = $("#file-panel-" + id).data("value");
+        let name = $("#post-filename-" + id).html();
+
+        (async function () {
+            let base64: string = await new Promise(resolve => {
+                if (/image\/\w/.test(type)) {
+                    let src = $("#post-img-preview-"+id).attr("src");
+                    resolve(src.replace(/^data:.+;base64,/, ""));
+                } else {
+                    // need to download from backend
+                    myAjax({
+                        type: "GET",
+                        dataType: "json",
+                        url: format("{1}/api/posts/{2}/file?session={3}",
+                                    backendUrl, id, sessionKey),
+                        success: function(res: any) {
+                            let msg = JSON.stringify(res);
+                            debugOutput("[ajax] File downloaded: " + msg);
+                            resolve(res.mData.mData);
+                        }
+                    });
+                }
+            });
+            downloadFile(base64, type, name);
+        })();
+    }
+
+    private static onClickCommentDownloadFile() {
+        debugOutput("PostCommentBlock.onClickCommentDownloadFile()");
     }
 
     private static onChangeCommentAddFile() {

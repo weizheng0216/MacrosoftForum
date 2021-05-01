@@ -88,7 +88,7 @@
     float: left;
 }
 
-.post-comment-view .file-panel .file-down-btn {
+.post-comment-view .file-panel .post-file-down-btn, .comment-file-down-btn {
     font-size: medium;
     width: 80%;
     height: 100%;

@@ -10,17 +10,18 @@
             </div>
             <div class="attachments-panel">
                 {{#if this.mFileInfo.mType}}
-                    <div class="file-panel">
+                    <div class="file-panel" id="file-panel-{{this.mPostID}}" data-value="{{this.mFileInfo.mType}}">
                         {{#if this.mFileInfo.mIsImg}}
                             <img src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"
                                     class="img-preview img-thumbnail rounded mx-auto d-block"
+                                    id="post-img-preview-{{this.mPostID}}"
                                     alt="Preview not available">
                         {{else}}
                             <span class="glyphicon glyphicon-file file-preview"></span>
                         {{/if}}
                         <div class="file-info">
-                            <div>{{this.mFileInfo.mName}}</div>
-                            <button class="file-down-btn little-button">Download</button>
+                            <div id="post-filename-{{this.mPostID}}">{{this.mFileInfo.mName}}</div>
+                            <button class="post-file-down-btn little-button">Download</button>
                         </div>
                     </div>
                 {{/if}}
@@ -80,7 +81,7 @@
                             {{/if}}
                             <div class="file-info">
                                 <div>{{this.mFileInfo.mName}}</div>
-                                <button class="file-down-btn little-button">Download</button>
+                                <button class="comment-file-down-btn little-button">Download</button>
                             </div>
                         </div>
                     {{/if}}

@@ -67,6 +67,28 @@ function redirect(name: string) {
     window.location.replace(backendUrl + "/" + name);
 }
 
+function downloadFile(base64: string, fileType: string, fileName: string) {
+    // Create blob
+    let bstr = atob(base64);
+    let n = bstr.length;
+    let u8arr = new Uint8Array(n);
+    while (n--)
+        u8arr[n] = bstr.charCodeAt(n);
+    let blob: Blob = new Blob([u8arr], { type: fileType });
+
+    // Create url
+    let url = URL.createObjectURL(blob);
+
+    // Trigger download
+    let a = document.createElement("a");
+    a.setAttribute("href", url)
+    a.setAttribute("download", fileName)
+    a.setAttribute("target", "_blank")
+    let clickEvent = document.createEvent("MouseEvents");
+    clickEvent.initEvent("click", true, true);  
+    a.dispatchEvent(clickEvent);
+}
+
 /**
  * Accept raw backend response and scans through the file headers in
  * each object. If an image is identified, download the image and update
