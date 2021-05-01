@@ -15,7 +15,7 @@ class BasicStructure {
      *              and load the response to the screen etc. 
      *      3) it will initialize the NewPostBlock, which enable user to create a new post. 
      */
-    static init() {
+    private static init() {
         debugOutput("BasicStructure.init()");
         if (!BasicStructure.isInit) {
             // add the basix structure to the html
@@ -79,6 +79,10 @@ class BasicStructure {
         $(".other-user-profile-block").remove();
         
         MyProfileBlock.refresh();
+    }
+
+    public static refresh() {
+        BasicStructure.init();
     }
 
 }

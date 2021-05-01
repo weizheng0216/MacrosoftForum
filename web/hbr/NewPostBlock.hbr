@@ -25,7 +25,10 @@
             </button>
             <nobr id="post-fileupload-name">No file selected</nobr>
         </div>
+        <img id="post-fileupload-imgpreview" src=""/>
     </div>
+
+    <br/>
 
     <div class="links-block">
         Links

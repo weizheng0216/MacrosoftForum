@@ -2,39 +2,21 @@ class NewPostBlock {
 
     private static isInit = false;
 
-    private static strbase64 = null;
-    private static imagetype = null;
-
     /**
-     * this function will initailize the new post block. 
-     *  including add the html structure and click function
-     * 
-     * NOTE: NewPostBlock will not be initialized during the test since spec_running.html has
-     *  already had this structure. 
+     * This function will initailize the new post block, which includes adding the
+     * DOM nodes and registering click events.
      */
     private static init() {
         debugOutput("NewPostBlock.init()");
         if (!NewPostBlock.isInit) {
             $("#right-part").append(templatedHTML("NewPostBlock"));
             //$("#file-upload-btn").on("click", NewPostBlock.readURL);
-            $("#my-send-new-post-button").on("click", NewPostBlock.sendPost);
+            $("#post-fileupload-input").on("change", NewPostBlock.onChangeAddFile);
+            $("#post-fileupload-remove").on("click", NewPostBlock.onClickRemoveFile);
+            $("#my-send-new-post-button").on("click", NewPostBlock.onClickSendPost);
             $("#my-new-post-block").hide();
             NewPostBlock.isInit = true;
         }
-    }
-
-    /**
-     * This function will send the new post to the server. 
-     * 
-     * NOTE: this function will not be called during test, so no if(testing) statement here
-     */
-
-    public static AddLink() {
-        debugOutput("NewPostBlock.AddLink()");
-        var strLink = $('#upload-link').val();
-        $('#link-id').attr('href', strLink);
-        $('#link-id').text(strLink);
-        $('#link-id').attr('target', '_blank');
     }
 
     public static readURL(input) {
@@ -70,7 +52,6 @@ class NewPostBlock {
 
 
     private static sendPost() {
-        debugOutput("NewPostBlock.sendPost()");
         var newTitle = $("#input-title").val();
         var newContent = $("#input-content").val();
         //var newFile = $("#file-upload-image").val();
@@ -125,29 +106,24 @@ class NewPostBlock {
         this.init();
     }
 
-
-
-
-
-
-
-
     // ===================================================================
     // Events
 
-    private static onClickAddFile() {
+    private static onChangeAddFile() {
+        debugOutput("NewPostBlock.onClickAddFile()");
 
     }
 
-    private static onClickAddLink() {
-
+    private static onClickRemoveFile() {
+        debugOutput("NewPostBlock.onClickRemoveFile()");
     }
 
     private static onClickAddVideo() {
-        
+        debugOutput("NewPostBlock.onClickAddVideo()");
+
     }
 
     private static onClickSendPost() {
-
+        debugOutput("NewPostBlock.onClickSendPost()");
     }
 }

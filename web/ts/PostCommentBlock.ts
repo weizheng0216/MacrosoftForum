@@ -51,14 +51,6 @@ class PostCommentBlock {
 
     }
 
-    public static AddLink() {
-        debugOutput("PostCommentBlock.AddLink()");
-        var strLink = $('#insert-link').val();
-        $('#id-link').attr('href', strLink);
-        $('#id-link').text(strLink);
-        $('#id-link').attr('target', '_blank');
-    }
-
     /**
      * Called by BreifPostsList.refresh().
      * Update all background post-comment views with new data.
@@ -156,17 +148,11 @@ class PostCommentBlock {
         })
     }
 
-
-
-
-
-
-
     // ===================================================================
     // Events
 
     private static onClickOthersProfile() {
-        debugOutput("PostCommentBlock.getOtherProfile()");
+        debugOutput("PostCommentBlock.onClickOthersProfile()");
 
         var userID = $(this).data("value");
         debugOutput("user click user: " + userID + ", request for detail");
@@ -183,7 +169,7 @@ class PostCommentBlock {
     }
 
     private static onClickUpVote() {
-        debugOutput("PostCommentBlock.upVotePost()");
+        debugOutput("PostCommentBlock.onClickUpVote()");
 
         let postID = $(this).data("postid");
         let oldState = $(this).attr("data-upvotestate") == "true";
@@ -225,7 +211,7 @@ class PostCommentBlock {
     }
 
     private static onClickDownVote() {
-        debugOutput("PostCommentBlock.downVotePost()");
+        debugOutput("PostCommentBlock.onClickDownVote()");
 
         let postID = $(this).data("postid");
         let oldState = $(this).attr("data-downvotestate") == "true";
@@ -269,7 +255,7 @@ class PostCommentBlock {
 
     }
 
-    private static onClickCommentAddLink() {
+    private static onClickCommentRemoveFile() {
 
     }
 

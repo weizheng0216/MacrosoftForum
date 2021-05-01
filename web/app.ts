@@ -22,7 +22,7 @@ jQuery(function () {
     sessionKey = sessionStorage.getItem("sessionKey");
     if (!sessionKey && !test) redirect("login.html");
     debugOutput("Session key: " + sessionKey);
-    BasicStructure.init();
+    BasicStructure.refresh();
 });
 
 
