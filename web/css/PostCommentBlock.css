@@ -109,9 +109,12 @@
     min-height: 100px;
     min-width: 20%;
     max-width: 43%;
+    max-height: 135px;
     border: 2px solid #8C0303;
     border-radius: 13px;
     box-shadow: 2px 2px 0px #a12424;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 .post-comment-view .attachments-panel {

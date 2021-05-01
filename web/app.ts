@@ -4,6 +4,8 @@
 /// <reference path="ts/NewPostBlock.ts"/>
 /// <reference path="ts/MyProfileBlock.ts"/>
 
+let Handlebars: any;
+
 const backendUrl = "https://cse216-macrosoft.herokuapp.com";
 
 const alertOn = true;
@@ -197,7 +199,37 @@ let backend = test && (function () {
                             "mName": "MyPDFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFffF"
                         },
                         "mLinks": [
-                            "https://www.examples.com",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
                             "https://www.lehigh.edu"
                         ]
                     },

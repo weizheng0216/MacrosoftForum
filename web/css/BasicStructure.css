@@ -101,7 +101,7 @@ div {
 .mybtn {
     border: 3px solid #8C0303;
     border-radius: 15px;
-    box-shadow:8px 8px 0px #a12424;
+    box-shadow:7px 7px 0px #a12424;
 }
 
 .mybtn:hover {
