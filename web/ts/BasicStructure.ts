@@ -54,9 +54,9 @@ class BasicStructure {
     private static onClickNewPost() {
         debugOutput("BasicStructure.showNewPostBlock()");
         
-        $("#my-new-post-block").show();
-        $(".post-comment-block").hide();
-        $(".my-user-profile-block").hide();
+        $(".post-comment-block").hide();     // hide post-comment-block
+        $(".my-user-profile-block").hide();  // hide my-profile-block
+        $("#my-new-post-block").show();      // show new-post-block
 
         // remember to hide other user's profile, if there is one
         $(".other-user-profile-block").remove();
@@ -74,10 +74,11 @@ class BasicStructure {
      */
     private static onClickMyProfile() {
         debugOutput("BasicStructure.showMyProfileBlock()");
-        $(".post-comment-block").hide();
-        $("#my-new-post-block").hide();
-        $(".other-user-profile-block").remove();
+
+        $("#my-new-post-block").hide();     // hide new-post-block
+        $(".post-comment-block").hide();    // hide post-comment-block
         
+        $(".other-user-profile-block").remove();
         MyProfileBlock.refresh();
     }
 

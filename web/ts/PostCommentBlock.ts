@@ -15,8 +15,6 @@ class PostCommentBlock {
 
         // Append the updated template
         $("#right-part").append(templatedHTML("PostCommentBlock", data));
-        if (PostCommentBlock.currPostId == -1)
-            $(".post-comment-block").hide();
 
         // Register events
         $(".my-down-vote-button").on("click", PostCommentBlock.onClickDownVote);
@@ -42,17 +40,26 @@ class PostCommentBlock {
     }
 
     /**
-     * Show the post with specific ID. However this function does not set
-     * the visibility of "post-comment-block", i.e. caller should set the
-     * "post-comment-block" to be the only visible block before calling this
-     * function.
+     * Enforece the view window on the right to show the PostCommentBlock and
+     * display the post with the ID specified.  If ID is not provided, the
+     * ID that's displayed last time will be used.
+     * 
+     * If target post does not exist, the PostCommentBlock will be hidden.
+     * 
      * @param postId ID of the post to show.
      */
-    public static showPost(postId: number) {
-        PostCommentBlock.currPostId = postId;
-        $(".post-comment-view").hide();
+    public static showPost(postId?: number) {
+        if (postId) {
+            PostCommentBlock.currPostId = postId;
+        } else {
+            postId = PostCommentBlock.currPostId;
+        }
+        $("#my-new-post-block").hide();      // hide new post block
+        $(".my-user-profile-block").hide();  // hide my profile block
+        $(".post-comment-block").show();     // show post-comment-block
+        $(".post-comment-view").hide();      // hide all views
         let targetView = $(format(".post-comment-view[data-value='{1}']", postId));
-        if (targetView) {  // only show when the view exists
+        if (targetView.html()) {  // only show when the view exists
             targetView.show();
         } else {  // otherwise hide the entire block again.
             $(".post-comment-block").hide();

@@ -23,6 +23,7 @@ class BriefPostsList {
                 fetchImgs(res.mData);
                 BriefPostsList.update(res);
                 PostCommentBlock.update(res);
+                PostCommentBlock.showPost();
             },
             error: function() {
                 alertOutput("Login timeout, please login again");
@@ -59,16 +60,7 @@ class BriefPostsList {
     private static onClickBriefPost() {
         debugOutput("BriefPostList.onClickBriefPost()");
 
-        // The postId is stored in data-value attribute of the button.
         let postID = $(this).data("value");
-
-        // Hide all other blocks:
-        $("#my-new-post-block").hide();
-        $(".my-user-profile-block").hide();
-        $(".my-user-profile-view").hide();
-
-        // Only show the specific PostCommentView
-        $(".post-comment-block").show();
         PostCommentBlock.showPost(postID);
     }
 
