@@ -98,7 +98,7 @@ function downloadFile(base64: string, fileType: string, fileName: string) {
  * The file data will be appended to the "mData" field of mFileInfo.
  * The isImg boolean will be appended to mIsImg field of mFileInfo.
  * 
- * @param posts An array of "PostSubType"
+ * @param posts An array of "PostSubType" or "CommentSubType"
  */
 function fetchImgs(posts: any) {
     for (let i = 0; i < posts.length; i++) {
