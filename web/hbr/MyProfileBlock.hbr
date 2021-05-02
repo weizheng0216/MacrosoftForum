@@ -50,7 +50,6 @@
         <h4>Comment: </h4>
         <h5>Content: </h5>
         <textarea name="" id="comment-content{{this.mCommentID}}" cols="30" rows="5" class="edit-place">{{this.mContent}}</textarea>
-        <img class="img-preview" src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"/>
         {{#if this.mFileInfo.mType}}
             <h5>File: {{this.mFileInfo.mName}}</h5>
             <div name="" id="comment-file{{this.mPostID}}" cols="30" rows="5" class="edit-place">

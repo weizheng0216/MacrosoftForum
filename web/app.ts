@@ -48,6 +48,7 @@ function debugOutput(...data: any[]) {
 
 function alertOutput(msg: string) {
     if (alertOn) alert(msg);
+    return msg;
 }
 
 function myAjax(settings: JQuery.AjaxSettings) {
@@ -216,9 +217,9 @@ let backend = (function () {
                         },
                         "mDate": "2018-02-18 14:00:06",
                         "mFileInfo": {
-                            "mType": "pdf",
+                            "mType": "image/png",
                             "mTime": "2020-01-15 08:15:23",
-                            "mName": "MyPDFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFffF"
+                            "mName": "image"
                         },
                         "mLinks": [
                             "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
@@ -330,9 +331,9 @@ let backend = (function () {
                     },
                     "mDate": "2018-02-18 14:00:06",
                     "mFileInfo": {
-                        "mType": "pdf",
+                        "mType": "image/png",
                         "mTime": "2020-01-15 08:15:23",
-                        "mName": "MyPDF"
+                        "mName": "imgk"
                     },
                     "mLinks": [
                         "https://www.examples.com",

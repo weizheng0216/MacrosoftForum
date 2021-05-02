@@ -10,7 +10,7 @@
     <div class="content-block">
         Content
         <textarea class="text-input" id="input-content"
-            placeholder="write your content here"></textarea>
+            placeholder="write your content here (500 characters limit)"></textarea>
     </div>
 
     <br/><br/>

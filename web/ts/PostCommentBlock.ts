@@ -258,17 +258,17 @@ class PostCommentBlock {
         let file = htmFileInput.files ? htmFileInput.files[0] : null;
 
         // Data to be included in request Json
-        let content = $("#comment-content-input").val();
+        let content: any = $("#comment-content-input").val();
         let rawLinks: any = $("#comment-links").val();  // any: avoid compiler error
         let fileName = file ? file.name : "";
         let fileType = file ? file.type : "";
         let fileData = "";  // base64 string for file content
 
-        // Comment must have content.
-        if (!content) {
-            alertOutput("Missing comment body.");
-            return;
-        }
+        // Length check
+        if (!content) return alertOutput("Missing comment body.");
+        if (content.length > 500) return alertOutput("Content too long.");
+        if (rawLinks.length > 500) return alertOutput("Links too long.");
+        if (fileName.length > 100) return alertOutput("File name too long.");
 
         (async function () {
             // Load fileData
