@@ -204,6 +204,35 @@ class PostCommentBlock {
 
     private static onClickCommentDownloadFile() {
         debugOutput("PostCommentBlock.onClickCommentDownloadFile()");
+
+        let postid = PostCommentBlock.currPostId;
+        let commentid = $(this).data("commentid");
+        let type = $(format("#file-panel-{1}-{2}", postid, commentid)).data("value");
+        let name = $(format("#comment-filename-{1}-{2}", postid, commentid)).text();
+
+        (async function () {
+            let base64: string = await new Promise(resolve => {
+                if (/image\/\w/.test(type)) {
+                    let src = $(format("#comment-img-preview-{1}-{2}",
+                        postid, commentid)).attr("src");
+                    resolve(src.replace(/^data:.+;base64,/, ""));
+                } else {
+                    // need to download from backend
+                    myAjax({
+                        type: "GET",
+                        dataType: "json",
+                        url: format("{1}/api/posts/{2}/comments/{3}/file?session={4}",
+                                    backendUrl, postid, commentid, sessionKey),
+                        success: function(res: any) {
+                            let msg = JSON.stringify(res);
+                            debugOutput("[ajax] File downloaded: " + msg);
+                            resolve(res.mData.mData);
+                        }
+                    });
+                }
+            });
+            downloadFile(base64, type, name);
+        })();
     }
 
     private static onChangeCommentAddFile() {
