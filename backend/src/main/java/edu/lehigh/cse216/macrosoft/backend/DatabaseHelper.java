@@ -374,11 +374,11 @@ class DatabaseHelper {
     String addPost(String userId, PostRequest req) throws SQLException {
         int userIdInt = Integer.parseInt(userId);
         StringBuilder linksSB = new StringBuilder();
-        String video = req.videos;
+        String video_link = req.video_link;
         for (String link : req.links)
             linksSB.append(link).append(" ");
         db.insertPost(req.title, req.content, userIdInt, req.fileType,
-                "", linksSB.toString(), video);
+                "", linksSB.toString(), video_link);
         // get the id of newly added post
         ResultSet rs = db.selectLatestPostId();
         rs.next();
@@ -475,7 +475,7 @@ class DatabaseHelper {
             links.addAll(Arrays.asList(linksStr.split("\\s")));
 
         // Attached video of the post
-        String video = rs.getString("videos");
+        String video_link = rs.getString("video_link");
 
         // Comments under the post
         ArrayList<CommentSubtype> comments = new ArrayList<>();
@@ -496,7 +496,7 @@ class DatabaseHelper {
                 rs.getBoolean("flagged"), 
                 fileInfo,
                 links,
-                video,
+                video_link,
                 comments
         );
     }

@@ -51,14 +51,14 @@ package edu.lehigh.cse216.macrosoft.backend;
 #         filedate    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  # future PUT
 #         filepath    VARCHAR(100),
 #         links       VARCHAR(500),
-#         videos      VARCHAR(500)
+#         video_link      VARCHAR(500)
 #     );
 #
 # [?] dropPostTable();
 #     Drop TABLE posts;
 
 [C] insertPost(String title, String content, int userId,
-               String filetype, String filepath, String links, String videos);
+               String filetype, String filepath, String links, String video_link);
     INSERT INTO posts VALUES (default, ?, ?, default, 0, 0, ?, false, ?, default, ?, ?, ?);
 
 [R] selectPostById(int postId);

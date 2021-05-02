@@ -192,14 +192,14 @@ class Database {
         mBlockUserByEmail.executeUpdate();
     }
 
-    void insertPost(String title, String content, int userId, String filetype, String filepath, String links, String videos) throws SQLException {
+    void insertPost(String title, String content, int userId, String filetype, String filepath, String links, String video_link) throws SQLException {
         mInsertPost.setString(1, title);
         mInsertPost.setString(2, content);
         mInsertPost.setInt(3, userId);
         mInsertPost.setString(4, filetype);
         mInsertPost.setString(5, filepath);
         mInsertPost.setString(6, links);
-        mInsertPost.setString(7, videos);
+        mInsertPost.setString(7, video_link);
         mInsertPost.executeUpdate();
     }
 
