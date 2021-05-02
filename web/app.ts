@@ -147,7 +147,7 @@ function fetchImgs(posts: any) {
 // ===================================================
 // Fake backend for testing
 
-let backend = test && (function () {
+let backend = (function () {
     // Only support simplest logic for now
     let json1 = {
         "mStatus": "OK",

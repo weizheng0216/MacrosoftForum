@@ -34,24 +34,21 @@ cp node_modules/bootstrap/dist/css/bootstrap.min.css $TARGETFOLDER/$WEBFOLDERNAM
 node_modules/typescript/bin/tsc app.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/app.js
 
 # step 5: copy css files
-cat css/BasicStructure.css css/PostBrief.css css/PostCommentBlock.css css/NewPostBlock.css css/MyProfileBlock.css css/OtherProfileBlock.css> $TARGETFOLDER/$WEBFOLDERNAME/app.css
+cat css/*.css> $TARGETFOLDER/$WEBFOLDERNAME/app.css
 cp login.css $TARGETFOLDER/$WEBFOLDERNAME
 
 # step 6: compile handlebars templates to the deploy folder
-node_modules/handlebars/bin/handlebars hb/NewPostBlock.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
-node_modules/handlebars/bin/handlebars hb/BriefPostsList.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
-node_modules/handlebars/bin/handlebars hb/PostCommentBlock.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
-node_modules/handlebars/bin/handlebars hb/BasicStructure.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
-node_modules/handlebars/bin/handlebars hb/MyProfileBlock.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
-node_modules/handlebars/bin/handlebars hb/OtherProfileBlock.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+for hbr in $(ls hbr/); do
+    node_modules/handlebars/bin/handlebars hbr/$hbr >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+done
 
 
 # set up Jasmine
 
-node_modules/typescript/bin/tsc appForTest.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/appForTest.js
-node_modules/typescript/bin/tsc apptest.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/apptest.js
-cp spec_runner.html $TARGETFOLDER/$WEBFOLDERNAME
-cp node_modules/jasmine-core/lib/jasmine-core/jasmine.css $TARGETFOLDER/$WEBFOLDERNAME
-cp node_modules/jasmine-core/lib/jasmine-core/jasmine.js $TARGETFOLDER/$WEBFOLDERNAME
-cp node_modules/jasmine-core/lib/jasmine-core/boot.js $TARGETFOLDER/$WEBFOLDERNAME
-cp node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js $TARGETFOLDER/$WEBFOLDERNAME
+# node_modules/typescript/bin/tsc appForTest.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/appForTest.js
+# node_modules/typescript/bin/tsc apptest.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/apptest.js
+# cp spec_runner.html $TARGETFOLDER/$WEBFOLDERNAME
+# cp node_modules/jasmine-core/lib/jasmine-core/jasmine.css $TARGETFOLDER/$WEBFOLDERNAME
+# cp node_modules/jasmine-core/lib/jasmine-core/jasmine.js $TARGETFOLDER/$WEBFOLDERNAME
+# cp node_modules/jasmine-core/lib/jasmine-core/boot.js $TARGETFOLDER/$WEBFOLDERNAME
+# cp node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js $TARGETFOLDER/$WEBFOLDERNAME
