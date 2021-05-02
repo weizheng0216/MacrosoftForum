@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.util.Scanner;
 import java.util.Date;
 import java.sql.ResultSetMetaData;
+import java.util.regex.*;
 
 /**
  * App is our basic admin app.  For now, it is a demonstration of the six key 
@@ -103,7 +104,8 @@ import java.sql.ResultSetMetaData;
         System.out.println("    [4] Select user by User ID");
         System.out.println("    [5] Select user by Email");
         System.out.println("    [6] Delete an User\n");
-
+        System.out.println("NEW FUNCTION:");
+        System.out.println("    [7] Block User By Email \n");
         System.out.println("    [0] Quit Table Session");
         System.out.println("*******************************");
     }
@@ -120,9 +122,10 @@ import java.sql.ResultSetMetaData;
         System.out.println("    [5] Select a Post by Post Id");
         System.out.println("    [6] Update a Post by Post Id");        
         System.out.println("    [7] Delete a Post");
+        System.out.println("    [8] View all files");
         System.out.println("");
         System.out.println("NEW FUNCTION:");
-        System.out.println("    [8] View all files\n");
+        System.out.println("    [9] Flag a Post\n");
         System.out.println("    [0] Quit Table Session");
         System.out.println("*******************************");
     }
@@ -141,9 +144,10 @@ import java.sql.ResultSetMetaData;
         System.out.println("    [6] View Comment(s) made by an User");
         System.out.println("    [7] Update a Comment");        
         System.out.println("    [8] Delete a Comment");
+        System.out.println("    [9] View all files");
         System.out.println("");
         System.out.println("NEW FUNCTION:");
-        System.out.println("    [9] View all files\n");
+        System.out.println("    [10] Flag a Comment\n");
         System.out.println("    [0] Quit Table Session");
         System.out.println("*******************************");
     }
@@ -216,16 +220,17 @@ import java.sql.ResultSetMetaData;
         String email;
         String first_name;
         String last_name;
-        
+        boolean blocked;
         String filepath;
         //      Post table attributes
         int post_id;
         String title;
         String content;
+        String video_link;
         Date date;
         int vote_up;
         int vote_down;
-        boolean pinned;
+        boolean flagged;
 
         //      Comment Table Attributes
         int comment_id;
@@ -587,8 +592,9 @@ import java.sql.ResultSetMetaData;
                                 email = rs.getString("email");
                                 first_name = rs.getString("first_name");
                                 last_name = rs.getString("last_name");
+                                blocked = rs.getBoolean("blocked");
                                 System.out.println(user_id + ", " + email + ", " + first_name +
-                           ", " + last_name);
+                           ", " + last_name + " blocked: " + blocked);
                             }while(rs.next());
                             }
                             catch (SQLException e) {
@@ -617,8 +623,9 @@ import java.sql.ResultSetMetaData;
                                     email = rs.getString("email");
                                     first_name = rs.getString("first_name");
                                     last_name = rs.getString("last_name");
+                                    blocked = rs.getBoolean("blocked");
                                     System.out.println(user_id + " " + email + " " + first_name +
-                           " " + last_name);
+                           " " + last_name + " blocked: " + blocked);
                             }while(rs.next());
                             }
                             catch (SQLException e) {
@@ -656,6 +663,37 @@ import java.sql.ResultSetMetaData;
                                     System.out.println("An error happened when deleteing the user");
                                 }
 
+                            break;
+                        case 7: 
+                            System.out.println();
+                            
+                                
+                               
+                                try{
+                                    System.out.println("\tEnter the user email: ");
+                                    email = keyboard.nextLine();
+                                    rs = database.selectUserByEmail(email); 
+                                    System.out.println();
+                              
+                                    if(!rs.next())
+                                    {
+                                    System.out.println("This user Doesn't Exist");
+                                    }
+                                    else{
+                                        
+                                        try{
+                                        
+                                        database.blockUserByEmail(true, email);
+                                        System.out.println("The post has been blocked:) ");
+                                        }catch (SQLException e) {
+                                        System.out.println("An error happened when blocking the user");
+                                    }
+                                    }}
+                                    catch (SQLException e) {
+                                        System.out.println("An error happened when updating the post");
+
+                                    }
+                                    System.out.println();
                             break;
                         case 0:
                                 System.out.println("Quit Table User. Back to Main Menu ...");
@@ -700,24 +738,22 @@ import java.sql.ResultSetMetaData;
                         title = keyboard.nextLine();
                         System.out.println("\tEnter the post content: ");
                         content = keyboard.nextLine();
-                        // System.out.println("Enter the number of upvotes");
-                        // vote_up = keyboard.nextInt();
-                        // if(keyboard.hasNextLine()){
-                        //     keyboard.nextLine();
-                        // }
-                        // System.out.println("Enter the number of downvotes");
-                        // vote_down = keyboard.nextInt();
-                        // if(keyboard.hasNextLine()){
-                        //     keyboard.nextLine();
-                        // }
+                        System.out.println("\tEnter the video link: ");
+
+                        String linkPattern = "^(http(s)?://)?((w){3}.)?youtu(be|.be)?(.com)?/.+";
+                        video_link = keyboard.nextLine();
+                        if(!Pattern.matches(linkPattern, video_link)){
+                            System.out.println("\tVideo link not provided, default to empty");
+                            video_link = "";
+                        } else {
+                            video_link = video_link.substring(video_link.lastIndexOf("=") + 1);
+                        }
                     
-                        user_id = getInputInt("\tEnter the user id: ");
-                        
-                        pinned = getInputBoolean("\tIs it pinned(true/false): "); 
+                        user_id = getInputInt("\tEnter the user id: "); 
                         
                         
                         try{
-                            database.insertPost(title, content, 0, 0, user_id, pinned);
+                            database.insertPost(title, content, 0, 0, user_id, video_link);
                             System.out.println("\nNew post has been added to the data base");
                         }
                         catch (SQLException e) {
@@ -739,7 +775,8 @@ import java.sql.ResultSetMetaData;
                                 vote_down = rs.getInt("vote_down");
                                 last_name = rs.getString("last_name");
                                 first_name = rs.getString("first_name");
-                                pinned = rs.getBoolean("pinned");
+                                flagged = rs.getBoolean("flagged");
+                                video_link = rs.getString("video_link");
                                 System.out.println("=====================");
                                 System.out.println(" -- Post ID ----- ");
                                 System.out.println("      " + post_id);
@@ -757,11 +794,13 @@ import java.sql.ResultSetMetaData;
                                 System.out.println("        " + last_name);
                                 System.out.println(" ---- First Name -- ");
                                 System.out.println("        " + first_name);
-                                System.out.println(" ---- Pinned ------");
-                                System.out.println("        " + pinned);
+                                System.out.println(" ---- Video Link ------");
+                                System.out.println("        " + video_link);
+                                System.out.println(" ---- Flagged ------");
+                                System.out.println("        " + flagged);
                                 System.out.println("=====================");
                                 System.out.println();
-                                //System.out.printf ("%15d%15s%15s%15s%15d%15d%15s%15s%15b\n",post_id, title, content, date, vote_up, vote_down, first_name, pinned);
+                                //System.out.printf ("%15d%15s%15s%15s%15d%15d%15s%15s%15b\n",post_id, title, content, date, vote_up, vote_down, first_name, flagged);
                                 }
                             }
                             catch (SQLException e) {
@@ -790,7 +829,8 @@ import java.sql.ResultSetMetaData;
                                 vote_up = rs.getInt("vote_up");
                                 vote_down = rs.getInt("vote_down");
                                 user_id = rs.getInt("user_id");
-                                pinned = rs.getBoolean("pinned");
+                                flagged = rs.getBoolean("flagged");
+                                video_link = rs.getString("video_link");
                                 System.out.println();
                                 System.out.println("=====================");
                                 System.out.println(" -- Post ID -------");
@@ -807,13 +847,15 @@ import java.sql.ResultSetMetaData;
                                 System.out.println("        " + vote_down);
                                 System.out.println(" ---- User Id ----- ");
                                 System.out.println("        " + user_id);
-                                System.out.println(" ---- Pinned ------ ");
-                                System.out.println("        " + pinned);
+                                System.out.println(" ---- Flagged ------ ");
+                                System.out.println("        " + flagged);
+                                System.out.println(" ---- Video Link ------ ");
+                                System.out.println("        " + video_link);
                                 System.out.println("=====================");
                                 System.out.println();
 
                                 //System.out.println(post_id + ", " + title + ", " + content + " ," + date +
-                           //", " + vote_up + " ," + vote_down + " ," + user_id + " ," + pinned);
+                           //", " + vote_up + " ," + vote_down + " ," + user_id + " ," + flagged);
                             }while(rs.next());
                         }
                             catch (SQLException e) {
@@ -845,12 +887,12 @@ import java.sql.ResultSetMetaData;
                                        
                                         vote_down = getInputInt("\tEnter the number of downvotes: ");
                                         
-                                        pinned = getInputBoolean("\tIs it pinned: true/false: ");
+                                        flagged = getInputBoolean("\tIs it flagged: true/false: ");
                                         
                                         System.out.println();
                                         try{
                                         
-                                        database.updatePostById(title, content, vote_up, vote_down, pinned, post_id);
+                                        database.updatePostById(title, content, vote_up, vote_down, flagged, post_id);
                                         System.out.println("The post has been reset:) ");
                                         }catch (SQLException e) {
                                         System.out.println("An error happened when updating the post");
@@ -932,9 +974,33 @@ import java.sql.ResultSetMetaData;
                             System.out.println("An error happened when selecting the file");
 
                         }
+                        break;
+                        case 9: // flag post
+                        System.out.println();
+                            
+                        post_id = getInputInt("\tEnter the post id you want to flag: ");
+                        
+                        try{
+                            rs = database.selectPostById(post_id);
+                            System.out.println();
+                        
+                            if(!rs.next())
+                            {
+                            System.out.println("This post Doesn't Exist");
+                            }
+                            else{
+                                try{
+                                    database.flagPostById(true, post_id);
+                                    System.out.println("The post has been flagged:) ");
+                                }catch (SQLException e) {
+                                System.out.println("An error happened when flagging the post");
+                            }
+                            }}
+                            catch (SQLException e) {
+                                System.out.println("An error happened when flagging the post");
 
-
-
+                            }
+                            System.out.println();
                             break;
                         case 0:    
                             System.out.println("Quit Table Post. Back to Main Menu ...");
@@ -1018,6 +1084,7 @@ import java.sql.ResultSetMetaData;
                             date = rs.getDate("date");
                             last_name = rs.getString("last_name");
                             first_name = rs.getString("first_name");
+                            flagged = rs.getBoolean("flagged");
                             System.out.println("=====================");
                             System.out.println(" -- Comment ID --");
                             System.out.println("      " + comment_id);
@@ -1030,6 +1097,8 @@ import java.sql.ResultSetMetaData;
                             System.out.println(" ---- First Name --");
                             System.out.println("        " + first_name);
                             System.out.println("=====================");
+                            System.out.println(" ---- Flagged -----");
+                            System.out.println("        " + flagged);
                             }
                         }
                         catch (SQLException e) {
@@ -1057,6 +1126,7 @@ import java.sql.ResultSetMetaData;
                                 date = rs.getDate("date");
                                 user_id = rs.getInt("user_id");
                                 post_id = rs.getInt("post_id");
+                                flagged = rs.getBoolean("flagged");
                                 System.out.println("=====================");
                                 System.out.println(" -- Comment ID --");
                                 System.out.println("      " + comment_id);
@@ -1068,6 +1138,8 @@ import java.sql.ResultSetMetaData;
                                 System.out.println("        " + user_id);
                                 System.out.println(" ---- Post ID -----");
                                 System.out.println("        " + post_id);
+                                System.out.println(" ---- Flagged -----");
+                                System.out.println("        " + flagged);
                                 System.out.println("=====================");
                                 System.out.println();
 
@@ -1192,13 +1264,36 @@ import java.sql.ResultSetMetaData;
                             System.out.println("An error happened when selecting the file");
 
                         }
+                        break;
+
+                        case 10:
+                        System.out.println();
+                            
+                        comment_id = getInputInt("\tEnter the comment id you want to flag: ");
                         
+                        try{
+                            rs = database.selectCommentById(comment_id);
+                            System.out.println();
+                        
+                            if(!rs.next())
+                            {
+                            System.out.println("This comment Doesn't Exist");
+                            }
+                            else{
+                                try{
+                                    database.flagCommentById(true, comment_id);
+                                    System.out.println("The comment has been flagged:) ");
+                                }catch (SQLException e) {
+                                System.out.println("An error happened when flagging the comment");
+                            }
+                            }}
+                            catch (SQLException e) {
+                                System.out.println("An error happened when flagging the comment");
 
-
-
-
-
+                            }
+                            System.out.println();
                             break;
+                        
                         case 0:    
                             System.out.println("Quit Table Comment. Back to Main Menu ...");
                             break;
