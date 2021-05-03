@@ -395,22 +395,12 @@ class DatabaseHelper {
 
         String videoPattern = "^(http(s)?://)?((w){3}.)?youtu(be|.be)?(.com)?/.+";
         String videoLink = req.videoLink;
-                        if(!Pattern.matches(videoPattern, videoLink)){
+        if(!Pattern.matches(videoPattern, videoLink)){
                             //System.out.println("\tVideo link not provided, default to empty");
                             videoLink = "";
                         } else {
                             videoLink = videoLink.substring(videoLink.lastIndexOf("=") + 1);
                         }
-
-        // String video = 
-        // String videoLink = "^(http(s)?://)?((w){3}.)?youtu(be|.be)?(.com)?/.+";
-        //                 video;
-        //                 if(!Pattern.matches(video, video)){
-        //                     System.out.println("\tVideo link not provided, default to empty");
-        //                     video = "";
-        //                 } else {
-        //                     video = video.substring(video.lastIndexOf("=") + 1);
-        //                 }
         for (String link : req.links)
             linksSB.append(link).append(" ");
         db.insertPost(req.title, req.content, userIdInt, req.fileType,
@@ -512,25 +502,14 @@ class DatabaseHelper {
             links.addAll(Arrays.asList(linksStr.split("\\s")));
 
         // Attached video of the post
-        
-        // String videoPattern = "^(http(s)?://)?((w){3}.)?youtu(be|.be)?(.com)?/.+";
-        
-        // if(!Pattern.matches(videoLink, video)){
-        //     System.out.println("\tVideo link not provided, default to empty");
-        //     video = "";
-        // } else {
-        //     video = video.substring(video.lastIndexOf("=") + 1);
-        // }
-
 
         String videoPattern = "^(http(s)?://)?((w){3}.)?youtu(be|.be)?(.com)?/.+";
         String videoLink = rs.getString("video_link");
-                        if(!Pattern.matches(videoPattern, videoLink)){
-                            //System.out.println("\tVideo link not provided, default to empty");
-                            videoLink = "";
-                        } else {
-                            videoLink = videoLink.substring(videoLink.lastIndexOf("=") + 1);
-                        }
+        if (!videoLink.equals("")){
+            videoLink = "https://www.youtube.com/embed/"+videoLink+"?autoplay=1";
+        }
+       
+
         // Comments under the post
         ArrayList<CommentSubtype> comments = new ArrayList<>();
         ResultSet commentsRs = db.selectCommentsByPostId(
