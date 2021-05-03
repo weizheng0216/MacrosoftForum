@@ -4,23 +4,13 @@
 - Phase 1: Haocheng Gao
 - Phase 2: Coco Chen
 - Phase 3: Weihang Guo
+- Phase 4: Wei Zheng
 
 ## What's New
-- **Integration Test**. Add a integration test for admin. Try `sh test.sh`
-- **Manage files**. Admin app can list all files under posts, comments, and a specific user. For convenience, one can not only check file information under posts table and comments table but also can manage files under "Manage File" interface. 
- 
-Manage File Menu
-***
-    [1] Select all files under posts
-    [2] Select all files under comments
-    [3] Select all files of a user
-    [4] Delete a file under posts
-    [5] Delete a file under comments
-    [6] Manage Least used file
-    [0] Quit Table Session
-***
-
-- **Standardized Output**. Replace "+" with "=" and "-" as a decoration of output, which make the UI clearer. Standardized the space in front of each line.  
+- **Block User By Email**. New functionality added in the user table. This gives the admin app the ability to block a post by email. `Blocked` attribute in the user table will assign to `true` when the operation was performed
+- **Flag a Post**. New functionality added in the post table. This gives the admin app the ability to flag a post by its post ID. `Flagged` attribute in the post table will assign to `true` when the operation was performed
+- **Flag a Comment**. New functionality added in the comment table. This gives the admin app the ability to flag a comment by its comment ID. `Flagged` attribute in the comment table will assign to `true` when the operation was performed
+ - **Standardized Output**. Replace "+" with "=" and "-" as a decoration of output, which make the UI clearer. Standardized the space in front of each line.  
 
 **example:**
 ```
@@ -34,7 +24,6 @@ Manage File Menu
 =====================
 ```
 
-- **Input check**. In previous phase, there is no input check, so whenever there is an invalid input (require int or boolean but input is String) the entire system will crash. In this phase, input check is implement, when there is an invalid input, application will let the user type again until the input is valid. 
 
 **example:**
 ```java
@@ -97,6 +86,7 @@ There are four tables in total:
     [4] Select user by User ID
     [5] Select user by Email
     [6] Delete an User
+    [7] Block User By Email
     [0] Quit Table Session
 ***
   Post Table
@@ -109,6 +99,7 @@ There are four tables in total:
     [6] Update a Post by Post Id        
     [7] Delete a Post
     [8] View all files
+    [9] Flag a Post
     [0] Quit Table Session
 ***
   Comment Table
@@ -122,6 +113,7 @@ There are four tables in total:
     [7] Update a Comment
     [8] Delete a Comment
     [9] View all files
+    [10] Flag a Comment
     [0] Quit Table Session
 ***
   Votes Table

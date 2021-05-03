@@ -170,7 +170,7 @@ public class Database {
         mSelectAll = mConnection.prepareStatement("SELECT * from posts");
 
         // phase3: change the statement 
-        mCreatePostTable = mConnection.prepareStatement("CREATE TABLE posts ( post_id SERIAL PRIMARY KEY, title VARCHAR(100), content VARCHAR(500), date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, vote_up INTEGER, vote_down INTEGER, user_id INTEGER REFERENCES users (user_id), flagged BOOLEAN, filetype varchar(10), filedate varchar(19), filepath varchar(100), links varchar(500), video_link varchar(500) )");
+        mCreatePostTable = mConnection.prepareStatement("CREATE TABLE posts ( post_id SERIAL PRIMARY KEY, title VARCHAR(100), content VARCHAR(500), date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, vote_up INTEGER, vote_down INTEGER, user_id INTEGER REFERENCES users (user_id), flagged BOOLEAN, filetype varchar(50), filedate varchar(19), filepath varchar(100), links varchar(500), video_link varchar(500) )");
 
 
         mDropPostTable = mConnection.prepareStatement("Drop TABLE posts");
@@ -185,7 +185,7 @@ public class Database {
         // Comments Table Prepared Statement
 
         // phase3: change the statement
-        mCreateCommentTable = mConnection.prepareStatement("CREATE TABLE comments ( comment_id SERIAL PRIMARY KEY, content VARCHAR(500), flagged boolean, date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, user_id INTEGER REFERENCES users (user_id), post_id INTEGER REFERENCES posts (post_id), filetype varchar(10), filedate varchar(19), filepath varchar(100), links varchar(500) )");
+        mCreateCommentTable = mConnection.prepareStatement("CREATE TABLE comments ( comment_id SERIAL PRIMARY KEY, content VARCHAR(500), flagged boolean, date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, user_id INTEGER REFERENCES users (user_id), post_id INTEGER REFERENCES posts (post_id), filetype varchar(50), filedate varchar(19), filepath varchar(100), links varchar(500) )");
         mDropCommentTable = mConnection.prepareStatement("DROP TABLE comments");
         mInsertComment = mConnection.prepareStatement("INSERT INTO comments VALUES (default, ?, false, default, ?, ?, '','' ,'','')");
         mSelectAllCommentsJoinUsers = mConnection.prepareStatement("SELECT comment_id, content, date, users.last_name, users.first_name FROM comments JOIN users ON comments.user_id=users.user_id");

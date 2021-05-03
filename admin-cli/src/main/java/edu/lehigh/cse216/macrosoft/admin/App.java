@@ -78,16 +78,16 @@ import java.util.regex.*;
         System.out.println("    You can edit the following tables");
         System.out.println("    By entering the correspond number,");  
         System.out.println("    you can check what changes can be made to each table.");
-        System.out.println("     [1] User Table");
-        System.out.println("     [2] Post Table");
-        System.out.println("     [3] Comment Table");
+        System.out.println(" NEW [1] User Table");
+        System.out.println(" NEW [2] Post Table");
+        System.out.println(" NEW [3] Comment Table");
         System.out.println("     [4] Votes Table");
-        System.out.println(" NEW [5] Manage File.\n");
+        System.out.println("     [5] Manage File.\n");
         System.out.println("     [0] Quit the session.");
         System.out.println("---------------------------------------------------------");
         System.out.println("");
         
-        System.out.println(" !!NEW FUNCTIONS from phase 3 under post & comment table!!");
+        System.out.println(" !!NEW FUNCTIONS from phase 4 under post, comment, and user table!!");
         System.out.println("");
         System.out.println("*********************************************************");
     }
