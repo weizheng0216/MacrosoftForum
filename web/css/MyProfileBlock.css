@@ -10,19 +10,20 @@
     border-radius: 15px;
     box-shadow:8px 8px 0px #a12424;
 
+    padding-left: 40px;
+    padding-right: 40px;
+
     overflow-y: scroll;
 }
 
 .my-user-profile-block h4 {
     font-size: 20px;
     font-weight: 700;
-    text-indent: 30px;
 }
 
 .my-user-profile-block h5 {
     font-size: 20px;
     font-weight: 700;
-    text-indent: 60px;
 }
 
 .my-user-profile-block p {
@@ -65,4 +66,10 @@
 .my-user-profile-block .file-preview {
     font-size: 50pt;
     display: inline-block;
+}
+
+.my-user-profile-block hr {
+    height: 2px;
+    border: none;
+    border-top: 2px dotted #8C0303;
 }

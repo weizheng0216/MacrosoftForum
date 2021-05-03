@@ -332,6 +332,7 @@ let backend = (function () {
                     "mUpVoteCount": 0,
                     "mDownVoteCount": 0,
                     "mFlagged": true,
+                    "mVideoLink": "https://www.youtube.com/embed/H96SP4kQGt4?autoplay=1&origin=http://example.com",
                     "mFileInfo": {
                         "mType": "",
                         "mTime": "",

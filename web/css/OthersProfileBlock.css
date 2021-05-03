@@ -6,9 +6,6 @@
     width: 70%;
     max-height: 300px;
 
-    padding-left: 30px;
-    
-
     filter:alpha(opacity=50);
 
     border: 3px solid #8C0303;
@@ -50,6 +47,8 @@
 .other-user-profile-block .user-information {
     overflow-y: scroll;
     max-height: 270px;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
 .other-user-profile-block .img-preview {
@@ -61,4 +60,10 @@
 .other-user-profile-block .file-preview {
     font-size: 30pt;
     display: inline-block;
+}
+
+.other-user-profile-block hr {
+    height: 2px;
+    border: none;
+    border-top: 2px dotted #8C0303;
 }

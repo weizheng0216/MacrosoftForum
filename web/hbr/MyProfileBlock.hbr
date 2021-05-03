@@ -8,7 +8,8 @@
     <p>{{this.mUser.mEmail}}</p>
 
     {{#each this.mPosts}}
-        <h4>{{#if this.mFlagged}}<span class="glyphicon glyphicon-exclamation-sign" title="Marked as inappropriate"></span> {{/if}}Post: </h4>
+        <hr/>
+        <h4>{{#if this.mFlagged}}<span class="glyphicon glyphicon-exclamation-sign" title="Marked as inappropriate"></span> {{/if}}{{#if this.mVideoLink}}<span class="glyphicon glyphicon-film" title="video attached"></span> {{/if}}Post: </h4>
         <h5>Title: </h5>
         <textarea name="" id="post-title{{this.mPostID}}" cols="30" rows="3" class="edit-place">{{this.mTitle}}</textarea>
         <h5>Content: </h5>
@@ -24,7 +25,7 @@
             </div>
         {{/if}}
         {{#if this.mLinks.length}}
-            <h5>Links: </h5>
+            <h5>Other Links: </h5>
             <div name="" id="post-links{{this.mPostID}}" cols="30" rows="5" class="edit-place">
                 <ul>
                     {{#each this.mLinks}}
@@ -47,6 +48,7 @@
     {{/each}}
      
     {{#each this.mComments}}
+        <hr/>
         <h4>{{#if this.mFlagged}}<span class="glyphicon glyphicon-exclamation-sign" title="Marked as inappropriate"></span> {{/if}}Comment: </h4>
         <h5>Content: </h5>
         <textarea name="" id="comment-content{{this.mCommentID}}" cols="30" rows="5" class="edit-place">{{this.mContent}}</textarea>
