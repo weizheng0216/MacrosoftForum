@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.Date;
 import static edu.lehigh.cse216.macrosoft.backend.DriveHelper.fromFullPath;
 import static edu.lehigh.cse216.macrosoft.backend.DriveHelper.toFullPath;
 
@@ -90,7 +90,6 @@ class DatabaseHelper {
         AllPostsPayload resPayload = new AllPostsPayload();
         int postIdInt = Integer.parseInt(postId);
         ResultSet aPostRs = db.selectPostById(postIdInt);
-       // while (!aPostRs.next()) {
         PostSubtype post = null;
             
         if (aPostRs.next()){
@@ -114,7 +113,6 @@ class DatabaseHelper {
             userVoteRs.close();
             resPayload.add(IntegratedPostSubtype
                     .fromBasicPost(post, userUpVote, userDownVote));
-        //}
         
         return resPayload;
     }
@@ -125,25 +123,45 @@ class DatabaseHelper {
     //  * @param commentIdInt ID of the requesting comment.
     //  * @return Response payload.
     //  */
-    CommentPayload queryGetAComment(String commentId) throws SQLException {
+    // CommentPayload queryGetAComment(String commentId) throws SQLException {
+    //     CommentPayload resPayload = new CommentPayload();
+    //     //int postIdInt = Integer.parseInt(postId);
+    //     int commentIdInt = Integer.parseInt(commentId);
+    //     ResultSet aCommentRs = db.SelectCommentById(commentIdInt);
+    //    // while (!aCommentRs.next()) {
+    //     CommentSubtype comment = null;
+            
+    //     if (aCommentRs.next()){
+    //          comment = rs2Comment(aCommentRs);}
+    //     aCommentRs.close();
+         
+    //     // ResultSet rs = db.selectCommentById(commentIdInt);
+    //     // String authorId = rs.next() ?
+    //     //         Integer.toString(rs.getInt("user_id")) : null;
+    //     // rs.close();
+
+    //     //     int userIdInt = Integer.parseInt(authorId);;
+           
+    //     resPayload.add(comment);
+        
+        
+    //     return resPayload;
+    // }
+
+
+
+    CommentPayload queryGetAComment(String postId, String commentId) throws SQLException {
         CommentPayload resPayload = new CommentPayload();
+        int postIdInt = Integer.parseInt(postId);
         int commentIdInt = Integer.parseInt(commentId);
-        ResultSet aCommentRs = db.SelectCommentById(commentIdInt);
+        ResultSet aCommentRs = db.selectCommentByIds(postIdInt, commentIdInt);
        // while (!aCommentRs.next()) {
         CommentSubtype comment = null;
             
         if (aCommentRs.next()){
              comment = rs2Comment(aCommentRs);}
         aCommentRs.close();
-         
-        // ResultSet rs = db.selectCommentById(commentIdInt);
-        // String authorId = rs.next() ?
-        //         Integer.toString(rs.getInt("user_id")) : null;
-        // rs.close();
-
-        //     int userIdInt = Integer.parseInt(authorId);;
-           
-            resPayload.add(comment);
+        resPayload.add(comment);
         
         
         return resPayload;
@@ -258,24 +276,38 @@ class DatabaseHelper {
 
       void flagPost(String postId, PostRequest req) throws SQLException {
         int postIdInt = Integer.parseInt(postId);
-        if (req.flagged){
+        if(req.flagged){
             req.flagged = true;
-    }
+        }
         else{
             req.flagged = false;
         }
-       
         db.flagPostById(req.flagged, postIdInt);
     }  
-    
+      /**
+     * FLAG a comment.
+     * @param commentId Identify the post to flag
+     * @param req Front-end request
+     */
+
+    void flagComment(String commentId, CommentRequest req) throws SQLException {
+        int commentIdInt = Integer.parseInt(commentId);
+        if(req.flagged){
+            req.flagged = true;
+        }
+        else{
+            req.flagged = false;
+        }
+        db.flagCommentById(req.flagged, commentIdInt);
+    }  
     
     boolean checkBlocked(String userId) throws SQLException {
         int userIdInt = Integer.parseInt(userId);
+        boolean block = false;
         ResultSet rs = db.selectUserById(userIdInt);
-        //ResultSet rs = db.selectUserById(loginUserId);
-        
-        boolean block = rs.getBoolean("blocked");
-            
+        if(rs.next()){
+            block = rs.getBoolean("blocked");
+        }
         // db.selectUserById(userIdInt);
         // mSelectUserById.setInt(1, userIdInt);
         return block;
@@ -292,22 +324,7 @@ class DatabaseHelper {
         db.updateCommentById(req.content, commentIdInt);
     }
 
-    /**
-     * FLAG a comment.
-     * @param commentId Identify the post to flag
-     * @param req Front-end request
-     */
-
-    void flagComment(String commentId, CommentRequest req) throws SQLException {
-        int commentIdInt = Integer.parseInt(commentId);
-    if (req.flagged){
-        req.flagged = true;
-    }
-    else{
-        req.flagged = false;
-    }
-        db.flagCommentById(req.flagged, commentIdInt);
-    }  
+  
 
     
     /**
@@ -374,11 +391,11 @@ class DatabaseHelper {
     String addPost(String userId, PostRequest req) throws SQLException {
         int userIdInt = Integer.parseInt(userId);
         StringBuilder linksSB = new StringBuilder();
-        String video_link = req.video_link;
+        String videoLink = req.videoLink;
         for (String link : req.links)
             linksSB.append(link).append(" ");
         db.insertPost(req.title, req.content, userIdInt, req.fileType,
-                "", linksSB.toString(), video_link);
+                "", linksSB.toString(), videoLink);
         // get the id of newly added post
         ResultSet rs = db.selectLatestPostId();
         rs.next();
@@ -444,7 +461,8 @@ class DatabaseHelper {
         ResultSet userRs = db.selectUserByEmail(email);
         int newId;  // the id to be returned
         if (userRs.next()) {  // user already exist in db
-            newId = userRs.getInt(1);
+            newId = userRs.getBoolean("blocked") ? -1 : userRs.getInt(1);
+            
         } else {  // user does not exist
             db.insertUser(email, firstName, lastName);
             ResultSet idRs = db.selectLatestUserId();
@@ -453,7 +471,7 @@ class DatabaseHelper {
             idRs.close();
         }
         userRs.close();
-        return Integer.toString(newId);
+        return newId >= 0 ? Integer.toString(newId) : null;
     }
 
     // *******************************************
@@ -475,16 +493,17 @@ class DatabaseHelper {
             links.addAll(Arrays.asList(linksStr.split("\\s")));
 
         // Attached video of the post
-        String video_link = rs.getString("video_link");
+        String videoLink = rs.getString("video_link");
 
         // Comments under the post
         ArrayList<CommentSubtype> comments = new ArrayList<>();
         ResultSet commentsRs = db.selectCommentsByPostId(
                 rs.getInt("post_id"));
+        
         while (commentsRs.next())
             comments.add(rs2Comment(commentsRs));
         commentsRs.close();
-
+        System.out.println("the post result set flagged value is " + rs.getBoolean("flagged")+"\n");
         return new PostSubtype(
                 rs.getInt("post_id"),
                 rs.getString("title"),
@@ -496,7 +515,7 @@ class DatabaseHelper {
                 rs.getBoolean("flagged"), 
                 fileInfo,
                 links,
-                video_link,
+                videoLink,
                 comments
         );
     }
@@ -508,6 +527,8 @@ class DatabaseHelper {
             links.addAll(Arrays.asList(linksStr.split("\\s")));
         ResultSet userRs = db.selectUserById(rs.getInt("user_id"));
         userRs.next();
+        boolean flag = rs.getBoolean("flagged");
+        System.out.println("the comment result set flagged value is " + flag);
         return new CommentSubtype(
                 rs.getInt("comment_id"),
                 rs.getInt("post_id"),
@@ -516,11 +537,13 @@ class DatabaseHelper {
                 rs.getString("date"),
                 rs2FileInfo(rs),
                 links, 
-                rs.getBoolean("flagged")
+                flag
         );
     }
 
     private FileInfoSubtype rs2FileInfo(ResultSet rs) throws SQLException {
+        // String date = rs.getString("filedate");
+        // String returnDate = (new Date(date)).toLocaleDateString() + ' ' + (new Date(date)).toLocaleTimeString();
         return new FileInfoSubtype(
                 rs.getString("filetype"),
                 rs.getString("filedate"),

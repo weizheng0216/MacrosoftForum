@@ -143,7 +143,7 @@ class Database {
         mUpdatePostFilePathById = mConnection.prepareStatement("UPDATE posts SET filepath=? WHERE post_id=?");
         mFlagPostById = mConnection.prepareStatement("UPDATE posts SET flagged =? WHERE post_id=?");
         mDeletePostById = mConnection.prepareStatement("DELETE FROM posts WHERE post_id=?");
-        mInsertComment = mConnection.prepareStatement("INSERT INTO comments VALUES (default, ?, default, ?, ?, ?, default, ?, ?, false)");
+        mInsertComment = mConnection.prepareStatement("INSERT INTO comments VALUES (default, ?, false, default, ?, ?, ?, default, ?, ?)");
         mSelectCommentByIds = mConnection.prepareStatement("SELECT * FROM comments WHERE post_id=? AND comment_id=?");
         mSelectCommentsByPostId = mConnection.prepareStatement("SELECT * FROM comments WHERE post_id=? ORDER BY date DESC");
         mSelectCommentsByUserId = mConnection.prepareStatement("SELECT * FROM comments WHERE user_id=?");

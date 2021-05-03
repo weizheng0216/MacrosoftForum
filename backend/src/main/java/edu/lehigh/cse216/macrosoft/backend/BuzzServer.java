@@ -185,32 +185,33 @@ class BuzzServer {
             return StructuredResponse.OK(payload);
         }, gson::toJson);
 
-        // // *****************************************************************
-        // // *      GET /api/comments/:comment_id
-        // // *****************************************************************
-        // Spark.get("/api/comments/:comment_id", (req, res) -> {
-        //     res.type("application/json");
+        // *****************************************************************
+        // *      GET /api/posts/:post_id/comments/:comment_id
+        // *****************************************************************
+        Spark.get("/api/posts/:post_id/comments/:comment_id", (req, res) -> {
+            res.type("application/json");
 
-        //     // verify login
-        //     String sessionKey = req.queryParams("session");
-        //     String loginUserId = auth.verifyLogin(sessionKey);
-        //     if (loginUserId == null) {
-        //         res.status(401);
-        //         return StructuredResponse.LOGIN_ERR;
-        //     }
+            // verify login
+            String sessionKey = req.queryParams("session");
+            String loginUserId = auth.verifyLogin(sessionKey);
+            if (loginUserId == null) {
+                res.status(401);
+                return StructuredResponse.LOGIN_ERR;
+            }
 
-        //     // get comment from storage
-        //     String commentId = req.params("comment_id");
-        //     Object payload = db.queryGetAComment(commentId);
-        //     if (payload == null) {
-        //         res.status(404);
-        //         return StructuredResponse.ERR("Comment does not exist.");
-        //     }
+            // get comment from storage
+            String commentId = req.params("comment_id");
+            String postId = req.params("post_id");
+            Object payload = db.queryGetAComment(postId, commentId);
+            if (payload == null) {
+                res.status(404);
+                return StructuredResponse.ERR("Comment does not exist.");
+            }
 
-        //     res.status(200);
-        //     return StructuredResponse.OK(payload);
+            res.status(200);
+            return StructuredResponse.OK(payload);
 
-        // }, gson::toJson);
+        }, gson::toJson);
 
         // *****************************************************************
         // *                       GET /api/users/my
@@ -389,6 +390,7 @@ class BuzzServer {
 
             // user is valid, login and add to db
             String userId = db.addUser(payload);  // will not add duplicate user
+            
             String sessionKey = auth.login(userId);
 
             res.status(200);
@@ -529,8 +531,9 @@ class BuzzServer {
             }
 
             // execute update in db
+            System.out.println("the flag value is  "+ request.flagged);
             db.flagComment(commentId, request);  
-
+            System.out.println("the flag value is  "+ request.flagged);
             res.status(200);
             return StructuredResponse.OK(null);
         }, gson::toJson);

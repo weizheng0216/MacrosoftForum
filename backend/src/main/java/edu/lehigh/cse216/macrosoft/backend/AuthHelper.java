@@ -18,6 +18,7 @@ class AuthHelper {
     private final String CLIENT_ID;
 
     private final Random random;
+    private static DatabaseHelper db;
 
     private final CacheHelper cache;
 
@@ -51,9 +52,24 @@ class AuthHelper {
             return null;
         if (sessionKey.equals("buzztester66-qwertyuioplkjhgfdsa"))
             return "66";  // the test user
+
+        // check if the user is blocked
+    //     try{
+    //     if(db.checkBlocked(cache.getSession(sessionKey)))
+    //     {
+    //         //res.status(406);
+    //         return null;
+    //     }    
+    // }catch (Exception exp) {
+    //     System.out.println(exp.getMessage());
+    // }
         return cache.getSession(sessionKey);
     }
 
+    //isblocked
+    // input parameter user id
+    // return db.checkedblock
+    //
     /**
      * Login a user by refreshing her <i>sessionKey</i> entry in the backend cache
      * or by creating a new entry with a newly generated <i>sessionKey</i>. The
