@@ -531,9 +531,9 @@ class BuzzServer {
             }
 
             // execute update in db
-            System.out.println("the flag value is  "+ request.flagged);
+            //System.out.println("the flag value is  "+ request.flagged);
             db.flagComment(commentId, request);  
-            System.out.println("the flag value is  "+ request.flagged);
+            //System.out.println("the flag value is  "+ request.flagged);
             res.status(200);
             return StructuredResponse.OK(null);
         }, gson::toJson);

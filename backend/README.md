@@ -8,7 +8,11 @@
 
 ## Introduction
 The backend of BUZZ serves the front-end pages and provides a set of APIs
-for the front-end pages to access. In phase3, support to files are added.
+for the front-end pages to access. 
+In phase3, support to files/links are added.
+In phase4, functions to block user while logging in and flag inappropriate 
+contents are provided.
+For the extra credit, support to youtube video is added.
 
 ## APIs
 
@@ -22,9 +26,10 @@ for the front-end pages to access. In phase3, support to files are added.
 > - Forbidden operations will cause error now.
 
 Below is a list of APIs inherited from phase2, most of which are changed either
-for improving the comprehensiveness of the design or for adapting phase3 requirement.
+for improving the comprehensiveness of the design or for adapting phase3/4 requirement.
 
 - [GET /api/posts](#markdown-header-get-apiposts)
+- [GET /api/posts/:post_id](#markdown-header-get-apipostspost_id)
 - [GET /api/posts/:post_id/file](#markdown-header-get-apipostspost_idfile)
 - [GET /api/posts/:post_id/comments/:comment_id/file](#markdown-header-get-apipostspost_idcommentscomment_idfile)
 - [GET /api/users/my](#markdown-header-get-apiusersmy)
@@ -93,6 +98,7 @@ Example response payload:
       "https://www.examples.com",
       "https://www.lehigh.edu"
     ],
+    "mVideoLink": "",
     "mComments": [
       {
         "mCommentID": 555,
@@ -113,7 +119,8 @@ Example response payload:
         "mLinks": [
           "https://www.examples.com",
           "https://www.lehigh.edu"
-        ]
+        ],
+      "mFlagged": false,
       },
       {}
     ],
@@ -130,6 +137,64 @@ Return codes:
 | 200 | OK |
 | 401 | Session key is invalid |
 | 500+ | Unexpected server error |
+
+
+### GET /api/posts/:post_id
+Get a post information, including the comments, the author of
+the comments, and the vote status.
+
+The example is the same as above.
+
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 401 | Session key is invalid |
+| 500+ | Unexpected server error |
+
+
+
+### GET /api/posts/:post_id/comments/:comment_id
+Get a specific comment by using the post id and comment id
+
+Example response payload:
+```json
+
+{
+  "mStatus": "OK",
+  "mMessage": "",
+  "mData": [
+    {
+      "mCommentID": 5,
+      "mPostID": 10,
+      "mContent": "Kangaroo",
+      "mAuthor": {
+        "mUserID": 5,
+        "mEmail": "hag223@lehigh.edu",
+        "mFirstName": "Haocheng",
+        "mLastName": "Gao",
+        "mBlocked": false
+      },
+      "mDate": "2021-05-02 06:12:07.178088",
+      "mFileInfo": {
+        "mType": "image/png",
+        "mName": "long nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.png"
+      },
+      "mLinks": [],
+      "mFlagged": false
+    }
+  ]
+}
+```
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 401 | Session key is invalid |
+| 500+ | Unexpected server error |
+
 
 ### GET /api/posts/:post_id/file
 Download the file attached to the particular post. The file content, which is

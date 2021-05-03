@@ -102,17 +102,17 @@ class DatabaseHelper {
         rs.close();
 
 
-            int userIdInt = Integer.parseInt(authorId);;
-            boolean userUpVote = false;
-            boolean userDownVote = false;
-            ResultSet userVoteRs = db.selectVoteByIds(userIdInt, postIdInt);
-            if (userVoteRs.next()) {
-                userUpVote = userVoteRs.getBoolean("vote_up");
-                userDownVote = userVoteRs.getBoolean("vote_down");
-            }
-            userVoteRs.close();
-            resPayload.add(IntegratedPostSubtype
-                    .fromBasicPost(post, userUpVote, userDownVote));
+        int userIdInt = Integer.parseInt(authorId);;
+        boolean userUpVote = false;
+        boolean userDownVote = false;
+        ResultSet userVoteRs = db.selectVoteByIds(userIdInt, postIdInt);
+        if (userVoteRs.next()) {
+            userUpVote = userVoteRs.getBoolean("vote_up");
+            userDownVote = userVoteRs.getBoolean("vote_down");
+        }
+        userVoteRs.close();
+        resPayload.add(IntegratedPostSubtype
+            .fromBasicPost(post, userUpVote, userDownVote));
         
         return resPayload;
     }
@@ -503,7 +503,7 @@ class DatabaseHelper {
         while (commentsRs.next())
             comments.add(rs2Comment(commentsRs));
         commentsRs.close();
-        System.out.println("the post result set flagged value is " + rs.getBoolean("flagged")+"\n");
+        //System.out.println("the post result set flagged value is " + rs.getBoolean("flagged")+"\n");
         return new PostSubtype(
                 rs.getInt("post_id"),
                 rs.getString("title"),
@@ -528,7 +528,7 @@ class DatabaseHelper {
         ResultSet userRs = db.selectUserById(rs.getInt("user_id"));
         userRs.next();
         boolean flag = rs.getBoolean("flagged");
-        System.out.println("the comment result set flagged value is " + flag);
+        //System.out.println("the comment result set flagged value is " + flag);
         return new CommentSubtype(
                 rs.getInt("comment_id"),
                 rs.getInt("post_id"),
