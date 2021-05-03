@@ -10,13 +10,13 @@ const backendUrl = "https://cse216-macrosoft.herokuapp.com";
 
 const alertOn = true;
 
-const test = true;
+const debug = false;
 
-const debug = true;
+let test = true;
 
 let sessionKey: string;
 
-// Run some configuration code when the web page loads
+// Starting point of the application
 jQuery(function () {
     debugOutput("Ready");
     sessionKey = sessionStorage.getItem("sessionKey");
@@ -30,27 +30,48 @@ jQuery(function () {
 // ===================================================
 // Utility Functions
 
+/**
+ * Load Handlebars template.
+ * @param name Template name.
+ * @param data Data to be passed into template.
+ * @returns The html.
+ */
 function templatedHTML(name: string, data?: any) {
     data = data || {};
     return Handlebars.templates[name + '.hbr'](data);
 }
 
+/**
+ * Formatted output.
+ * EX: format("{1}+{2}={3}", 1, 1, 1+1) => "1+1=2";
+ */
 function format(s: string, ...objs: any[]) {
     if (!s) return "";
     return s.replace(/\{(\d+)\}/g, (m, i) => objs[i-1]);
 }
 
+/**
+ * Output in debug mode.
+ */
 function debugOutput(...data: any[]) {
     if (!debug) return;
     for (let i = 0; i < data.length; i++)
         console.log(data[i]);
 }
 
+/**
+ * Prompt in alert mode.
+ */
 function alertOutput(msg: string) {
     if (alertOn) alert(msg);
     return msg;
 }
 
+/**
+ * Wrapper of the $.ajax function. It will redirect the requests to
+ * an in-memory fake backend during tests.
+ * @param settings Ajax Settings
+ */
 function myAjax(settings: JQuery.AjaxSettings) {
     if (!settings) return;
     let msg = JSON.stringify(settings);
@@ -65,9 +86,15 @@ function myAjax(settings: JQuery.AjaxSettings) {
 }
 
 function redirect(name: string) {
-    window.location.replace(backendUrl + "/" + name);
+    window.location.href = backendUrl + "/" + name;
 }
 
+/**
+ * Download the file to user's local hard drive.
+ * @param base64 The base64 data string.
+ * @param fileType HTTP file type. Examples: image/png, application/pdf, test/css
+ * @param fileName Name of the file being downloaded.
+ */
 function downloadFile(base64: string, fileType: string, fileName: string) {
     // Create blob
     let bstr = atob(base64);
@@ -148,179 +175,17 @@ function fetchImgs(posts: any) {
 // ===================================================
 // Fake backend for testing
 
-let backend = (function () {
-    // Only support simplest logic for now
-    let json1 = {
-        "mStatus": "OK",
-        "mMessage": "",
-        "mData": [
-            {
-                "mPostID": 23,
-                "mTitle": "newest post",
-                "mContent": "Here is my comment",
-                "mAuthor": {
-                    "mUserID": 66,
-                    "mEmail": "test@lehigh.edu",
-                    "mFirstName": "test_first",
-                    "mLastName": "test_last"
-                },
-                "mDate": "2021-04-13 09:20:01.62778",
-                "mUpVoteCount": 0,
-                "mDownVoteCount": 0,
-                "mFlagged": true,
-                "mFileInfo": {
-                    "mType": "image/png",
-                    "mTime": "2020-05-01 55:55:55 234145134",
-                    "mName": "Reddot.png"
-                },
-                "mLinks": [
-                    "www.lehigh.edu",
-                    "www.baidu.com"
-                ],
-                "mComments": [
-                    {
-                        "mCommentID": 555,
-                        "mPostID": 23,
-                        "mContent": "My comment 1",
-                        "mAuthor": {
-                            "mUserID": 201,
-                            "mEmail": "example@lehigh.edu",
-                            "mFirstName": "first",
-                            "mLastName": "last"
-                        },
-                        "mDate": "2018-02-18 14:00:06",
-                        "mFileInfo": {
-                            "mType": "image/png",
-                            "mTime": "2020-05-01 55:55:55 234145134",
-                            "mName": "Reddot.png"
-                        },
-                        "mLinks": [
-                            "https://www.examples.com",
-                            "https://www.lehigh.edu"
-                        ]
-                    }
-                ],
-                "mVideoLink": "https://www.youtube.com/embed/H96SP4kQGt4?autoplay=1&origin=http://example.com",
-                "mUserUpVote": false,
-                "mUserDownVote": false
-            },
-            {
-                "mPostID": 22,
-                "mTitle": "newest post",
-                "mContent": "Here is my comment",
-                "mAuthor": {
-                    "mUserID": 66,
-                    "mEmail": "test@lehigh.edu",
-                    "mFirstName": "test_first",
-                    "mLastName": "test_last"
-                },
-                "mDate": "2021-04-13 09:12:08.854174",
-                "mUpVoteCount": 0,
-                "mDownVoteCount": 0,
-                "mFlagged": false,
-                "mFileInfo": {
-                    "mType": "image/png",
-                    "mTime": "2020-05-01 55:55:55 234145134",
-                    "mName": "Reddot.png"
-                },
-                "mLinks": [
-                    "www.lehigh.edu",
-                    "www.baidu.com"
-                ],
-                "mComments": [
-                    {
-                        "mCommentID": 556,
-                        "mPostID": 22,
-                        "mContent": "My comment 1",
-                        "mAuthor": {
-                            "mUserID": 201,
-                            "mEmail": "example@lehigh.edu",
-                            "mFirstName": "first",
-                            "mLastName": "last"
-                        },
-                        "mDate": "2018-02-18 14:00:06",
-                        "mFileInfo": {
-                            "mType": "image/png",
-                            "mTime": "2020-01-15 08:15:23",
-                            "mName": "image"
-                        },
-                        "mLinks": [
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
-                            "https://www.lehigh.edu"
-                        ]
-                    },
-                    {
-                        "mCommentID": 555,
-                        "mPostID": 22,
-                        "mContent": "My comment 1",
-                        "mAuthor": {
-                            "mUserID": 201,
-                            "mEmail": "example@lehigh.edu",
-                            "mFirstName": "first",
-                            "mLastName": "last"
-                        },
-                        "mDate": "2018-02-18 14:00:06",
-                        "mFileInfo": {
-                            "mType": "image/png",
-                            "mTime": "2020-05-01 55:55:55 234145134",
-                            "mName": "Reddot.png"
-                        },
-                        "mLinks": [
-                            "https://www.examples.com",
-                            "https://www.lehigh.edu"
-                        ]
-                    }
-                ],
-                "mUserUpVote": false,
-                "mUserDownVote": false
-            }
-        ]
-    };  // end of response
-
-    let json2 = {
-        "mStatus": "OK",
-        "mMessage": "",
-        "mData": {
-            "mUser": {
-                "mUserID": 66,
-                "mEmail": "test@lehigh.edu",
-                "mFirstName": "test_first",
-                "mLastName": "test_last"
-            },
-            "mPosts": [
+let backend: any;
+if (test) {  // only load during tests
+    backend = (function () {
+        // Only support simplest logic for now
+        let json1 = {
+            "mStatus": "OK",
+            "mMessage": "",
+            "mData": [
                 {
-                    "mPostID": 20,
-                    "mTitle": "my title",
+                    "mPostID": 23,
+                    "mTitle": "newest post",
                     "mContent": "Here is my comment",
                     "mAuthor": {
                         "mUserID": 66,
@@ -328,124 +193,282 @@ let backend = (function () {
                         "mFirstName": "test_first",
                         "mLastName": "test_last"
                     },
-                    "mDate": "2021-04-13 09:04:19.940533",
+                    "mDate": "2021-04-13 09:20:01.62778",
                     "mUpVoteCount": 0,
                     "mDownVoteCount": 0,
                     "mFlagged": true,
-                    "mVideoLink": "https://www.youtube.com/embed/H96SP4kQGt4?autoplay=1&origin=http://example.com",
-                    "mFileInfo": {
-                        "mType": "",
-                        "mTime": "",
-                        "mName": ""
-                    },
-                    "mLinks": [
-                    ]
-                }
-            ],
-            "mComments": [
-                {
-                    "mCommentID": 555,
-                    "mPostID": 123,
-                    "mContent": "My comment 1",
-                    "mAuthor": {
-                        "mUserID": 201,
-                        "mEmail": "example@lehigh.edu",
-                        "mFirstName": "first",
-                        "mLastName": "last"
-                    },
-                    "mDate": "2018-02-18 14:00:06",
-                    "mFlagged": true,
                     "mFileInfo": {
                         "mType": "image/png",
-                        "mTime": "2020-01-15 08:15:23",
-                        "mName": "imgk"
+                        "mTime": "2020-05-01 55:55:55 234145134",
+                        "mName": "Reddot.png"
                     },
                     "mLinks": [
-                        "https://www.examples.com",
-                        "https://www.lehigh.edu"
-                    ]
+                        "www.lehigh.edu",
+                        "www.baidu.com"
+                    ],
+                    "mComments": [
+                        {
+                            "mCommentID": 555,
+                            "mPostID": 23,
+                            "mContent": "My comment 1",
+                            "mAuthor": {
+                                "mUserID": 201,
+                                "mEmail": "example@lehigh.edu",
+                                "mFirstName": "first",
+                                "mLastName": "last"
+                            },
+                            "mDate": "2018-02-18 14:00:06",
+                            "mFileInfo": {
+                                "mType": "image/png",
+                                "mTime": "2020-05-01 55:55:55 234145134",
+                                "mName": "Reddot.png"
+                            },
+                            "mLinks": [
+                                "https://www.examples.com",
+                                "https://www.lehigh.edu"
+                            ]
+                        }
+                    ],
+                    "mVideoLink": "https://www.youtube.com/embed/H96SP4kQGt4?autoplay=1&origin=http://example.com",
+                    "mUserUpVote": false,
+                    "mUserDownVote": false
                 },
                 {
-                    "mCommentID": 555,
-                    "mPostID": 123,
-                    "mContent": "My comment 1",
+                    "mPostID": 22,
+                    "mTitle": "newest post",
+                    "mContent": "Here is my comment",
                     "mAuthor": {
-                        "mUserID": 201,
-                        "mEmail": "example@lehigh.edu",
-                        "mFirstName": "first",
-                        "mLastName": "last"
+                        "mUserID": 66,
+                        "mEmail": "test@lehigh.edu",
+                        "mFirstName": "test_first",
+                        "mLastName": "test_last"
                     },
-                    "mDate": "2018-02-18 14:00:06",
+                    "mDate": "2021-04-13 09:12:08.854174",
+                    "mUpVoteCount": 0,
+                    "mDownVoteCount": 0,
+                    "mFlagged": false,
                     "mFileInfo": {
-                        "mType": "pdf",
-                        "mTime": "2020-01-15 08:15:23",
-                        "mName": "MyPDF"
+                        "mType": "image/png",
+                        "mTime": "2020-05-01 55:55:55 234145134",
+                        "mName": "Reddot.png"
                     },
                     "mLinks": [
-                        "https://www.examples.com",
-                        "https://www.lehigh.edu"
-                    ]
+                        "www.lehigh.edu",
+                        "www.baidu.com"
+                    ],
+                    "mComments": [
+                        {
+                            "mCommentID": 556,
+                            "mPostID": 22,
+                            "mContent": "My comment 1",
+                            "mAuthor": {
+                                "mUserID": 201,
+                                "mEmail": "example@lehigh.edu",
+                                "mFirstName": "first",
+                                "mLastName": "last"
+                            },
+                            "mDate": "2018-02-18 14:00:06",
+                            "mFileInfo": {
+                                "mType": "image/png",
+                                "mTime": "2020-01-15 08:15:23",
+                                "mName": "image"
+                            },
+                            "mLinks": [
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.examples.cooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom",
+                                "https://www.lehigh.edu"
+                            ]
+                        },
+                        {
+                            "mCommentID": 555,
+                            "mPostID": 22,
+                            "mContent": "My comment 1",
+                            "mAuthor": {
+                                "mUserID": 201,
+                                "mEmail": "example@lehigh.edu",
+                                "mFirstName": "first",
+                                "mLastName": "last"
+                            },
+                            "mDate": "2018-02-18 14:00:06",
+                            "mFileInfo": {
+                                "mType": "image/png",
+                                "mTime": "2020-05-01 55:55:55 234145134",
+                                "mName": "Reddot.png"
+                            },
+                            "mLinks": [
+                                "https://www.examples.com",
+                                "https://www.lehigh.edu"
+                            ]
+                        }
+                    ],
+                    "mUserUpVote": false,
+                    "mUserDownVote": false
                 }
             ]
-        }
-    };
+        };  // end of response
 
-    let json3 = {
-        "mStatus": "OK",
-        "mMessage": "",
-        "mData": {
-            "mData": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
-        }
-    };
-
-    return {
-        getResponse: function (settings: JQuery.AjaxSettings) {
-            let regex: RegExp;
-            settings.url = settings.url || "";
-
-            // PostCommentBlock Get file under post
-            regex = /\/api\/posts\/[0-9]+\/file(\?.*)?/;
-            if (settings.type == "GET" && regex.test(settings.url)) {
-                return json3;
+        let json2 = {
+            "mStatus": "OK",
+            "mMessage": "",
+            "mData": {
+                "mUser": {
+                    "mUserID": 66,
+                    "mEmail": "test@lehigh.edu",
+                    "mFirstName": "test_first",
+                    "mLastName": "test_last"
+                },
+                "mPosts": [
+                    {
+                        "mPostID": 20,
+                        "mTitle": "my title",
+                        "mContent": "Here is my comment",
+                        "mAuthor": {
+                            "mUserID": 66,
+                            "mEmail": "test@lehigh.edu",
+                            "mFirstName": "test_first",
+                            "mLastName": "test_last"
+                        },
+                        "mDate": "2021-04-13 09:04:19.940533",
+                        "mUpVoteCount": 0,
+                        "mDownVoteCount": 0,
+                        "mFlagged": true,
+                        "mVideoLink": "https://www.youtube.com/embed/H96SP4kQGt4?autoplay=1&origin=http://example.com",
+                        "mFileInfo": {
+                            "mType": "",
+                            "mTime": "",
+                            "mName": ""
+                        },
+                        "mLinks": [
+                        ]
+                    }
+                ],
+                "mComments": [
+                    {
+                        "mCommentID": 555,
+                        "mPostID": 123,
+                        "mContent": "My comment 1",
+                        "mAuthor": {
+                            "mUserID": 201,
+                            "mEmail": "example@lehigh.edu",
+                            "mFirstName": "first",
+                            "mLastName": "last"
+                        },
+                        "mDate": "2018-02-18 14:00:06",
+                        "mFlagged": true,
+                        "mFileInfo": {
+                            "mType": "image/png",
+                            "mTime": "2020-01-15 08:15:23",
+                            "mName": "imgk"
+                        },
+                        "mLinks": [
+                            "https://www.examples.com",
+                            "https://www.lehigh.edu"
+                        ]
+                    },
+                    {
+                        "mCommentID": 555,
+                        "mPostID": 123,
+                        "mContent": "My comment 1",
+                        "mAuthor": {
+                            "mUserID": 201,
+                            "mEmail": "example@lehigh.edu",
+                            "mFirstName": "first",
+                            "mLastName": "last"
+                        },
+                        "mDate": "2018-02-18 14:00:06",
+                        "mFileInfo": {
+                            "mType": "pdf",
+                            "mTime": "2020-01-15 08:15:23",
+                            "mName": "MyPDF"
+                        },
+                        "mLinks": [
+                            "https://www.examples.com",
+                            "https://www.lehigh.edu"
+                        ]
+                    }
+                ]
             }
+        };
 
-            // PostCommentBlock Get file under comment
-            regex = /\/api\/posts\/[0-9]+\/comments\/[0-9]+\/file(\?.*)?/;
-            if (settings.type == "GET" && regex.test(settings.url)) {
-                return json3;
+        let json3 = {
+            "mStatus": "OK",
+            "mMessage": "",
+            "mData": {
+                "mData": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
             }
+        };
 
-            // BriefPostsList Get all
-            regex = /\/api\/posts(\?.*)?/;
-            if (settings.type == "GET" && regex.test(settings.url)) {
-                return json1;
-            }
+        return {
+            getResponse: function (settings: JQuery.AjaxSettings) {
+                let regex: RegExp;
+                settings.url = settings.url || "";
 
-            // MyProfileBlock Get my profile
-            regex = /\/api\/users\/my(\?.*)?/;
-            if (settings.type == "GET" && regex.test(settings.url)) {
-                return json2;
-            }
+                // PostCommentBlock Get file under post
+                regex = /\/api\/posts\/[0-9]+\/file(\?.*)?/;
+                if (settings.type == "GET" && regex.test(settings.url)) {
+                    return json3;
+                }
 
-            // PostCommentBlock Get others' profile
-            regex = /\/api\/users\/[0-9]+(\?.*)?/;
-            if (settings.type == "GET" && regex.test(settings.url)) {
-                return json2;
-            }
+                // PostCommentBlock Get file under comment
+                regex = /\/api\/posts\/[0-9]+\/comments\/[0-9]+\/file(\?.*)?/;
+                if (settings.type == "GET" && regex.test(settings.url)) {
+                    return json3;
+                }
 
-            // File upload
-            regex = /\/api\/users\/[0-9]+(\?.*)?/;
-            if (settings.type == "POST") {
-                json3.mData.mData = JSON.parse(settings.data).fileData;
-                return {};
-            }
+                // BriefPostsList Get all
+                regex = /\/api\/posts(\?.*)?/;
+                if (settings.type == "GET" && regex.test(settings.url)) {
+                    return json1;
+                }
 
-            // Trivial reponses
-            return {
-                "mStatus": "OK",
-                "mMessage": "",
-                "mData": null
-            };
-        }  // end of getResponse()
-    }  // end of the exported obj
-})();
+                // MyProfileBlock Get my profile
+                regex = /\/api\/users\/my(\?.*)?/;
+                if (settings.type == "GET" && regex.test(settings.url)) {
+                    return json2;
+                }
+
+                // PostCommentBlock Get others' profile
+                regex = /\/api\/users\/[0-9]+(\?.*)?/;
+                if (settings.type == "GET" && regex.test(settings.url)) {
+                    return json2;
+                }
+
+                // Trivial reponses
+                return {
+                    "mStatus": "OK",
+                    "mMessage": "",
+                    "mData": null
+                };
+            }  // end of getResponse()
+        }  // end of the exported obj
+    })();
+}

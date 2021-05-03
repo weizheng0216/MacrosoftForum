@@ -34,15 +34,9 @@ for hbr in $(ls hbr/); do
 done
 
 # step 7: set up Jasmine
-
-# node_modules/typescript/bin/tsc appForTest.ts --strict --outFile $TARGETFOLDER/appForTest.js
-# node_modules/typescript/bin/tsc apptest.ts --strict --outFile $TARGETFOLDER/apptest.js
-# cp spec_runner.html $TARGETFOLDER
-# cp node_modules/jasmine-core/lib/jasmine-core/jasmine.css $TARGETFOLDER
-# cp node_modules/jasmine-core/lib/jasmine-core/jasmine.js $TARGETFOLDER
-# cp node_modules/jasmine-core/lib/jasmine-core/boot.js $TARGETFOLDER
-# cp node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js $TARGETFOLDER
-
-# node_modules/.bin/http-server $TARGETFOLDER -c-1
-
-
+node_modules/typescript/bin/tsc apptest.ts --strict --outFile $TARGETFOLDER/apptest.js 2>&1 1>/dev/null
+cp spec_runner.html $TARGETFOLDER
+cp node_modules/jasmine-core/lib/jasmine-core/jasmine.css $TARGETFOLDER
+cp node_modules/jasmine-core/lib/jasmine-core/jasmine.js $TARGETFOLDER
+cp node_modules/jasmine-core/lib/jasmine-core/boot.js $TARGETFOLDER
+cp node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js $TARGETFOLDER

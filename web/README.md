@@ -3,6 +3,8 @@
 ## Front-end Role
 - Phase 1: Wei Zheng
 - Phase 2: Weihang Guo
+- Phase 3: Siyu(Coco) Chen
+- Phase 4: Haocheng Gao
 
 ## Introduction 
 
@@ -13,8 +15,73 @@ In general, the front end's UI have two parts: left part and right part. Left pa
 ***
 
 ## Dependencies
+There are three types of dependencies used in this project: the deployed node
+modules, the undeployed node modules, and the URLs embedded in HTML pages.
 
-Bootstrap, Handlebars and JQuery are used to ensure the web is functionally work. Specifically, icons in Boostrap are used. Handlebars process the responses from the backend and add the element in html, JQuery enable us to find a element efficiently.  
+We have installed Bootstrap, Handlebars, jQuery as modules that will be deployed
+onto the Heroku server. They contribute to CSS templating, html templating, and 
+serve as function library. Jasmine is used for unit testing and is also deployed
+to the server.
+
+TypeScript and simple http server are installed as undeploed modules. They are
+the develop tools we used during this project.
+
+We have also linked other external sources, like google's oAuth API, into our html.
+Please view them in the `head` secion of `login.html` and `index.html`.
+
+***
+
+## Refactorization
+For maintainability and future developments, the Buzz front-end is refactored in
+Phase4 to eliminate the technical debts on record. Here is a listing of all debts
+accumulated through the course of development, and how they are resolved.
+
+
+### Adding Handlebars for BasicStructure
+`BasicStructure` is the foundamental skeleton of the Buzz front-end. It was
+embedded in `index.html` originally. To extend the templating design with
+handlebars to its maximum potential, these skeleton elements are moved to
+`BasicStructure.hbr` and a function call to its loaded is run in the main
+function of `app.ts`.
+
+This part of refactorization improves the readability of the project by letting
+each module having its own template file, stylesheet and script file instead of
+hard coding anything into the html page.
+
+
+### Redo the CSS of NewPostBlock
+NewPostBlock follows a very simple flow-layout, meaning each component in the
+layout would share most of their style attributes. However the original CSS
+design heavily utilized the `position` attribute and the offset settings that
+comes with it. Although it worked in previous phases, the complexity of the
+stylesheets increases very fast as we extend the module.
+
+Therefore the CSS of this module is re-designed with extensive uses of margins,
+paddings, flex-boxes and height constraints. To add new components to the module,
+we can simply insert new container into its DOM tree then define the height
+constrain of the new container.
+
+
+### Global CSS definitions
+There are patterns that show up repeatedly through the application. For instance,
+the shaded red border, the CSS effect upon mouse clicks, the file containers,
+etc. `BasicStructure.css` was initially desinged not only to define the style
+information of the document skeleton, but also to contain some global CSS class
+definitions.  However, through the course of developing, this file is rarely
+edited and has become out-dated. There are more grouped style attributes that
+could be extracted into this global file.
+
+By creating `mybtn` class in the global css file, we don't need to specify the
+same border pattern and CSS effect over buttons over and over again when
+extending the application.
+
+
+### Wrapping console.log
+In previous implementations, the script functions are flooded with `console.log`
+output functions which will print something to the console in debug mode. There
+are countless `if` branches inserted and they make the code unreadable.
+
+I 
 
 ***
 
