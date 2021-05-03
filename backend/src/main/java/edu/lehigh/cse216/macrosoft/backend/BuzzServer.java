@@ -390,7 +390,10 @@ class BuzzServer {
 
             // user is valid, login and add to db
             String userId = db.addUser(payload);  // will not add duplicate user
-            
+            if(userId == null){
+                res.status(406);
+                return StructuredResponse.ERR("User is Blocked");
+            }
             String sessionKey = auth.login(userId);
 
             res.status(200);
