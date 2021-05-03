@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.regex.*;
 import static edu.lehigh.cse216.macrosoft.backend.DriveHelper.fromFullPath;
 import static edu.lehigh.cse216.macrosoft.backend.DriveHelper.toFullPath;
 
@@ -391,7 +392,25 @@ class DatabaseHelper {
     String addPost(String userId, PostRequest req) throws SQLException {
         int userIdInt = Integer.parseInt(userId);
         StringBuilder linksSB = new StringBuilder();
+
+        String videoPattern = "^(http(s)?://)?((w){3}.)?youtu(be|.be)?(.com)?/.+";
         String videoLink = req.videoLink;
+                        if(!Pattern.matches(videoPattern, videoLink)){
+                            //System.out.println("\tVideo link not provided, default to empty");
+                            videoLink = "";
+                        } else {
+                            videoLink = videoLink.substring(videoLink.lastIndexOf("=") + 1);
+                        }
+
+        // String video = 
+        // String videoLink = "^(http(s)?://)?((w){3}.)?youtu(be|.be)?(.com)?/.+";
+        //                 video;
+        //                 if(!Pattern.matches(video, video)){
+        //                     System.out.println("\tVideo link not provided, default to empty");
+        //                     video = "";
+        //                 } else {
+        //                     video = video.substring(video.lastIndexOf("=") + 1);
+        //                 }
         for (String link : req.links)
             linksSB.append(link).append(" ");
         db.insertPost(req.title, req.content, userIdInt, req.fileType,
@@ -493,8 +512,25 @@ class DatabaseHelper {
             links.addAll(Arrays.asList(linksStr.split("\\s")));
 
         // Attached video of the post
-        String videoLink = rs.getString("video_link");
+        
+        // String videoPattern = "^(http(s)?://)?((w){3}.)?youtu(be|.be)?(.com)?/.+";
+        
+        // if(!Pattern.matches(videoLink, video)){
+        //     System.out.println("\tVideo link not provided, default to empty");
+        //     video = "";
+        // } else {
+        //     video = video.substring(video.lastIndexOf("=") + 1);
+        // }
 
+
+        String videoPattern = "^(http(s)?://)?((w){3}.)?youtu(be|.be)?(.com)?/.+";
+        String videoLink = rs.getString("video_link");
+                        if(!Pattern.matches(videoPattern, videoLink)){
+                            //System.out.println("\tVideo link not provided, default to empty");
+                            videoLink = "";
+                        } else {
+                            videoLink = videoLink.substring(videoLink.lastIndexOf("=") + 1);
+                        }
         // Comments under the post
         ArrayList<CommentSubtype> comments = new ArrayList<>();
         ResultSet commentsRs = db.selectCommentsByPostId(
