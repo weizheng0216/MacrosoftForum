@@ -177,7 +177,30 @@ let backend = (function () {
                     "www.lehigh.edu",
                     "www.baidu.com"
                 ],
-                "mComments": [],
+                "mComments": [
+                    {
+                        "mCommentID": 555,
+                        "mPostID": 23,
+                        "mContent": "My comment 1",
+                        "mAuthor": {
+                            "mUserID": 201,
+                            "mEmail": "example@lehigh.edu",
+                            "mFirstName": "first",
+                            "mLastName": "last"
+                        },
+                        "mDate": "2018-02-18 14:00:06",
+                        "mFileInfo": {
+                            "mType": "image/png",
+                            "mTime": "2020-05-01 55:55:55 234145134",
+                            "mName": "Reddot.png"
+                        },
+                        "mLinks": [
+                            "https://www.examples.com",
+                            "https://www.lehigh.edu"
+                        ]
+                    }
+                ],
+                "mVideoLink": "https://www.youtube.com/embed/H96SP4kQGt4?autoplay=1&origin=http://example.com",
                 "mUserUpVote": false,
                 "mUserDownVote": false
             },
@@ -308,7 +331,7 @@ let backend = (function () {
                     "mDate": "2021-04-13 09:04:19.940533",
                     "mUpVoteCount": 0,
                     "mDownVoteCount": 0,
-                    "mFlagged": false,
+                    "mFlagged": true,
                     "mFileInfo": {
                         "mType": "",
                         "mTime": "",
@@ -330,6 +353,7 @@ let backend = (function () {
                         "mLastName": "last"
                     },
                     "mDate": "2018-02-18 14:00:06",
+                    "mFlagged": true,
                     "mFileInfo": {
                         "mType": "image/png",
                         "mTime": "2020-01-15 08:15:23",
@@ -406,6 +430,13 @@ let backend = (function () {
             regex = /\/api\/users\/[0-9]+(\?.*)?/;
             if (settings.type == "GET" && regex.test(settings.url)) {
                 return json2;
+            }
+
+            // File upload
+            regex = /\/api\/users\/[0-9]+(\?.*)?/;
+            if (settings.type == "POST") {
+                json3.mData.mData = JSON.parse(settings.data).fileData;
+                return {};
             }
 
             // Trivial reponses

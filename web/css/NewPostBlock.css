@@ -76,6 +76,10 @@
     display: none;  /* Will be controlled by JavaScript */
 }
 
+.new-post-block .yt-block {
+    height: 80px;
+}
+
 .new-post-block .links-block {
     height: 150px;
 }

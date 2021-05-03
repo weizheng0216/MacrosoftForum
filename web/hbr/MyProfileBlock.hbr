@@ -8,7 +8,7 @@
     <p>{{this.mUser.mEmail}}</p>
 
     {{#each this.mPosts}}
-        <h4>Post: </h4>
+        <h4>{{#if this.mFlagged}}<span class="glyphicon glyphicon-exclamation-sign" title="Marked as inappropriate"></span> {{/if}}Post: </h4>
         <h5>Title: </h5>
         <textarea name="" id="post-title{{this.mPostID}}" cols="30" rows="3" class="edit-place">{{this.mTitle}}</textarea>
         <h5>Content: </h5>
@@ -47,7 +47,7 @@
     {{/each}}
      
     {{#each this.mComments}}
-        <h4>Comment: </h4>
+        <h4>{{#if this.mFlagged}}<span class="glyphicon glyphicon-exclamation-sign" title="Marked as inappropriate"></span> {{/if}}Comment: </h4>
         <h5>Content: </h5>
         <textarea name="" id="comment-content{{this.mCommentID}}" cols="30" rows="5" class="edit-place">{{this.mContent}}</textarea>
         {{#if this.mFileInfo.mType}}

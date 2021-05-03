@@ -21,12 +21,11 @@
 }
 
 .post-detail-block {
-    position: relative;
-    width: 96%;
-    left: 2%;
-    right: 2%;
+    margin-left: 3px;
+    padding-left: 37px;
+    padding-right: 37px;
     min-height: 300px;
-    overflow: auto;
+    width: 100%;
 
     border: 3px solid #8C0303;
     border-radius: 15px;
@@ -61,25 +60,33 @@
     text-indent: 40px;
 }
 
-.post-comment-view .file-panel {
+.post-comment-block .yt-block {
+    width: 640px;
+    height: 360px;
+    margin: 10px;
+    border: 2px solid #8C0303;
+    border-radius: 13px;
+    box-shadow: 2px 2px 0px #a12424;
+}
+
+.post-comment-block .file-panel {
     max-width: 55%;
     margin: 10px;
     padding: 6px;
-    margin-left: 20px;
     min-height: 100px;
     border: 2px solid #8C0303;
     border-radius: 13px;
     box-shadow: 2px 2px 0px #a12424;
 }
 
-.post-comment-view .file-panel .file-preview {
+.post-comment-block .file-panel .file-preview {
     margin-top: 10px;
     font-size: 50pt;
     float: left;
     display: block;
 }
 
-.post-comment-view .file-panel .file-info {
+.post-comment-block .file-panel .file-info {
     padding: 4px;
     max-width: 70%;
     font-size: 14pt;
@@ -88,25 +95,24 @@
     float: left;
 }
 
-.post-comment-view .file-panel .post-file-down-btn, .comment-file-down-btn {
+.post-comment-block .file-panel .file-panel .post-file-down-btn, .comment-file-down-btn {
     font-size: medium;
     width: 80%;
     height: 100%;
     margin: 10px;
 }
 
-.post-comment-view .file-panel .img-preview {
+.post-comment-block .file-panel .img-preview {
     min-height: 90px;
     max-height: 300px;
     float: left;
 }
 
-.post-comment-view .links-panel {
+.post-comment-block .links-panel {
     margin: 10px;
     padding: 9px;
     min-height: 100px;
-    min-width: 20%;
-    max-width: 43%;
+    max-width: 35%;
     max-height: 135px;
     border: 2px solid #8C0303;
     border-radius: 13px;
@@ -115,7 +121,7 @@
     overflow-y: scroll;
 }
 
-.post-comment-view .attachments-panel {
+.post-comment-block .attachments-panel {
     display: flex;
 }
 
@@ -150,6 +156,11 @@
     margin-right: 20px;
 }
 
+.post-detail-block .lower-information .post-flag-button {
+    float: right;
+    margin-right: 20px;
+}
+
 .post-detail-block .lower-information .upload-button {
     float: right;
     margin-right: 20px;
@@ -164,6 +175,8 @@
 .comment-block {
     position: relative;
     margin-top: 20px;
+    padding-left: 30px;
+    padding-right: 30px;
     width: 92%;
     left: 5%;
     right: 3%;
@@ -207,6 +220,11 @@
     margin-right: 20px;
 }
 
+.comment-block .lower-information .comment-flag-button {
+    float: right;
+    margin-right: 20px;
+}
+
 .add-comment-block {
     margin-top: 25px;
     position: relative;
@@ -237,10 +255,6 @@
     font-weight: 700;
     width: 10%;
     height: 80%;
-
-    border: 3px solid #8C0303;
-    border-radius: 10px;
-    box-shadow:6px 6px 0px #a12424;
 }
 
 .add-comment-block .send-comment:hover {

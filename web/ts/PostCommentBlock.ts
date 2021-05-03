@@ -17,6 +17,8 @@ class PostCommentBlock {
         $("#right-part").append(templatedHTML("PostCommentBlock", data));
 
         // Register events
+        $(".post-flag-button").on("click", PostCommentBlock.onClickFlagPost);
+        $(".comment-flag-button").on("click", PostCommentBlock.onClickFlagComment);
         $(".my-down-vote-button").on("click", PostCommentBlock.onClickDownVote);
         $(".my-up-vote-button").on("click", PostCommentBlock.onClickUpVote);
         $(".user-button").on("click", PostCommentBlock.onClickOthersProfile);
@@ -70,6 +72,94 @@ class PostCommentBlock {
 
     // ===================================================================
     // Events
+
+    private static onClickFlagComment() {
+        debugOutput("PostCommentBlock.onClickFlagComment()");
+
+        let postID: any = PostCommentBlock.currPostId;
+        let commentID = $(this).data("commentid");
+        let oldState = $(this).attr("data-flagstate") == "true";
+
+        // update DOM
+        if (oldState) {
+            // user wants to cancel the flag
+            $(this).attr("data-flagstate", "false");
+            $(this).removeClass("my-vote-true").addClass("my-vote-false");
+            let hasFlag = (function() {
+                let commentFlags = document.getElementsByClassName("comment-flag-button");
+                for (let i = 0; i < commentFlags.length; i++) {
+                    let elem = commentFlags[i];
+                    if (elem.getAttribute("data-flagstate") == "true" &&
+                        elem.getAttribute("data-postid") == postID)
+                        return true;
+                }
+                return $("#flag-button-" + postID).attr("data-flagstate") == "true";
+            })();
+            if (!hasFlag) $("#postlist-flag-" + postID).hide();
+        } else {
+            // user wants to flag the post
+            $(this).attr("data-flagstate", "true");
+            $(this).removeClass("my-vote-false").addClass("my-vote-true");
+            $("#postlist-flag-" + postID).show();
+        }
+        // inform backend
+        myAjax({
+            type: "PUT",
+            url: format("{1}/api/posts/{2}/comments/{3}/flag?session={4}",
+                backendUrl, postID, commentID, sessionKey),
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify({
+                "flagged": !oldState
+            }),
+            success: function (res: any) {
+                debugOutput("[ajax] Comment flag click response: " + JSON.stringify(res));
+            }
+        });
+    }
+
+    private static onClickFlagPost() {
+        debugOutput("PostCommentBlock.onClickFlagPost()");
+
+        let postID: any = PostCommentBlock.currPostId;
+        let oldState = $(this).attr("data-flagstate") == "true";
+
+        // update DOM
+        if (oldState) {
+            // user wants to cancel the flag
+            $(this).attr("data-flagstate", "false");
+            $(this).removeClass("my-vote-true").addClass("my-vote-false");
+            let hasFlag = (function() {
+                let commentFlags = document.getElementsByClassName("comment-flag-button");
+                for (let i = 0; i < commentFlags.length; i++) {
+                    let elem = commentFlags[i];
+                    if (elem.getAttribute("data-flagstate") == "true" &&
+                        elem.getAttribute("data-postid") == postID)
+                        return true;
+                }
+                return false;
+            })();
+            if (!hasFlag) $("#postlist-flag-" + postID).hide();
+        } else {
+            // user wants to flag the comment
+            $(this).attr("data-flagstate", "true");
+            $(this).removeClass("my-vote-false").addClass("my-vote-true");
+            $("#postlist-flag-" + postID).show();
+        }
+        // inform backend
+        myAjax({
+            type: "PUT",
+            url: backendUrl + "/api/posts/" + postID + "/flag?session=" + sessionKey,
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify({
+                "flagged": !oldState
+            }),
+            success: function (res: any) {
+                debugOutput("[ajax] Post flag click response: " + JSON.stringify(res));
+            }
+        });
+    }
 
     private static onClickOthersProfile() {
         debugOutput("PostCommentBlock.onClickOthersProfile()");

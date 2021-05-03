@@ -13,7 +13,7 @@
         {{#each this.mPosts}}
             <h4>Post: </h4>
 
-            <h5>Title: </h5>
+            <h5>{{#if this.mFlagged}}<span class="glyphicon glyphicon-exclamation-sign" title="Marked as inappropriate"></span> {{/if}}Title: </h5>
             <p>{{this.mTitle}}</p>
 
             <h5>Content: </h5>
@@ -40,7 +40,7 @@
 
         {{#each this.mComments}}
             <br/>
-            <h5>Comment: </h5>
+            <h5>{{#if this.mFlagged}}<span class="glyphicon glyphicon-exclamation-sign" title="Marked as inappropriate"></span> {{/if}}Comment: </h5>
             <p>{{this.mContent}}</p>
 
             {{#if this.mFileInfo.mType}}

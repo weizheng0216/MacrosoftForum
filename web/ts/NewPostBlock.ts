@@ -62,11 +62,6 @@ class NewPostBlock {
         htmName.innerHTML = "No file selected";  // reset filename entry
     }
 
-    private static onClickAddVideo() {
-        debugOutput("NewPostBlock.onClickAddVideo()");
-
-    }
-
     private static onClickSendPost() {
         debugOutput("NewPostBlock.onClickSendPost()");
         let htmFileInput: any = document.getElementById("post-fileupload-input");
@@ -75,6 +70,7 @@ class NewPostBlock {
         // Data to be included in request Json
         let title: any = $("#input-title").val();  // any: avoid compiler error
         let content: any = $("#input-content").val();
+        let ytLink: any = $("#input-yt").val();
         let rawLinks: any = $("#input-links").val();
         let fileName = file ? file.name : "";
         let fileType = file ? file.type : "";
@@ -84,6 +80,7 @@ class NewPostBlock {
         if (!title || !content) return alertOutput("Missing title or body.");
         if (title.length > 100) return alertOutput("Title too long.");
         if (content.length > 500) return alertOutput("Content too long.");
+        if (ytLink.length > 100) return alertOutput("Youtube link too long.");
         if (rawLinks.length > 500) return alertOutput("Links too long.");
         if (fileName.length > 100) return alertOutput("File name too long.");
 
@@ -104,6 +101,7 @@ class NewPostBlock {
                 data: JSON.stringify({
                     "title": title,
                     "content": content,
+                    "videoLink": ytLink,
                     "links": rawLinks.split(/\s+/),
                     "fileName": fileName,
                     "fileType": fileType,
@@ -115,6 +113,7 @@ class NewPostBlock {
                     $("#my-new-post-block").hide();
                     $("#input-title").val("");
                     $("#input-content").val("");
+                    $("#input-yt").val("");
                     $("#input-links").val("");
                     NewPostBlock.onClickRemoveFile();
                     BriefPostsList.refresh();

@@ -8,14 +8,17 @@
             <div class="content">
                 {{this.mContent}}
             </div>
+            {{#if this.mVideoLink}}
+            <iframe class="yt-block" type="text/html" src="{{this.mVideoLink}}" frameborder="0"></iframe>
+            {{/if}}
             <div class="attachments-panel">
                 {{#if this.mFileInfo.mType}}
                     <div class="file-panel" id="file-panel-{{this.mPostID}}" data-value="{{this.mFileInfo.mType}}">
                         {{#if this.mFileInfo.mIsImg}}
                             <img src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"
-                                    class="img-preview img-thumbnail rounded mx-auto d-block"
-                                    id="post-img-preview-{{this.mPostID}}"
-                                    alt="Preview not available">
+                                class="img-preview img-thumbnail rounded mx-auto d-block"
+                                id="post-img-preview-{{this.mPostID}}"
+                                alt="Preview not available">
                         {{else}}
                             <span class="glyphicon glyphicon-file file-preview"></span>
                         {{/if}}
@@ -38,6 +41,12 @@
             </div> <!-- End attachments -->
             
             <div class="lower-information">
+                <button id="flag-button-{{this.mPostID}}"
+                        class="post-flag-button little-button my-vote-{{this.mFlagged}}"
+                        data-flagstate="{{this.mFlagged}}">
+                    <span class="glyphicon glyphicon-exclamation-sign"></span>
+                </button>
+
                 <button id="my-down-vote-button{{this.mPostID}}"
                         class="dislike-button little-button my-down-vote-button my-vote-{{this.mDownVoteCount}}"
                         data-postid="{{this.mPostID}}"
@@ -100,6 +109,14 @@
                 </div> <!-- End attachments -->
 
                 <div class="lower-information">
+                    <button id="flag-button-{{this.mPostID}}-{{this.mCommentID}}"
+                            class="comment-flag-button little-button my-vote-{{this.mFlagged}}"
+                            data-flagstate="{{this.mFlagged}}"
+                            data-postid="{{this.mPostID}}"
+                            data-commentid="{{this.mCommentID}}">
+                        <span class="glyphicon glyphicon-exclamation-sign"></span>
+                    </button>
+
                     <button class="user-button little-button" data-value="{{this.mAuthor.mUserID}}">
                         <span class="glyphicon glyphicon-user"></span>
                         {{this.mAuthor.mFirstName}} {{this.mAuthor.mLastName}}

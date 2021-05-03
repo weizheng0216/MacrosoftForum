@@ -38,7 +38,7 @@ class BriefPostsList {
      * 
      * @param data StructuredResponse(with img data) from backend.
      */
-    private static update(data: any){
+    private static update(data: any) {
         debugOutput("BriefPostList.update()");
 
         // remove the exising list
@@ -46,6 +46,12 @@ class BriefPostsList {
 
         // append new list using handlebar and the data passed
         $("#left-part").append(templatedHTML("BriefPostsList", data));
+
+        // Update flag visibility
+        for (let i = 0; i < data.mData.length; i++) {
+            let post = data.mData[i];
+            if (!post.mFlagged) $("#postlist-flag-" + post.mPostID).hide();
+        }
         
         // register click events on the list
         $(".post-brief-block").on("click", BriefPostsList.onClickBriefPost);

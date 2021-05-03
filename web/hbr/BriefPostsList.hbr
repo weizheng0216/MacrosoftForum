@@ -6,9 +6,9 @@
             {{this.mTitle}}
         </div>
 
-        {{#if this.mFlagged}}
-            <div class="glyphicon glyphicon-exclamation-sign flag-icon"></div>
-        {{/if}}
+        <div class="glyphicon glyphicon-exclamation-sign flag-icon"
+            id="postlist-flag-{{mPostID}}"
+            title="The post or the comments under the post may contain inappropriate content"></div>
     </div>
 
     <div class="content">
