@@ -4,10 +4,15 @@
 - Phase 1: Weihang Guo
 - Phase 2: Wei Zheng
 - Phase 3: Haocheng Gao
+- Phase 4: Siyu Chen
 
 ## Introduction
 The backend of BUZZ serves the front-end pages and provides a set of APIs
-for the front-end pages to access. In phase3, support to files are added.
+for the front-end pages to access. 
+In phase3, support to files/links are added.
+In phase4, functions to block user while logging in and flag inappropriate 
+contents are provided.
+For the extra credit, support to youtube video is added.
 
 ## APIs
 
@@ -21,9 +26,10 @@ for the front-end pages to access. In phase3, support to files are added.
 > - Forbidden operations will cause error now.
 
 Below is a list of APIs inherited from phase2, most of which are changed either
-for improving the comprehensiveness of the design or for adapting phase3 requirement.
+for improving the comprehensiveness of the design or for adapting phase3/4 requirement.
 
 - [GET /api/posts](#markdown-header-get-apiposts)
+- [GET /api/posts/:post_id](#markdown-header-get-apipostspost_id)
 - [GET /api/posts/:post_id/file](#markdown-header-get-apipostspost_idfile)
 - [GET /api/posts/:post_id/comments/:comment_id/file](#markdown-header-get-apipostspost_idcommentscomment_idfile)
 - [GET /api/users/my](#markdown-header-get-apiusersmy)
@@ -34,6 +40,8 @@ for improving the comprehensiveness of the design or for adapting phase3 require
 - [PUT /api/posts/:post_id](#markdown-header-put-apipostspost_id)
 - [PUT /api/posts/:post_id/comments/:comment_id](#markdown-header-put-apipostspost_idcommentscomment_id)
 - [PUT /api/posts/:post_id/vote](#markdown-header-put-apipostspost_idvote)
+- [PUT /api/posts/:post_id/flag](#markdown-header-put-apipostspost_idflag)
+- [PUT /api/posts/:post_id/comments/:comment_id/flag ](#markdown-header-get-apipostspost_idcommentscomment_idflag)
 - [DELETE /api/posts/:post_id/comments/:comment_id](#markdown-header-delete-apipostspost_idcommentscomment_id)
 - [DELETE /api/posts/:post_id](#markdown-header-delete-apipostspost_id)
 
@@ -80,7 +88,7 @@ Example response payload:
     "mDate": "2018-09-06 10:16:34",
     "mUpVoteCount": 10,
     "mDownVoteCount": 25,
-    "mPinned": true,
+    "mFlagged": true,
     "mFileInfo": {
       "mType": "pdf",
       "mTime": "2020-01-15 08:15:23",
@@ -90,6 +98,7 @@ Example response payload:
       "https://www.examples.com",
       "https://www.lehigh.edu"
     ],
+    "mVideoLink": "",
     "mComments": [
       {
         "mCommentID": 555,
@@ -110,7 +119,8 @@ Example response payload:
         "mLinks": [
           "https://www.examples.com",
           "https://www.lehigh.edu"
-        ]
+        ],
+      "mFlagged": false,
       },
       {}
     ],
@@ -124,9 +134,67 @@ Return codes:
 
 | Return code | Explanation |
 | :---------: | :---------- |
+| 200  | OK |
+| 401  | Session key is invalid |
+| 500+ | Unexpected server error |
+
+
+### GET /api/posts/:post_id
+Get a post information, including the comments, the author of
+the comments, and the vote status.
+
+The example is the same as above.
+
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200  | OK |
+| 401  | Session key is invalid |
+| 500+ | Unexpected server error |
+
+
+
+### GET /api/posts/:post_id/comments/:comment_id
+Get a specific comment by using the post id and comment id
+
+Example response payload:
+```json
+
+{
+  "mStatus": "OK",
+  "mMessage": "",
+  "mData": [
+    {
+      "mCommentID": 5,
+      "mPostID": 10,
+      "mContent": "Kangaroo",
+      "mAuthor": {
+        "mUserID": 5,
+        "mEmail": "hag223@lehigh.edu",
+        "mFirstName": "Haocheng",
+        "mLastName": "Gao",
+        "mBlocked": false
+      },
+      "mDate": "2021-05-02 06:12:07.178088",
+      "mFileInfo": {
+        "mType": "image/png",
+        "mName": "long nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.png"
+      },
+      "mLinks": [],
+      "mFlagged": false
+    }
+  ]
+}
+```
+Return codes:
+
+| Return code | Explanation |
+| :---------: | :---------- |
 | 200 | OK |
 | 401 | Session key is invalid |
 | 500+ | Unexpected server error |
+
 
 ### GET /api/posts/:post_id/file
 Download the file attached to the particular post. The file content, which is
@@ -188,7 +256,7 @@ Example response payload:
       "mDate": "2020-12-32 00:00:00",
       "mUpVoteCount": 0,
       "mDownVoteCount": 100,
-      "mPinned": false,
+      "mFlagged": false,
       "mFileInfo": {
         "mType": "pdf",
         "mTime": "2020-01-15 08:15:23",
@@ -280,6 +348,7 @@ Return codes:
 | :---------: | :---------- |
 | 200 | OK |
 | 401 | Session key is invalid |
+| 406 | User is blocked |
 | 507 | Server runs out of quota. File not uploaded(however post is uploaded) |
 | Other 500+ | Unexpected server error |
 
@@ -314,6 +383,7 @@ Return codes:
 | 400 | Invalid request body |
 | 401 | Session key is invalid |
 | 404 | *post_id* cannot be found |
+| 406 | User is blocked |
 | 507 | Server runs out of quota. File not uploaded(however comment is uploaded) |
 | Other 500+ | Unexpected server error |
 
@@ -422,7 +492,7 @@ Example request:
 ```json
 {
   "upVote": false,
-  "downVote": false
+  "downVote": true
 }
 ```
 There is no response payload for this request.
@@ -434,6 +504,30 @@ Return codes:
 | 200 | OK |
 | 400 | Invalid request body |
 | 400 | Both fields of the quest are `true` |
+| 401 | Session key is invalid |
+| 404 | *post_id* cannot be found |
+| 500+ | Unexpected server error |
+
+### PUT /api/posts/:post_id/flag
+Submit a flag request through this API when the front-end user flag 
+an inappropriate post. 
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 400 | Invalid request body |
+| 401 | Session key is invalid |
+| 404 | *post_id* cannot be found |
+| 500+ | Unexpected server error |
+
+### PUT /api/posts/:post_id/comments/:comment_id
+Submit a flag request through this API when the front-end user flag 
+an inappropriate comment. 
+
+| Return code | Explanation |
+| :---------: | :---------- |
+| 200 | OK |
+| 400 | Invalid request body |
 | 401 | Session key is invalid |
 | 404 | *post_id* cannot be found |
 | 500+ | Unexpected server error |
@@ -812,7 +906,7 @@ PUT http://localhost:4567/api/posts/25/vote?session=buzztester66-qwertyuioplkjhg
 ```json
 {
   "upVote": false,
-  "downVote": false
+  "downVote": true
 }
 ```
 Response(200):
@@ -848,3 +942,23 @@ Response(200):
   "mMessage": ""
 }
 ```
+### Flag Post
+Request:
+```
+https://cse216-macrosoft.herokuapp.com/api/posts/10/flag?session=buzztester66-qwertyuioplkjhgfdsa
+
+{"flagged" : true/false
+}
+```
+
+Response(200):
+```json
+{
+  "mStatus": "OK",
+  "mMessage": ""
+}
+```
+
+### Block User:
+
+We first check if the logging user is blocked or not by retrieving the Blocked attribute from the database in the addUser(GoogleIdToken.Payload payload) function inside DatabaseHelper.java. If the user is blocked, the addUser() function returns null as loginUserId. When the blocked user tries to login which triggers the login API inside BuzzServer.java, addUser function will be called and check if the userId is null or not. If it is null, the response status will be set to 406 with a returned error message “User is Blocked.” After the api request is delivered to the frontend, it will prevent the user from logging in and present an alert window to note that this user is blocked. 

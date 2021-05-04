@@ -8,7 +8,7 @@ public class CommentRequest implements ValidateFormat {
     public String fileName;
     public String fileType;
     public String fileData;
-
+    public boolean flagged;
     public boolean validate() {
         if (content == null) content = "";
         if (fileName == null) fileName = "";

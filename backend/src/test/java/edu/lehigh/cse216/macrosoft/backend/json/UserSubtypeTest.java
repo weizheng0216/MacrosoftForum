@@ -16,10 +16,11 @@ public class UserSubtypeTest extends TestCase {
 
     public void testConstructor() {
         UserSubtype user = new UserSubtype(123, "email",
-                "first", "last");
+                "first", "last", false);
         assertEquals(user.mUserID, 123);
         assertEquals(user.mEmail, "email");
         assertEquals(user.mFirstName, "first");
         assertEquals(user.mLastName, "last");
+        assertEquals(user.mBlocked, false);
     }
 }

@@ -10,15 +10,17 @@ public class PostSubtype {
     public String mDate;
     public int mUpVoteCount;
     public int mDownVoteCount;
-    public boolean mPinned;
+    public boolean mFlagged;
     public FileInfoSubtype mFileInfo;
     public ArrayList<String> mLinks;
+    public String mVideoLink;
     public ArrayList<CommentSubtype> mComments;
 
     public PostSubtype(int mPostID, String mTitle, String mContent,
                        UserSubtype mAuthor, String mDate, int mUpVoteCount,
-                       int mDownVoteCount, boolean mPinned,
+                       int mDownVoteCount, boolean mFlagged,
                        FileInfoSubtype mFileInfo, ArrayList<String> mLinks,
+                       String mVideoLink,
                        ArrayList<CommentSubtype> mComments) {
         this.mPostID = mPostID;
         this.mTitle = mTitle;
@@ -27,9 +29,10 @@ public class PostSubtype {
         this.mDate = mDate;
         this.mUpVoteCount = mUpVoteCount;
         this.mDownVoteCount = mDownVoteCount;
-        this.mPinned = mPinned;
+        this.mFlagged = mFlagged;
         this.mFileInfo = mFileInfo;
         this.mLinks = mLinks;
+        this.mVideoLink = mVideoLink;
         this.mComments = mComments;
     }
 }

@@ -10,9 +10,10 @@ public class IntegratedPostSubtype {
     public String mDate;
     public int mUpVoteCount;
     public int mDownVoteCount;
-    public boolean mPinned;
+    public boolean mFlagged;
     public FileInfoSubtype mFileInfo;
     public ArrayList<String> mLinks;
+    public String mVideoLink;
     public ArrayList<CommentSubtype> mComments;
     public boolean mUserUpVote;
     public boolean mUserDownVote;
@@ -20,9 +21,10 @@ public class IntegratedPostSubtype {
     public IntegratedPostSubtype(int mPostID, String mTitle,
                                  String mContent, UserSubtype mAuthor,
                                  String mDate, int mUpVoteCount,
-                                 int mDownVoteCount, boolean mPinned,
+                                 int mDownVoteCount, boolean mFlagged,
                                  FileInfoSubtype mFileInfo,
                                  ArrayList<String> mLinks,
+                                 String mVideoLink,
                                  ArrayList<CommentSubtype> mComments,
                                  boolean mUserUpVote, boolean mUserDownVote) {
         this.mPostID = mPostID;
@@ -32,9 +34,10 @@ public class IntegratedPostSubtype {
         this.mDate = mDate;
         this.mUpVoteCount = mUpVoteCount;
         this.mDownVoteCount = mDownVoteCount;
-        this.mPinned = mPinned;
+        this.mFlagged = mFlagged;
         this.mFileInfo = mFileInfo;
         this.mLinks = mLinks;
+        this.mVideoLink = mVideoLink;
         this.mComments = mComments;
         this.mUserUpVote = mUserUpVote;
         this.mUserDownVote = mUserDownVote;
@@ -50,9 +53,10 @@ public class IntegratedPostSubtype {
                 base.mDate,
                 base.mUpVoteCount,
                 base.mDownVoteCount,
-                base.mPinned,
+                base.mFlagged,
                 base.mFileInfo,
                 base.mLinks,
+                base.mVideoLink,
                 base.mComments,
                 mUserUpVote,
                 mUserDownVote
