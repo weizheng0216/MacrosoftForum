@@ -13,7 +13,7 @@ class MyProfileBlock {
             success: function (res: any) {
                 debugOutput("[ajax] MyProfile Response: " + JSON.stringify(res));
                 fetchImgs(res.mData.mPosts);
-                fetchImgs(res.mData.mComments);
+                fetchImgsComments(res.mData.mComments);
                 MyProfileBlock.update(res);
             },
             error: function() {

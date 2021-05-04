@@ -125,7 +125,7 @@ function downloadFile(base64: string, fileType: string, fileName: string) {
  * The file data will be appended to the "mData" field of mFileInfo.
  * The isImg boolean will be appended to mIsImg field of mFileInfo.
  * 
- * @param posts An array of "PostSubType" or "CommentSubType"
+ * @param posts An array of "PostSubType"
  */
 function fetchImgs(posts: any) {
     for (let i = 0; i < posts.length; i++) {
@@ -167,6 +167,28 @@ function fetchImgs(posts: any) {
                     }
                 });
             }
+        }
+    }
+}
+
+function fetchImgsComments(comments: any) {
+    for (let i = 0; i < comments.length; i++) {
+        let c = comments[i];
+        c.mFileInfo.mIsImg = false;
+        if (/image\/.+/.test(c.mFileInfo.mType)) {
+            c.mFileInfo.mIsImg = true;
+            myAjax({
+                async: false,
+                type: "GET",
+                dataType: "json",
+                url: format("{1}/api/posts/{2}/comments/{3}/file?session={4}",
+                            backendUrl, c.mPostID, c.mCommentID, sessionKey),
+                success: function(res: any) {
+                    let msg = JSON.stringify(res);
+                    debugOutput("[ajax] File downloaded: " + msg);
+                    c.mFileInfo.mData = res.mData.mData;
+                }
+            });
         }
     }
 }
