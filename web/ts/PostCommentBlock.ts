@@ -238,7 +238,7 @@ class PostCommentBlock {
             success: function (res: any) {
                 debugOutput("[ajax] Others profile response: " + JSON.stringify(res));
                 fetchImgs(res.mData.mPosts);
-                fetchImgs(res.mData.mComments);
+                fetchImgsComments(res.mData.mComments);
                 PostCommentBlock.showOthersProfile(res);
             }
         });
