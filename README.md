@@ -6,7 +6,7 @@
 - Phase 2: Haocheng Gao
 - Phase 3: Wei Zheng
 - Phase 4: Weihang Guo 
-
+ 
 ## Introduction
 Buzz provide a platform for the company staffs to illustrate, view, comment,
 and vote their ideas through posts. People are also able to include files in their posts and comments for better user interaction. The administrator can also pin important
