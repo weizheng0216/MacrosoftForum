@@ -134,8 +134,8 @@ Return codes:
 
 | Return code | Explanation |
 | :---------: | :---------- |
-| 200 | OK |
-| 401 | Session key is invalid |
+| 200  | OK |
+| 401  | Session key is invalid |
 | 500+ | Unexpected server error |
 
 
@@ -149,8 +149,8 @@ Return codes:
 
 | Return code | Explanation |
 | :---------: | :---------- |
-| 200 | OK |
-| 401 | Session key is invalid |
+| 200  | OK |
+| 401  | Session key is invalid |
 | 500+ | Unexpected server error |
 
 
@@ -942,3 +942,23 @@ Response(200):
   "mMessage": ""
 }
 ```
+### Flag Post
+Request:
+```
+https://cse216-macrosoft.herokuapp.com/api/posts/10/flag?session=buzztester66-qwertyuioplkjhgfdsa
+
+{"flagged" : true/false
+}
+```
+
+Response(200):
+```json
+{
+  "mStatus": "OK",
+  "mMessage": ""
+}
+```
+
+### Block User:
+
+We first check if the logging user is blocked or not by retrieving the Blocked attribute from the database in the addUser(GoogleIdToken.Payload payload) function inside DatabaseHelper.java. If the user is blocked, the addUser() function returns null as loginUserId. When the blocked user tries to login which triggers the login API inside BuzzServer.java, addUser function will be called and check if the userId is null or not. If it is null, the response status will be set to 406 with a returned error message “User is Blocked.” After the api request is delivered to the frontend, it will prevent the user from logging in and present an alert window to note that this user is blocked. 
