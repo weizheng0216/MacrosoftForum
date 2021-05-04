@@ -5,6 +5,7 @@
 - Phase 1: Siyu(Coco) Chen
 - Phase 2: Haocheng Gao
 - Phase 3: Wei Zheng
+- Phase 4: Weihang Guo 
 
 ## Introduction
 Buzz provide a platform for the company staffs to illustrate, view, comment,
