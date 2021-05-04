@@ -10,149 +10,107 @@ jQuery(function() {
     document.getElementById("main-block").style.visibility = "hidden";
 });
 
-describe("Tests of basic math functions", function() {
-    it("Adding 1 should work", function() {
-        var foo = 0;
-        foo += 1;
-        expect(foo).toEqual(1);
+function expectHidden(jquery: JQuery, b: boolean) {
+    let style = jquery.attr("style");
+    if (style) {  // element has style, check display property
+        if (b)  // should be hidden
+            expect(style.indexOf("display: none;")).not.toEqual(-1);
+        else  // should be shown
+            expect(style.indexOf("display: none;")).not.toEqual(-1);
+    }
+    // otherwise success
+    expect(true).toBe(true);
+}
+
+describe("BasicStructure tests", function() {
+    /**
+     * When new post button is clicked, 
+     *     1) new post block should be shown
+     *     2) all other blocks should be hidden
+     */
+    it("Click new post button", function() {
+        $('.new-post-button').trigger("click");
+        expectHidden($("#my-new-post-block"), false);
+        expectHidden($(".my-user-profile-block:first"), true);
+        expectHidden($(".post-comment-view:first"), true);
+        // no need to reset the UI
     });
 
-    it("Subtracting 1 should work", function () {
-        var foo = 0;
-        foo -= 1;
-        expect(foo).toEqual(-1);
+    /**
+     * This test is to ensure when the user profile button is clicked,
+     *     1) the user interface will be showed,
+     *     2) new post block will be hidden. 
+     */
+    it("Click my profile button", function () {
+        $(".my-profile-button").trigger("click");
+        expectHidden($(".my-user-profile-block:first"), false);
+        expectHidden($("#my-new-post-block"), true);
+        expectHidden($(".post-comment-view:first"), true);
+        // no need to reset the UI
     });
 });
-// var $:any;
-// var describe: any;
-// var it: any;
-// var expect: any;
-// /**
-//  * All tests about the front end is performed here.
-//  */
-// describe("basic structure", function() {
-//     
-//     /**
-//      * this test is to ensure when the brief post is clicked, 1) the corresponding detail will
-//      *  be showed in the right and 2) new post block will be hidden. 
-//      */
-//     it("show post detail", function(){
-//         let post_id = $(".post-brief-block").first().data("value");
-//         $(".post-brief-block").first().click();
-// 
-//         //expect the new post block is hidden
-//         expect($("#my-new-post-block").attr("style").indexOf("display: none;")).toEqual(0);
-// 
-//         //expect the first post's detail is showed
-//         expect($(".post-comment-view[data-value='"+post_id+"']").attr("style").indexOf("display: block;")).toEqual(0);
-//     });
-// 
-//     /**
-//      * this test is to ensure when the new post button is clicked, 1) the new post block will 
-//      *      be showed and 2) new post block will be hidden. 
-//      */
-//     it("show new post block", function(){
-//         
-//         $(".new-post-button").click();
-// 
-//         //expect the new post block is showed
-//         expect($("#my-new-post-block").attr("style").indexOf("display: block;")).toEqual(0);
-// 
-//         //expect the first post's detail is hidden
-//         expect($(".post-comment-view").attr("style").indexOf("display: none;")).toEqual(0);
-//     });
-// 
-//     /**
-//      * this test is to ensure when the user profile button is clicked, 1) the user interface will 
-//      *  be showed, 2) new post block will be hidden. 
-//      */
-//     it("show user profile interface", function(){
-//         
-//         $(".my-profile-button").click();
-// 
-//         //expect the new post block is hidden
-//         expect($("#my-new-post-block").attr("style").indexOf("display: none;")).toEqual(0);
-// 
-//         //expect the first post's detail is hidden
-//         expect($(".post-comment-view").attr("style").indexOf("display: none;")).toEqual(0);
-//     });
-// 
-// });
-// 
-// describe("hover or not", function(){
-//     /**
-//      * this test is to ensure when user click the "like" button, the count of like will increase by 1.
-//      *  In spec_runner.html, the current count of like is "0", so we expect "1" here.
-//      */
-//     // it("hover color", function(){
-//     //     $("#my-up-vote-button1").click();
-//     //     expect($("#my-up-vote-count1").text()).toEqual('1');
-//     // });
-//    
-//     // it("hover or not", function(){
-//         
-//     //     $(".file-upload-button").click();
-// 
-//     //     //expect the new post block is hidden
-//     //     expect($('#image-title').attr("style").indexOf("display: none;")).toEqual(0);
-// 
-//     //     //expect the first post's detail is hidden
-//     //     expect($(".post-comment-view").attr("style").indexOf("display: none;")).toEqual(0);
-//     // });
-// 
-//     it("tracks that the spy was called", function() {
-//         expect(NewPostBlock.AddLink()).toHaveBeenCalled();
-//       });
-// });
-// 
-// 
-// describe("test like and dislike", function(){
-//     /**
-//      * this test is to ensure when user click the "like" button, the count of like will increase by 1.
-//      *  In spec_runner.html, the current count of like is "0", so we expect "1" here.
-//      */
-//     it("test like", function(){
-//         $("#my-up-vote-button1").click();
-//         expect($("#my-up-vote-count1").text()).toEqual('1');
-//     });
-// 
-//     /**
-//      * this test is to ensure when user click the "dislike" button, the count of like will increase by 1.
-//      *  In spec_runner.html, the current count of dislike is "0", so we expect "1" here.
-//      */
-//     it("test dislike", function(){
-//         $("#my-down-vote-button1").click();
-//         expect($("#my-down-vote-count1").text()).toEqual('1');
-//     });
-// 
-// });
-// 
-// describe("test close/open other user interface", function(){
-// 
-//     /**
-//      * this test is to ensure when the user click user button, its corresponding information will be showed.
-//      */
-//     it("test show other user interface", function(){
-//         $(".new-post-button").click();
-//         $(".my-profile-button").click();
-//         $(".post-brief-block").first().click();
-//         $(".user-button").click();
-//         expect($(".other-user-profile-block").attr("style").indexOf("display: none;")).toEqual(-1);
-//     });
-// 
-//     /**
-//      * this test is to ensure when the user click the close button, the user interface will be closed. 
-//      *  Here we have to ensure the other user interface is already opened.
-//      */
-//     it("test show other user interface", function(){
-//         $(".post-brief-block").first().click();
-//         $(".user-button").click();
-//         $(".close-button").click();
-//         expect($(".other-user-profile-block").attr("style").indexOf("display: none;")).toEqual(0);
-//     });
-// });
-// 
-// 
-// 
-// 
-// 
+
+describe("BreifPostList tests", function() {
+    /**
+     * This test is to ensure when the brief post is clicked,
+     *     1) the corresponding detail will be showed in the right
+     *     2) new post block will be hidden. 
+     */
+    it("Click post detail", function(){
+        let post_id = $(".post-brief-block").first().data("value");
+        $(".post-brief-block").first().trigger("click");
+        expectHidden($("#my-new-post-block"), true);
+        expectHidden($(".post-comment-view[data-value='"+post_id+"']"), false);
+    });
+});
+
+describe("PostCommentBlock tests", function() {
+    it("Show others' profile", function(){
+        $(".new-post-button").trigger("click");
+        $(".my-profile-button").trigger("click");
+        $(".post-brief-block").first().trigger("click");
+        $(".user-button").trigger("click");
+        expectHidden($(".other-user-profile-block"), false);
+    });
+
+    it("Dislike the post", function() {
+        $("#my-down-vote-button23").trigger("click")
+        expect($("#my-down-vote-count23").text()).toEqual('1');
+    });
+
+    it("Like the post", function() {
+        $("#my-up-vote-button23").trigger("click");
+        expect($("#my-up-vote-count23").text()).toEqual('1');
+    });
+
+    it("Flagging inappropriate contents", function() {
+        let post_id = $(".post-brief-block").first().data("value");
+        let jqbtn = $("#flag-button-" + post_id);
+        jqbtn.trigger("click");
+        expectHidden($("#postlist-flag-" + post_id), false);
+    });
+
+    it("Unflagging inappropriate contents", function() {
+        let post_id = $(".post-brief-block").first().data("value");
+        let jqbtn = $("#flag-button-" + post_id);
+        jqbtn.trigger("click");
+        expectHidden($("#postlist-flag-" + post_id), true);
+    });
+});
+
+/**
+ * Test to see if the IFrame are displayed as required.
+ */
+describe("Phase4 Extra credit: IFrame test", function() {
+    it("IFrame displays properly", function() {
+        $(".post-brief-block").first().trigger("click");
+        let frames = document.getElementsByClassName("yt-block");
+        expect(frames.length).toEqual(2);
+    });
+
+    it("No IFrame for post without video link", function() {
+        $(".post-brief-block").first().trigger("click");
+        let frames = document.getElementsByClassName("yt-block");
+        expect(frames.length).toEqual(2);
+    });
+});
