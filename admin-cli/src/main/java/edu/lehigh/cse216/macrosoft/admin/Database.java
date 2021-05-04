@@ -91,6 +91,7 @@ public class Database {
     private PreparedStatement mSelectUserById;
     private PreparedStatement mSelectUserByEmail;
     private PreparedStatement mDeleteUserById;
+    private PreparedStatement mBlockUserByEmail;
     //private PreparedStatement mUpdateUserById;
 
     private PreparedStatement mCreatePostTable;
@@ -101,7 +102,8 @@ public class Database {
     private PreparedStatement mSelectPostById;
     private PreparedStatement mUpdatePostById;
     private PreparedStatement mDeletePostById;
-
+    private PreparedStatement mFlagPostById;
+    
     private PreparedStatement mSelectPostWithFile;
 
     private PreparedStatement mSelectAll;
@@ -112,8 +114,10 @@ public class Database {
     private PreparedStatement mSelectAllCommentsJoinUsers;
     private PreparedStatement mSelectCommentsByUserId;
     private PreparedStatement mSelectCommentsByPostId;
+    private PreparedStatement mSelectCommentById;
     private PreparedStatement mUpdateCommentById;
     private PreparedStatement mDeleteCommentById;
+    private PreparedStatement mFlagCommentById;
 
     private PreparedStatement mCreateVoteTable;
     private PreparedStatement mDropVoteTable;
@@ -154,40 +158,44 @@ public class Database {
         mSelectFileUnderPostByEmail = mConnection.prepareStatement("select post_id, filepath, title, users.user_id, email from posts, users where users.email=? and filepath != '' and users.user_id=posts.user_id;");
         
         mSelectFileUnderCommentByEmail = mConnection.prepareStatement(" select comment_id, filepath, content, users.user_id, email from comments, users where users.email=? and filepath != '' and users.user_id=comments.user_id;");
-        mCreateUserTable = mConnection.prepareStatement("CREATE TABLE users ( user_id SERIAL PRIMARY KEY, email VARCHAR(50), first_name VARCHAR(50), last_name VARCHAR(50) )");
+        mCreateUserTable = mConnection.prepareStatement("CREATE TABLE users ( user_id SERIAL PRIMARY KEY, email VARCHAR(50), first_name VARCHAR(50), last_name VARCHAR(50), blocked BOOLEAN )");
         mDropUserTable = mConnection.prepareStatement("DROP TABLE users");
         mInsertUser = mConnection.prepareStatement("INSERT INTO users VALUES (default, ?, ?, ?)");
         mSelectUserById = mConnection.prepareStatement("SELECT * FROM users WHERE user_id=?");
         mSelectUserByEmail = mConnection.prepareStatement("SELECT * FROM users WHERE email=?");
         mDeleteUserById = mConnection.prepareStatement("DELETE  FROM users WHERE user_id=?");
+        mBlockUserByEmail = mConnection.prepareStatement("UPDATE users SET blocked=? WHERE email=?");
         
         // Post Table Prepared Statement
         mSelectAll = mConnection.prepareStatement("SELECT * from posts");
 
         // phase3: change the statement 
-        mCreatePostTable = mConnection.prepareStatement("CREATE TABLE posts ( post_id SERIAL PRIMARY KEY, title VARCHAR(100), content VARCHAR(500), date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, vote_up INTEGER, vote_down INTEGER, user_id INTEGER REFERENCES users (user_id), pinned BOOLEAN, filetype varchar(10), filedate varchar(19), filepath varchar(100), links varchar(500) )");
+        mCreatePostTable = mConnection.prepareStatement("CREATE TABLE posts ( post_id SERIAL PRIMARY KEY, title VARCHAR(100), content VARCHAR(500), date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, vote_up INTEGER, vote_down INTEGER, user_id INTEGER REFERENCES users (user_id), flagged BOOLEAN, filetype varchar(50), filedate varchar(19), filepath varchar(100), links varchar(500), video_link varchar(500) )");
 
 
         mDropPostTable = mConnection.prepareStatement("Drop TABLE posts");
-        mInsertPost = mConnection.prepareStatement("INSERT INTO posts VALUES (default, ?, ?, default, ?, ?, ?, ? ,'','' ,'','')");
-        mSelectAllPostsJoinUsers = mConnection.prepareStatement("SELECT post_id, title, content, date, vote_up, vote_down, pinned, users.last_name, users.first_name FROM posts JOIN users ON posts.user_id=users.user_id");
-        mSelectAllPosts = mConnection.prepareStatement("SELECT posts.post_id, posts.title, posts.content, posts.date, posts.vote_up, posts.vote_down, posts.pinned, users.last_name, users.first_name, users.email FROM posts LEFT JOIN users ON posts.user_id=users.user_id");
+        mInsertPost = mConnection.prepareStatement("INSERT INTO posts VALUES (default, ?, ?, default, ?, ?, ?, false ,'','' ,'','',?)");
+        mSelectAllPostsJoinUsers = mConnection.prepareStatement("SELECT post_id, title, content, date, vote_up, vote_down, flagged, video_link, users.last_name, users.first_name FROM posts JOIN users ON posts.user_id=users.user_id");
+        mSelectAllPosts = mConnection.prepareStatement("SELECT posts.post_id, posts.title, posts.content, posts.date, posts.vote_up, posts.vote_down, posts.flagged, users.last_name, users.first_name, users.email FROM posts LEFT JOIN users ON posts.user_id=users.user_id");
         mSelectPostById = mConnection.prepareStatement("SELECT * FROM posts WHERE post_id=?");
-        mUpdatePostById = mConnection.prepareStatement("UPDATE posts SET title=?, content=?, vote_up=?, vote_down=?, pinned=? WHERE post_id=?");
+        mUpdatePostById = mConnection.prepareStatement("UPDATE posts SET title=?, content=?, vote_up=?, vote_down=?, flagged=? WHERE post_id=?");
         mDeletePostById = mConnection.prepareStatement("DELETE FROM posts WHERE post_id=?");
         mSelectPostWithFile = mConnection.prepareStatement("select post_id, filepath, last_name, first_name from posts, users where posts.user_id= users.user_id and filepath != '' order by date;");
+        mFlagPostById = mConnection.prepareStatement("UPDATE posts SET flagged=? WHERE post_id=?");
         // Comments Table Prepared Statement
 
         // phase3: change the statement
-        mCreateCommentTable = mConnection.prepareStatement("CREATE TABLE comments ( comment_id SERIAL PRIMARY KEY, content VARCHAR(500), date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, user_id INTEGER REFERENCES users (user_id), post_id INTEGER REFERENCES posts (post_id), filetype varchar(10), filedate varchar(19), filepath varchar(100), links varchar(500) )");
+        mCreateCommentTable = mConnection.prepareStatement("CREATE TABLE comments ( comment_id SERIAL PRIMARY KEY, content VARCHAR(500), flagged boolean, date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, user_id INTEGER REFERENCES users (user_id), post_id INTEGER REFERENCES posts (post_id), filetype varchar(50), filedate varchar(19), filepath varchar(100), links varchar(500) )");
         mDropCommentTable = mConnection.prepareStatement("DROP TABLE comments");
-        mInsertComment = mConnection.prepareStatement("INSERT INTO comments VALUES (default, ?, default, ?, ?, '','' ,'','')");
+        mInsertComment = mConnection.prepareStatement("INSERT INTO comments VALUES (default, ?, false, default, ?, ?, '','' ,'','')");
         mSelectAllCommentsJoinUsers = mConnection.prepareStatement("SELECT comment_id, content, date, users.last_name, users.first_name FROM comments JOIN users ON comments.user_id=users.user_id");
         mSelectCommentsByUserId = mConnection.prepareStatement("SELECT * FROM comments WHERE user_id=?");
         mSelectCommentsByPostId = mConnection.prepareStatement("SELECT * FROM comments WHERE post_id=?");
+        mSelectCommentById = mConnection.prepareStatement("SELECT * FROM comments WHERE comment_id=?");
         mUpdateCommentById = mConnection.prepareStatement("UPDATE comments SET content=? WHERE comment_id=?");
         mDeleteCommentById = mConnection.prepareStatement("DELETE FROM comments WHERE comment_id=?");
         mSelectCommentWithFile = mConnection.prepareStatement("select post_id,comment_id, filepath, last_name, first_name from comments, users where comments.user_id= users.user_id and filepath != '' order by date;");
+        mFlagCommentById = mConnection.prepareStatement("UPDATE comments SET flagged=? WHERE comment_id=?");
         // Votes Table Prepared Statement
         mCreateVoteTable = mConnection.prepareStatement("CREATE TABLE votes ( user_id INTEGER, post_id INTEGER, vote_up BOOLEAN, vote_down BOOLEAN )");
         mDropVoteTable = mConnection.prepareStatement("DROP TABLE votes");
@@ -260,6 +268,12 @@ public class Database {
         mDeleteUserById.executeUpdate();
     }
 
+    void blockUserByEmail(boolean blocked,String userEmail) throws SQLException {
+        mBlockUserByEmail.setBoolean(1, blocked);
+        mBlockUserByEmail.setString(2, userEmail);
+        mBlockUserByEmail.executeUpdate();
+    }
+
 
 
     // ***************
@@ -286,13 +300,15 @@ public class Database {
         return mSelectCommentWithFile.executeQuery();
     }
 
-    void insertPost(String title, String content, int upVote, int downVote, int userId, boolean pinned) throws SQLException {
+    void insertPost(String title, String content, int upVote, int downVote, int userId, String video) throws SQLException {
         mInsertPost.setString(1, title);
         mInsertPost.setString(2, content);
         mInsertPost.setInt(3, upVote);
         mInsertPost.setInt(4, downVote);
         mInsertPost.setInt(5, userId);
-        mInsertPost.setBoolean(6, pinned);
+        mInsertPost.setString(6, video);
+
+        // mInsertPost.setBoolean(6, flagged);
         mInsertPost.executeUpdate();
     }
 
@@ -305,12 +321,12 @@ public class Database {
         return mSelectPostById.executeQuery();
     }
 
-    void updatePostById(String title, String content, int upVote, int downVote, boolean pinned, int postId) throws SQLException {
+    void updatePostById(String title, String content, int upVote, int downVote, boolean flagged, int postId) throws SQLException {
         mUpdatePostById.setString(1, title);
         mUpdatePostById.setString(2, content);
         mUpdatePostById.setInt(3, upVote);
         mUpdatePostById.setInt(4, downVote);
-        mUpdatePostById.setBoolean(5, pinned);
+        mUpdatePostById.setBoolean(5, flagged);
         mUpdatePostById.setInt(6, postId);
         mUpdatePostById.executeUpdate();
     }     
@@ -333,6 +349,12 @@ public class Database {
     void createCommentTable() throws SQLException {
         mCreateCommentTable.execute();
     }
+
+    void flagPostById(boolean flagged, int postId) throws SQLException {
+        mFlagPostById.setBoolean(1, flagged);
+        mFlagPostById.setInt(2, postId);
+        mFlagPostById.executeUpdate();
+    }  
 
     void dropCommentTable() throws SQLException {
         mDropCommentTable.execute();
@@ -359,6 +381,11 @@ public class Database {
         return mSelectCommentsByPostId.executeQuery();
     }
 
+    ResultSet selectCommentById(int commentId) throws SQLException {
+        mSelectCommentById.setInt(1, commentId);
+        return mSelectCommentById.executeQuery();
+    }
+
     void updateCommentById(String content, int commentId) throws SQLException {
         mUpdateCommentById.setString(1, content);
         mUpdateCommentById.setInt(2, commentId);
@@ -370,6 +397,11 @@ public class Database {
         mDeleteCommentById.executeUpdate();
     }
 
+    void flagCommentById(boolean flagged, int commentId) throws SQLException {
+        mFlagCommentById.setBoolean(1, flagged);
+        mFlagCommentById.setInt(2, commentId);
+        mFlagCommentById.executeUpdate();
+    } 
 
 
     void createVoteTable() throws SQLException {
