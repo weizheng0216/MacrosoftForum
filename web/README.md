@@ -183,11 +183,139 @@ backend's resource folder to be packaged into its `jar` file, which will then
 be deployed onto `heroku` server and run. Please refer to the content of`deploy.sh`
 for more details about deployment.
 
+### Functions
+
+#### Sending ajax request to backend
+The core functionality of front-end is to communicate with backend by HTTPs
+protocol. To allow local tests, developers should use the `myAjax` utility
+function instead of the `$.ajax` function. Here is an example.
+
+```javascript
+myAjax({
+    type: "GET",
+    url: backendUrl + "/api/users/my?session=" + sessionKey,
+    dataType: "json",
+    success: function (res: any) {
+        debugOutput("[ajax] MyProfile Response: " + JSON.stringify(res));
+        fetchImgs(res.mData.mPosts);
+        fetchImgs(res.mData.mComments);
+        MyProfileBlock.update(res);
+    },
+    error: function() {
+        alertOutput("Login timeout, please login again");
+        redirect("login.html");
+    }
+});
+```
+
+#### Downloading file
+The Buzz system support file downloading with base64 strings. The function is
+implemented at `app.ts/downloadFile`. The developer should get the base64 data
+string and file type through `html` element properties or through ajax requests.
+
+```javascript
+downloadFile(base64, "image/png", "reddot.png");
+```
+
+#### Using promises
+During the development, there are a lot of senarios where we need to use the
+FileReader. FileReader reads blobs asynchronously, meaning the jobs that depdend
+on the result of FileReader must be performed after the asynchronous call. Our
+solution to this problem is to use promises. Please see an example from the project:
+
+```javascript
+let id = PostCommentBlock.currPostId;
+let type = $("#file-panel-" + id).data("value");
+let name = $("#post-filename-" + id).html();
+
+(async function () {
+    let base64: string = await new Promise(resolve => {
+        if (/image\/\w/.test(type)) {
+            let src = $("#post-img-preview-"+id).attr("src");
+            resolve(src.replace(/^data:.+;base64,/, ""));
+        } else {
+            // need to download from backend
+            myAjax({
+                type: "GET",
+                dataType: "json",
+                url: format("{1}/api/posts/{2}/file?session={3}",
+                            backendUrl, id, sessionKey),
+                success: function(res: any) {
+                    let msg = JSON.stringify(res);
+                    debugOutput("[ajax] File downloaded: " + msg);
+                    resolve(res.mData.mData);
+                }
+            });
+        }
+    });
+    downloadFile(base64, type, name);
+})();
+```
+
+In order to download a file, we may need to wait for the result from an ajax
+download request. Therefore the entire download process should be viewed as
+asynchronous(`async`), and we need to `await` the promise that retireve the
+file data before initiating the download process.
+
+#### CSS Conventions
+Under the `/css` folder contains all stylesheets that we need. Each file contains
+the stylesheet specific to the module, with the `BasicStructure.css` being an
+exception. `BasicStructure.css` also contains the global formatting information.
+
+#### Outputs
+There are two types of output functions that we define: `debugOutput` and `alertOutput`.
+The `debugOutput` will output to console in debug mode, and `alertOutput` will
+prompt the alert frame to user if the alert flag is on. It's important to
+produce output messages along the development because they help with debugging.
+The least requirement is to have one line of output to console that indicates
+which function is being called. Here is an example:
+```javascript
+function foo() {
+    debutOutput("Calling foo()");
+
+    // body of foo()...
+}
+
+function boo() {
+    debutOutput("Calling boo()");
+
+    // body of boo()...
+}
+```
+
+#### OAuth2.0
+We handle use session and logins with OAuth protocal and the use of session key.
+The work flow is simple:
+1. Get session key from browser storage in `app.ts`
+2. If there is session key, we are done.
+3. If there is no session key, redirect the user to login page
+4. User will go through Google's OAuth login process, producing an access token
+5. Send the access token to backend to get session key. Store the session key
+browser's storage and redirect the user to home page. This will bring us again to
+step 1.
+6. When the server indicate an error in the session key, log the user out and
+redirect them to the login page.
+
+#### Modules
+- BasicStructure: The overall skeleton of the web page.
+- BriefPostList: The left part of the page, which is a list of post breifings.
+- PostCommentBlock: The main viewing window that shows post contents and comments.
+- NewPostBlock: The block that prompt user to create new posts.
+- MyProfileBlock: The block that shows user profile.
+
 ***
 
-
 ### Phase4 Extra Credit
-```
-API: IFrame with Youtube
-```
-Buzz has been 
+
+**API: IFrame with Youtube**
+
+Buzz has prooved its usefulness by allowing posts, comments, and files. What
+else employees may need on a social network platform? Our group figures it
+to be the ability to watch videos. The most recent version of Buzz support
+youtube link uploading. Users can upload a youtube link when they make a post.
+The video will be displayed when other users view the post. In user's profile
+page, a "video icon" will be shown on the left of post titles to indicate
+there is a video attached to the post.
+
+The major task of web front-end is to display the video block properly. This is
+achieved by applying handlebars templating with data and CSS box model.
