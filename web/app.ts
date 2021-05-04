@@ -12,7 +12,7 @@ const alertOn = true;
 
 const debug = false;
 
-let test = true;
+let test = false;
 
 let sessionKey: string;
 
