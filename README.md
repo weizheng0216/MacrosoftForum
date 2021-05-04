@@ -30,6 +30,18 @@ list. Then follow the UI displayed in the viewing area. Other users will be
 able to view, comment, and vote on your post.  You can edit or delete the post
 you made anytime you want. 
 
+### YouTube Link
+
+User can add a YouTube link under the post. If a link is added, there will be a container to show the video. 
+
+### Mark content
+
+User can mark a comment or a post by clicking a button in the post or comment block.
+
+When a comment or a post is marked. There will be a "!" in the breif post list. 
+
+The Admin can check the flagged posts and comments and can delete them. 
+
 ### Voting
 First select the post by clicking on it within the message list.  Then simply
 click on the little square button in the bottom of the content of a post to
