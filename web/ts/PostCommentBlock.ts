@@ -1,9 +1,11 @@
 class PostCommentBlock {
 
+    private static currPostId = -1;
+
     /**
-     * 
-     * @param data 
-     * NOTE: during testing, we do not need Handlebars to append div to html
+     * Called by BreifPostsList.refresh().
+     * Update all background post-comment views with new data.
+     * @param data Backend response with img.
      */
 
     private static filedata = null;
@@ -71,265 +73,391 @@ class PostCommentBlock {
     }
     
     public static update(data: any) {
+        debugOutput("PostCommentBlock.update()");
 
-        if (!testing) {
-            $(".post-comment-view").remove();
-            $("#right-part").append(Handlebars.templates['PostCommentBlock.hb'](data));
-        }
+        // Remove old container from DOM
+        $(".post-comment-block").remove();
 
-        $(".send-comment").click(PostCommentBlock.addnewComment);
-        $(".my-down-vote-button").click(PostCommentBlock.downVotePost);
-        $(".my-up-vote-button").click(PostCommentBlock.upVotePost);
-        $(".user-button").click(PostCommentBlock.getOtherProfile);
-        $(".post-comment-view").hide()
+        // Append the updated template
+        $("#right-part").append(templatedHTML("PostCommentBlock", data));
+
+        // Register events
+        $(".post-flag-button").on("click", PostCommentBlock.onClickFlagPost);
+        $(".comment-flag-button").on("click", PostCommentBlock.onClickFlagComment);
+        $(".my-down-vote-button").on("click", PostCommentBlock.onClickDownVote);
+        $(".my-up-vote-button").on("click", PostCommentBlock.onClickUpVote);
+        $(".user-button").on("click", PostCommentBlock.onClickOthersProfile);
+        $(".post-file-down-btn").on("click", PostCommentBlock.onClickPostDownloadFile);
+        $(".comment-file-down-btn").on("click", PostCommentBlock.onClickCommentDownloadFile);
+
+        $("#send-comment").on("click", PostCommentBlock.onClickSendComment);
+        $("#comment-fileupload-input").on("change", PostCommentBlock.onChangeCommentAddFile);
+        $("#comment-fileupload-remove").on("click", PostCommentBlock.onClickCommentRemoveFile);
     }
 
-    private static addnewComment() {
-        let postID = $(this).data("value");
-        let newContent = $("#my-new-comment-content" + postID).val();
-        var newFileName = $("#file-title").val();
-        if(newFileName.length<=0){
-            newFileName="";
-        }
-        var newFileType = PostCommentBlock.filetype;
-        if (newFileType==null){
-        //if(newFileType.length<=0){
-            newFileType="";
-        }
-        var newFileData = PostCommentBlock.filedata;
-        if(newFileData==null){
-            newFileData="";
-        }
-        var newLink = $('#id-link').text();
-        if(newLink.length<=0){
-            newLink="";
-        }
-        console.log(newFileName);
-        // link and file
-        if (newContent === "") {
-            alert("invalid input")
-        } else {
-            sessionStorage.setItem("currentPost", postID);
-            $.ajax({
-                type: "POST",
-                url: backendUrl + "/api/posts/" + postID + "/comments?session=" + BasicStructure.sessionKey,
-                dataType: "json",
-                contentType: "application/json",
-                data: JSON.stringify({
-                    "postID": postID, "content": newContent, "links" : "["+newLink+"]", "fileName":newFileName, "fileType":newFileType, "fileData":newFileData
-                }),
-                success: function (result: any) {
-                    console.log(result);
-                    BriefPostsList.refresh()
-                    let postID = sessionStorage.getItem("currentPost");
-                    sessionStorage.removeItem("currentPost");
-                    if (debug)
-                        console.log("this postID: " + postID);
-                    if (debug)
-                        console.log("this postID2: " + postID);
-                    $("#my-new-comment-content" + postID).val("");
-                    if (debug)
-                        console.log("length: " + $(".post-comment-view[data-value='" + postID + "']").length);
-                    $(".post-comment-view[data-value='" + postID + "']").show();
+    /**
+     * Profile click event handler.
+     * @param data The ajax response with img.
+     */
+    private static showOthersProfile(data: any) {
+        debugOutput("PostCommentBlock.showOtherProfile()");
+        $(".other-user-profile-block").remove();
+        $("#right-part").append(templatedHTML("OthersProfileBlock", data));
+        $(".close-button").on("click", function () {
+            $(".other-user-profile-block").remove();
+        })
+    }
 
+    /**
+     * Enforece the view window on the right to show the PostCommentBlock and
+     * display the post with the ID specified.  If ID is not provided, the
+     * ID that's displayed last time will be used.
+     * 
+     * If target post does not exist, the PostCommentBlock will be hidden.
+     * 
+     * @param postId ID of the post to show.
+     */
+    public static showPost(postId?: number) {
+        if (postId) {
+            PostCommentBlock.currPostId = postId;
+        } else {
+            postId = PostCommentBlock.currPostId;
+        }
+        $("#my-new-post-block").hide();      // hide new post block
+        $(".my-user-profile-block").hide();  // hide my profile block
+        $(".post-comment-block").show();     // show post-comment-block
+        $(".post-comment-view").hide();      // hide all views
+        let targetView = $(format(".post-comment-view[data-value='{1}']", postId));
+        if (targetView.html()) {  // only show when the view exists
+            targetView.show();
+        } else {  // otherwise hide the entire block again.
+            $(".post-comment-block").hide();
+        }
+    }
+
+    // ===================================================================
+    // Events
+
+    private static onClickFlagComment() {
+        debugOutput("PostCommentBlock.onClickFlagComment()");
+
+        let postID: any = PostCommentBlock.currPostId;
+        let commentID = $(this).data("commentid");
+        let oldState = $(this).attr("data-flagstate") == "true";
+
+        // update DOM
+        if (oldState) {
+            // user wants to cancel the flag
+            $(this).attr("data-flagstate", "false");
+            $(this).removeClass("my-vote-true").addClass("my-vote-false");
+            let hasFlag = (function() {
+                let commentFlags = document.getElementsByClassName("comment-flag-button");
+                for (let i = 0; i < commentFlags.length; i++) {
+                    let elem = commentFlags[i];
+                    if (elem.getAttribute("data-flagstate") == "true" &&
+                        elem.getAttribute("data-postid") == postID)
+                        return true;
                 }
-            });
-        }
-        if (debug)
-            console.log("user add new comment under post: " + postID);
-        if (debug)
-            console.log("user send new comment: " + newContent);
-    }
-
-    private static downVotePost() {
-        // we need to make a state check 
-        let postID = $(this).data("postid");
-        let upVoteState = $("#my-up-vote-button" + postID).attr("data-upvotestate");
-        let downVoteState = $(this).attr("data-downvotestate");
-        if (debug)
-            console.log("down vote button is clicked for post: " + postID);
-        if (debug)
-            console.log("up state: " + upVoteState);
-        if (debug)
-            console.log("down state: " + downVoteState);
-
-        if (downVoteState == "true") {
-            // user want to cancel the dislike 
-            $(this).attr("data-downvotestate", "false");
-            let currentDownVote = $("#my-down-vote-count" + postID).text();
-            $("#my-down-vote-count" + postID).text(--currentDownVote);
-            $(this).removeClass("my-vote-true").addClass("my-vote-false");
-            // both up vote and down vote are 0
-
-            // ONLY connect backend when not testing
-            if (!testing) {
-                $.ajax({
-                    type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
-                    dataType: "json",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        "upVote": 0, "downVote": 0
-                    }),
-                    success: function (result: any) {
-                        if (debug)
-                            console.log(result);
-                    }
-                });
-            }
+                return $("#flag-button-" + postID).attr("data-flagstate") == "true";
+            })();
+            if (!hasFlag) $("#postlist-flag-" + postID).hide();
         } else {
-            // user dislike this post
-            $(this).attr("data-downvotestate", "true");
+            // user wants to flag the post
+            $(this).attr("data-flagstate", "true");
             $(this).removeClass("my-vote-false").addClass("my-vote-true");
-            let currentDownVote = $("#my-down-vote-count" + postID).text();
-            $("#my-down-vote-count" + postID).text(++currentDownVote);
-            if ($("#my-up-vote-button" + postID).attr("data-upvotestate") == "true") {
-                let currentUpVote = $("#my-up-vote-count" + postID).text();
-                $("#my-up-vote-count" + postID).text(--currentUpVote);
-                $("#my-up-vote-button" + postID).attr("data-upvotestate", "false");
-                $("#my-up-vote-button" + postID).removeClass("my-vote-true").addClass("my-vote-false");
-            }
-
-            // ONLY connect backend when not testing
-            if (!testing) {
-                $.ajax({
-                    type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
-                    dataType: "json",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        "upVote": 0, "downVote": 1
-                    }),
-                    success: function (result: any) {
-                        if (debug)
-                            console.log(result);
-                    }
-                });
-            }
+            $("#postlist-flag-" + postID).show();
         }
+        // inform backend
+        myAjax({
+            type: "PUT",
+            url: format("{1}/api/posts/{2}/comments/{3}/flag?session={4}",
+                backendUrl, postID, commentID, sessionKey),
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify({
+                "flagged": !oldState
+            }),
+            success: function (res: any) {
+                debugOutput("[ajax] Comment flag click response: " + JSON.stringify(res));
+            }
+        });
     }
 
-    private static upVotePost() {
-        // we need to make a state check 
-        let postID = $(this).data("postid");
-        let downVoteState = $("#my-down-vote-button" + postID).attr("data-downvotestate");
-        let upVoteState = $(this).attr("data-upvotestate");
-        if (debug)
-            console.log("up vote button is clicked for post: " + postID);
-        if (debug)
-            console.log("up state: " + upVoteState);
-        if (debug)
-            console.log("down state: " + downVoteState);
+    private static onClickFlagPost() {
+        debugOutput("PostCommentBlock.onClickFlagPost()");
 
-        if (upVoteState == "true") {
-            //user want to cancel the like
-            $(this).attr("data-upvotestate", "false");
-            let currentUpVote = $("#my-up-vote-count" + postID).text();
-            $("#my-up-vote-count" + postID).text(--currentUpVote);
+        let postID: any = PostCommentBlock.currPostId;
+        let oldState = $(this).attr("data-flagstate") == "true";
+
+        // update DOM
+        if (oldState) {
+            // user wants to cancel the flag
+            $(this).attr("data-flagstate", "false");
             $(this).removeClass("my-vote-true").addClass("my-vote-false");
-            // both up vote and down vote are 0
-
-            // ONLY connect backend when not testing
-            if (!testing) {
-                $.ajax({
-                    type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
-                    dataType: "json",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        "upVote": 0, "downVote": 0
-                    }),
-                    success: function (result: any) {
-                        if (debug)
-                            console.log(result);
-
-                    }
-                });
-            }
-
+            let hasFlag = (function() {
+                let commentFlags = document.getElementsByClassName("comment-flag-button");
+                for (let i = 0; i < commentFlags.length; i++) {
+                    let elem = commentFlags[i];
+                    if (elem.getAttribute("data-flagstate") == "true" &&
+                        elem.getAttribute("data-postid") == postID)
+                        return true;
+                }
+                return false;
+            })();
+            if (!hasFlag) $("#postlist-flag-" + postID).hide();
         } else {
-            //user like this post
+            // user wants to flag the comment
+            $(this).attr("data-flagstate", "true");
+            $(this).removeClass("my-vote-false").addClass("my-vote-true");
+            $("#postlist-flag-" + postID).show();
+        }
+        // inform backend
+        myAjax({
+            type: "PUT",
+            url: backendUrl + "/api/posts/" + postID + "/flag?session=" + sessionKey,
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify({
+                "flagged": !oldState
+            }),
+            success: function (res: any) {
+                debugOutput("[ajax] Post flag click response: " + JSON.stringify(res));
+            }
+        });
+    }
+
+    private static onClickOthersProfile() {
+        debugOutput("PostCommentBlock.onClickOthersProfile()");
+
+        var userID = $(this).data("value");
+        debugOutput("user click user: " + userID + ", request for detail");
+        myAjax({
+            type: "GET",
+            url: backendUrl + "/api/users/" + userID + "?session=" + sessionKey,
+            dataType: "json",
+            success: function (res: any) {
+                debugOutput("[ajax] Others profile response: " + JSON.stringify(res));
+                fetchImgs(res.mData.mPosts);
+                fetchImgs(res.mData.mComments);
+                PostCommentBlock.showOthersProfile(res);
+            }
+        });
+    }
+
+    private static onClickUpVote() {
+        debugOutput("PostCommentBlock.onClickUpVote()");
+
+        let postID = $(this).data("postid");
+        let oldState = $(this).attr("data-upvotestate") == "true";
+
+        // update DOM
+        if (oldState) {
+            //user wants to cancel the like
+            $(this).attr("data-upvotestate", "false");
+            let currentUpVotes = Number($("#my-up-vote-count" + postID).text());
+            $("#my-up-vote-count" + postID).text(--currentUpVotes);
+            $(this).removeClass("my-vote-true").addClass("my-vote-false");
+        } else {
+            //user likes this post
             $(this).attr("data-upvotestate", "true");
             $(this).removeClass("my-vote-false").addClass("my-vote-true");
-            let currentUpVote = $("#my-up-vote-count" + postID).text();
-            $("#my-up-vote-count" + postID).text(++currentUpVote);
-            if (debug)
-                console.log("after click: " + $("#my-up-vote-count" + postID).text());
+            let currentUpVotes = Number($("#my-up-vote-count" + postID).text());
+            $("#my-up-vote-count" + postID).text(++currentUpVotes);
             if ($("#my-down-vote-button" + postID).attr("data-downvotestate") == "true") {
-                let currentDownVote = $("#my-down-vote-count" + postID).text();
+                let currentDownVote = Number($("#my-down-vote-count" + postID).text());
                 $("#my-down-vote-count" + postID).text(--currentDownVote);
                 $("#my-down-vote-button" + postID).attr("data-downvotestate", "false");
                 $("#my-down-vote-button" + postID).removeClass("my-vote-true").addClass("my-vote-false");
             }
-
-            // ONLY connect backend when not testing
-            if (!testing) {
-                $.ajax({
-                    type: "PUT",
-                    url: backendUrl + "/api/posts/" + postID + "/vote?session=" + BasicStructure.sessionKey,
-                    dataType: "json",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        "upVote": 1, "downVote": 0
-                    }),
-                    success: function (result: any) {
-                        if (debug)
-                            console.log(result);
-                    }
-                });
-            }
-
         }
+        // inform backend
+        myAjax({
+            type: "PUT",
+            url: backendUrl + "/api/posts/" + postID + "/vote?session=" + sessionKey,
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify({
+                "upVote": !oldState,
+                "downVote": false
+            }),
+            success: function (res: any) {
+                debugOutput("[ajax] Upvote Click response: " + JSON.stringify(res));
+            }
+        });
     }
 
-    /**
-     * 
-     * NOTE: during testing, we will not connect to the backend. We do not need any information about "this user"
-     */
-    private static getOtherProfile() {
-        if (!testing) {
+    private static onClickDownVote() {
+        debugOutput("PostCommentBlock.onClickDownVote()");
 
-            var userID = $(this).data("value");
-            if (debug)
-                console.log("user click user: " + userID + ", request for detail");
-            $.ajax({
-                type: "GET",
-                url: backendUrl + "/api/users/" + userID + "?session=" + BasicStructure.sessionKey,
-                dataType: "json",
-                data: JSON.stringify({ "sessionKey": BasicStructure.sessionKey }),
-                success: function (result: any) {
-                    if (debug)
-                        console.log(result);
-                    PostCommentBlock.showOtherProfile(result);
+        let postID = $(this).data("postid");
+        let oldState = $(this).attr("data-downvotestate") == "true";
+
+        if (oldState) {
+            // user want to cancel the dislike 
+            $(this).attr("data-downvotestate", "false");
+            let currentDownVote = Number($("#my-down-vote-count" + postID).text());
+            $("#my-down-vote-count" + postID).text(--currentDownVote);
+            $(this).removeClass("my-vote-true").addClass("my-vote-false");
+        } else {
+            // user dislike this post
+            $(this).attr("data-downvotestate", "true");
+            $(this).removeClass("my-vote-false").addClass("my-vote-true");
+            let currentDownVote = Number($("#my-down-vote-count" + postID).text());
+            $("#my-down-vote-count" + postID).text(++currentDownVote);
+            if ($("#my-up-vote-button" + postID).attr("data-upvotestate") == "true") {
+                let currentUpVote = Number($("#my-up-vote-count" + postID).text());
+                $("#my-up-vote-count" + postID).text(--currentUpVote);
+                $("#my-up-vote-button" + postID).attr("data-upvotestate", "false");
+                $("#my-up-vote-button" + postID).removeClass("my-vote-true").addClass("my-vote-false");
+            }
+        }
+        // inform backend
+        myAjax({
+            type: "PUT",
+            url: backendUrl + "/api/posts/" + postID + "/vote?session=" + sessionKey,
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify({
+                "upVote": false,
+                "downVote": !oldState
+            }),
+            success: function (res: any) {
+                debugOutput("[ajax] Downvote Click response: " + JSON.stringify(res));
+            }
+        });
+    }
+
+    private static onClickPostDownloadFile() {
+        debugOutput("PostCommentBlock.onClickPostDownloadFile()");
+
+        let id = PostCommentBlock.currPostId;
+        let type = $("#file-panel-" + id).data("value");
+        let name = $("#post-filename-" + id).html();
+
+        (async function () {
+            let base64: string = await new Promise(resolve => {
+                if (/image\/\w/.test(type)) {
+                    let src = $("#post-img-preview-"+id).attr("src");
+                    resolve(src.replace(/^data:.+;base64,/, ""));
+                } else {
+                    // need to download from backend
+                    myAjax({
+                        type: "GET",
+                        dataType: "json",
+                        url: format("{1}/api/posts/{2}/file?session={3}",
+                                    backendUrl, id, sessionKey),
+                        success: function(res: any) {
+                            let msg = JSON.stringify(res);
+                            debugOutput("[ajax] File downloaded: " + msg);
+                            resolve(res.mData.mData);
+                        }
+                    });
                 }
             });
-        } else {
-            PostCommentBlock.showOtherProfile(" ");
-        }
-
+            downloadFile(base64, type, name);
+        })();
     }
 
+    private static onClickCommentDownloadFile() {
+        debugOutput("PostCommentBlock.onClickCommentDownloadFile()");
 
-    /**
-     * 
-     * @param data 
-     * NOTE: during testing, we do not need to create other profile block. 
-     */
-    private static showOtherProfile(data: any) {
-        if (!testing) {
-            $(".other-user-profile-block").remove();
-            $("#right-part").append(Handlebars.templates['OtherProfileBlock.hb'](data));
-            $(".close-button").click(function () {
-                $(".other-user-profile-block").remove();
-            })
-        } else {
-            $(".other-user-profile-block").show();
-            $(".close-button").click(function () {
-                $(".other-user-profile-block").hide();
-            })
-        }
+        let postid = PostCommentBlock.currPostId;
+        let commentid = $(this).data("commentid");
+        let type = $(format("#file-panel-{1}-{2}", postid, commentid)).data("value");
+        let name = $(format("#comment-filename-{1}-{2}", postid, commentid)).text();
 
+        (async function () {
+            let base64: string = await new Promise(resolve => {
+                if (/image\/\w/.test(type)) {
+                    let src = $(format("#comment-img-preview-{1}-{2}",
+                        postid, commentid)).attr("src");
+                    resolve(src.replace(/^data:.+;base64,/, ""));
+                } else {
+                    // need to download from backend
+                    myAjax({
+                        type: "GET",
+                        dataType: "json",
+                        url: format("{1}/api/posts/{2}/comments/{3}/file?session={4}",
+                                    backendUrl, postid, commentid, sessionKey),
+                        success: function(res: any) {
+                            let msg = JSON.stringify(res);
+                            debugOutput("[ajax] File downloaded: " + msg);
+                            resolve(res.mData.mData);
+                        }
+                    });
+                }
+            });
+            downloadFile(base64, type, name);
+        })();
     }
 
-   
+    private static onChangeCommentAddFile() {
+        debugOutput("PostCommentBlock.onChangeCommentAddFile()");
+
+        let htmFileInput: any = document.getElementById("comment-fileupload-input");
+        let htmName: any = document.getElementById("comment-fileupload-name");
+        htmName.innerHTML = "<b>" + htmFileInput.files[0].name + "</b>";
+    }
+
+    private static onClickCommentRemoveFile() {
+        debugOutput("PostCommentBlock.onClickCommentRemoveFile()");
+
+        let htmInput: any = document.getElementById("comment-fileupload-input");
+        let htmName: any = document.getElementById("comment-fileupload-name");
+        htmInput.value = null;  // clear selection
+        htmName.innerHTML = "No file selected";  // reset filename entry
+    }
+
+    private static onClickSendComment() {
+        debugOutput("PostCommentBlock.onClickSendComment()");
+        let htmFileInput: any = document.getElementById("comment-fileupload-input");
+        let file = htmFileInput.files ? htmFileInput.files[0] : null;
+
+        // Data to be included in request Json
+        let content: any = $("#comment-content-input").val();
+        let rawLinks: any = $("#comment-links").val();  // any: avoid compiler error
+        let fileName = file ? file.name : "";
+        let fileType = file ? file.type : "";
+        let fileData = "";  // base64 string for file content
+
+        // Length check
+        if (!content) return alertOutput("Missing comment body.");
+        if (content.length > 500) return alertOutput("Content too long.");
+        if (rawLinks.length > 500) return alertOutput("Links too long.");
+        if (fileName.length > 100) return alertOutput("File name too long.");
+
+        (async function () {
+            // Load fileData
+            fileData = await new Promise(function (resolve) {
+                let reader = new FileReader();
+                reader.onloadend = e => resolve(btoa(e.target.result.toString()));
+                if (!file) resolve("");
+                reader.readAsBinaryString(file);
+            });
+            // Send request
+            myAjax({
+                type: "POST",
+                url: format("{1}/api/posts/{2}/comments?session={3}",
+                    backendUrl, PostCommentBlock.currPostId, sessionKey),
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    "content": content,
+                    "links": rawLinks.split(/\s+/),
+                    "fileName": fileName,
+                    "fileType": fileType,
+                    "fileData": fileData
+                }),
+                success: function (res: any) {
+                    debugOutput("[ajax] New Comment Response: " + JSON.stringify(res));
+
+                    // Refresh DOM upon success
+                    $("#comment-content-input").val("");
+                    $("#comment-links").val("");
+                    BriefPostsList.refresh();  // the entire PostCommentBlock will be reset here
+                    PostCommentBlock.showPost(PostCommentBlock.currPostId);
+                }
+            });
+        })();
+    }
 }

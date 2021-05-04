@@ -1,5 +1,4 @@
-.my-user-profile-block{
-
+.my-user-profile-block {
     position: relative;
     left:2%;
     right: 2%;
@@ -11,26 +10,27 @@
     border-radius: 15px;
     box-shadow:8px 8px 0px #a12424;
 
+    padding-left: 40px;
+    padding-right: 40px;
+
     overflow-y: scroll;
 }
 
-.my-user-profile-block h4{
+.my-user-profile-block h4 {
     font-size: 20px;
     font-weight: 700;
-    text-indent: 30px;
 }
 
-.my-user-profile-block h5{
+.my-user-profile-block h5 {
     font-size: 20px;
     font-weight: 700;
-    text-indent: 60px;
 }
 
-.my-user-profile-block p{
+.my-user-profile-block p {
     text-indent: 50px;
 }
 
-.my-user-profile-block .edit-place{
+.my-user-profile-block .edit-place {
     position: relative;
     overflow-y:scroll;
     width: 90%;
@@ -42,7 +42,7 @@
 
 }
 
-.my-user-profile-block .edit-button{
+.my-user-profile-block .edit-button {
     margin-top: 10px;
     position: relative;
     right: -50%;
@@ -52,6 +52,24 @@
     margin-left: 10px;
 }
 
-.my-user-profile-block .edit-button:hover{
+.my-user-profile-block .edit-button:hover {
     background-color: #F2AA80;
+}
+
+
+.my-user-profile-block .img-preview {
+    width: auto;
+    max-height: 200px;
+    display: inline-block;
+}
+
+.my-user-profile-block .file-preview {
+    font-size: 50pt;
+    display: inline-block;
+}
+
+.my-user-profile-block hr {
+    height: 2px;
+    border: none;
+    border-top: 2px dotted #8C0303;
 }

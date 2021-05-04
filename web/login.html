@@ -5,17 +5,59 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <meta name="google-signin-client_id"
         content="41111326106-hcpq125i4f8c658t16g6euk7f0gi6gkr.apps.googleusercontent.com">
+    <title>Buzz Login</title>
 
-    <link rel="stylesheet" href="login.css">
+    <script src="jquery.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 
+    <style type="text/css">
+        .containor {
+            position: absolute;
+            text-align: center;
 
-    <title>Welcome to Buzz</title>
+            left: 0px;
+            right: 0px;
+            top: 0px;
+            bottom: 0px;
+            background-color: #a12424;
+            color: white;
+        }
+
+        .banner {
+            position: relative;
+            top: 40%;
+            font-size: 40px;
+            font-family: sans-serif;
+            font-weight: 700;
+        }
+
+        .login-button {
+            position: relative;
+            top: 42%;
+            width: 150px;
+            margin-left: 45%;
+            margin-right: 45%;
+
+            overflow: hidden;
+
+            background-color: white;
+            border: 3px solid #8C0303;
+            border-radius: 15px;
+            box-shadow:10px 10px 0px #590202;
+        }
+
+        .login-button:hover {
+            cursor:pointer;
+            transform:translate(calc(3px), calc(3px));
+            box-shadow:5px 5px 0px #a12424;
+        }
+
+        .google-button {
+            margin: 5px;
+        }
+    </style>
 </head>
 
 <body>
@@ -24,13 +66,9 @@
         <div class="login-button">
             <div class="g-signin2 google-button" data-onsuccess="onSignIn"></div>
         </div>
-
     </div>
 
-
-    <script>
-
-        const debug = false;
+    <script type="text/javascript">
         const backendUrl = "https://cse216-macrosoft.herokuapp.com";
 
         function onSignIn(googleUser) {
@@ -40,15 +78,6 @@
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.disconnect();
             
-            if (debug) {
-                console.log("ID Token: " + id_token);
-                console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-                console.log('Name: ' + profile.getName());
-                console.log('Image URL: ' + profile.getImageUrl());
-                console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-
-            }
-
             $(document).ready(function () {
                 $.ajax({
                     type: "POST",
@@ -56,21 +85,20 @@
                     dataType: "json",
                     data: JSON.stringify({ idToken: id_token }),
                     success: function (result) {
-                        if (debug) {
-                            console.log(result);
-                            console.log(result.mData);
-                        }
-
-                        alert("login successfully.");
+                        alert("Login successfully.");
                         sessionStorage.setItem('sessionKey', result.mData);
-                        window.location.replace(backendUrl + "/index.html");
+                        window.location.href = backendUrl + "/index.html";
+                    },
+                    error: function (xhr) {
+                        if (xhr.status == 406) {
+                            alert("You are blocked from Buzz.")
+                        } else {
+                            alert("Unable to login, probably because the credential you provided is invalid."); 
+                        }
                     }
                 });
             });
         }
-
-
-
     </script>
 </body>
 

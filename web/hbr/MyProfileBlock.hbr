@@ -1,0 +1,87 @@
+{{#with mData}}
+<div class="my-user-profile-block">
+    <h4 style="margin-top: 30px;">First Name:</h4>
+    <p>{{this.mUser.mFirstName}}</p>
+    <h4>Last Name:</h4>
+    <p>{{this.mUser.mLastName}}</p>
+    <h4>E-mail:</h4>
+    <p>{{this.mUser.mEmail}}</p>
+
+    {{#each this.mPosts}}
+        <hr/>
+        <h4>{{#if this.mFlagged}}<span class="glyphicon glyphicon-exclamation-sign" title="Marked as inappropriate"></span> {{/if}}{{#if this.mVideoLink}}<span class="glyphicon glyphicon-film" title="video attached"></span> {{/if}}Post: </h4>
+        <h5>Title: </h5>
+        <textarea name="" id="post-title{{this.mPostID}}" cols="30" rows="3" class="edit-place">{{this.mTitle}}</textarea>
+        <h5>Content: </h5>
+        <textarea name="" id="post-content{{this.mPostID}}" cols="30" rows="5" class="edit-place">{{this.mContent}}</textarea>
+        {{#if this.mFileInfo.mType}}
+            <h5>File: {{this.mFileInfo.mName}}</h5>
+            <div name="" id="post-file{{this.mPostID}}" cols="30" rows="5" class="edit-place">
+                {{#if this.mFileInfo.mIsImg}}
+                    <img class="img-preview" src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"/>
+                {{else}}
+                    <span class="glyphicon glyphicon-file file-preview"></span>
+                {{/if}}
+            </div>
+        {{/if}}
+        {{#if this.mLinks.length}}
+            <h5>Other Links: </h5>
+            <div name="" id="post-links{{this.mPostID}}" cols="30" rows="5" class="edit-place">
+                <ul>
+                    {{#each this.mLinks}}
+                        <li><a href="{{this}}">{{this}}</a></li>
+                    {{/each}}
+                </ul>
+            </div>
+        {{/if}}
+        <div>
+            <button class="post-update-button edit-button" data-value="{{this.mPostID}}">
+                <span class="glyphicon glyphicon-upload"></span>
+                update
+            </button>
+
+            <button class="post-delete-button edit-button"  data-value="{{this.mPostID}}">
+                <span class="glyphicon glyphicon-trash"></span>
+                delete
+            </button>
+        </div>
+    {{/each}}
+     
+    {{#each this.mComments}}
+        <hr/>
+        <h4>{{#if this.mFlagged}}<span class="glyphicon glyphicon-exclamation-sign" title="Marked as inappropriate"></span> {{/if}}Comment: </h4>
+        <h5>Content: </h5>
+        <textarea name="" id="comment-content{{this.mCommentID}}" cols="30" rows="5" class="edit-place">{{this.mContent}}</textarea>
+        {{#if this.mFileInfo.mType}}
+            <h5>File: {{this.mFileInfo.mName}}</h5>
+            <div name="" id="comment-file{{this.mPostID}}" cols="30" rows="5" class="edit-place">
+                {{#if this.mFileInfo.mIsImg}}
+                    <img class="img-preview" src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"/>
+                {{else}}
+                    <span class="glyphicon glyphicon-file file-preview"></span>
+                {{/if}}
+            </div>
+        {{/if}}
+        {{#if this.mLinks.length}}
+            <h5>Links: </h5>
+            <div name="" id="comment-links{{this.mPostID}}" cols="30" rows="5" class="edit-place">
+                <ul>
+                    {{#each this.mLinks}}
+                        <li><a href="{{this}}">{{this}}</a></li>
+                    {{/each}}
+                </ul>
+            </div>
+        {{/if}}
+        <div>
+            <button class="comment-update-button edit-button" data-value="{{this.mCommentID}}" data-postid="{{this.mPostID}}">
+                <span class="glyphicon glyphicon-upload"></span>
+                update
+            </button>
+            <button class="comment-delete-button edit-button" data-value="{{this.mCommentID}}" data-postid="{{this.mPostID}}">
+                <span class="glyphicon glyphicon-trash"></span>
+                delete
+            </button>
+        </div>
+    {{/each}}
+</div>
+{{/with}}

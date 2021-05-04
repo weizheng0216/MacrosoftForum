@@ -1,0 +1,152 @@
+<div class="post-comment-block">
+    {{#each mData}}
+    <div class="post-comment-view" data-value="{{this.mPostID}}">
+        <div class="post-detail-block" value-postid="">
+            <div class="title">
+                {{this.mTitle}}
+            </div>
+            <div class="content">
+                {{this.mContent}}
+            </div>
+            {{#if this.mVideoLink}}
+            <iframe class="yt-block" type="text/html" src="{{this.mVideoLink}}" frameborder="0"></iframe>
+            {{/if}}
+            <div class="attachments-panel">
+                {{#if this.mFileInfo.mType}}
+                    <div class="file-panel" id="file-panel-{{this.mPostID}}" data-value="{{this.mFileInfo.mType}}">
+                        {{#if this.mFileInfo.mIsImg}}
+                            <img src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"
+                                class="img-preview img-thumbnail rounded mx-auto d-block"
+                                id="post-img-preview-{{this.mPostID}}"
+                                alt="Preview not available">
+                        {{else}}
+                            <span class="glyphicon glyphicon-file file-preview"></span>
+                        {{/if}}
+                        <div class="file-info">
+                            <div id="post-filename-{{this.mPostID}}">{{this.mFileInfo.mName}}</div>
+                            <button class="post-file-down-btn little-button">Download</button>
+                        </div>
+                    </div>
+                {{/if}}
+                {{#if this.mLinks.length}}
+                    <div class="links-panel">
+                        <h5>Links: </h5>
+                        <ul>
+                            {{#each this.mLinks}}
+                                <li><a href="{{this}}">{{this}}</a></li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                {{/if}}
+            </div> <!-- End attachments -->
+            
+            <div class="lower-information">
+                <button id="flag-button-{{this.mPostID}}"
+                        class="post-flag-button little-button my-vote-{{this.mFlagged}}"
+                        data-flagstate="{{this.mFlagged}}">
+                    <span class="glyphicon glyphicon-exclamation-sign"></span>
+                </button>
+
+                <button id="my-down-vote-button{{this.mPostID}}"
+                        class="dislike-button little-button my-down-vote-button my-vote-{{this.mDownVoteCount}}"
+                        data-postid="{{this.mPostID}}"
+                        data-downvotestate="{{this.mUserDownVote}}">
+                    <span id="my-down-vote-count{{this.mPostID}}" class="glyphicon glyphicon-thumbs-down">{{this.mDownVoteCount}}</span>
+                </button>
+
+                <button id="my-up-vote-button{{this.mPostID}}"
+                        class="like-button little-button my-up-vote-button my-vote-{{this.mUpVoteCount}}" 
+                        data-postid="{{this.mPostID}}"
+                        data-upvotestate="{{this.mUserUpVote}}">
+                    <span id="my-up-vote-count{{this.mPostID}}" class="glyphicon glyphicon-thumbs-up">{{this.mUpVoteCount}}</span>
+                </button>
+
+                <button class="user-button little-button" data-value="{{this.mAuthor.mUserID}}">
+                    <span class="glyphicon glyphicon-user"></span>
+                    {{this.mAuthor.mFirstName}} {{this.mAuthor.mLastName}}
+                </button>
+
+                <button class="date-button little-button">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                    {{this.mDate}}
+                </button>
+            </div> <!-- End lower information -->
+        </div> <!-- End post-detail block -->
+
+        {{#each this.mComments}}
+            <div class="comment-block" data-value="{{this.mCommentID}}">
+                <div class="content">
+                    {{this.mContent}}
+                </div>
+                <div class="attachments-panel">
+                    {{#if this.mFileInfo.mType}}
+                        <div class="file-panel" id="file-panel-{{this.mPostID}}-{{this.mCommentID}}" data-value="{{this.mFileInfo.mType}}">
+                            {{#if this.mFileInfo.mIsImg}}
+                                <img src="data:{{this.mFileInfo.mType}};base64,{{this.mFileInfo.mData}}"
+                                    class="img-preview img-thumbnail rounded mx-auto d-block"
+                                    id="comment-img-preview-{{this.mPostID}}-{{this.mCommentID}}"
+                                    alt="Preview not available">
+                            {{else}}
+                                <span class="glyphicon glyphicon-file file-preview"></span>
+                            {{/if}}
+                            <div class="file-info">
+                                <div id="comment-filename-{{this.mPostID}}-{{this.mCommentID}}">{{this.mFileInfo.mName}}</div>
+                                <button class="comment-file-down-btn little-button"
+                                    data-commentid="{{this.mCommentID}}">Download</button>
+                            </div>
+                        </div>
+                    {{/if}}
+                    {{#if this.mLinks.length}}
+                        <div class="links-panel">
+                            <h5>Links: </h5>
+                            <ul>
+                                {{#each this.mLinks}}
+                                    <li><a href="{{this}}">{{this}}</a></li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    {{/if}}
+                </div> <!-- End attachments -->
+
+                <div class="lower-information">
+                    <button id="flag-button-{{this.mPostID}}-{{this.mCommentID}}"
+                            class="comment-flag-button little-button my-vote-{{this.mFlagged}}"
+                            data-flagstate="{{this.mFlagged}}"
+                            data-postid="{{this.mPostID}}"
+                            data-commentid="{{this.mCommentID}}">
+                        <span class="glyphicon glyphicon-exclamation-sign"></span>
+                    </button>
+
+                    <button class="user-button little-button" data-value="{{this.mAuthor.mUserID}}">
+                        <span class="glyphicon glyphicon-user"></span>
+                        {{this.mAuthor.mFirstName}} {{this.mAuthor.mLastName}}
+                    </button>
+
+                    <button class="date-button little-button">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                        {{this.mDate}}
+                    </button>
+                </div>
+            </div>
+        {{/each}}
+    </div>  <!-- End post-comment block -->
+    {{/each}}
+    <div class="add-comment-block">
+        <div class="comment-main">
+            <textarea id="comment-content-input" placeholder="add a comment"></textarea>
+            <button id="send-comment" class="mybtn">
+                <span class="glyphicon glyphicon-send"></span>
+                Send!
+            </button>
+        </div>
+        <div id="comment-attachments">
+            <textarea id="comment-links" placeholder="links (separate by space)"></textarea>
+            <input style="display:none;" type="file" id="comment-fileupload-input" data-value="{{this.mPostID}}" accept="image/*, application/pdf"/>
+            <label for="comment-fileupload-input" class="mybtn" id="comment-fileupload-label">Upload File</label>
+            <button id="comment-fileupload-remove" class="mybtn">
+                <span class="glyphicon glyphicon-trash"></span>
+            </button>
+            <nobr id="comment-fileupload-name">No file selected</nobr>
+        </div>
+    </div>    
+</div> <!-- End post-comment view -->

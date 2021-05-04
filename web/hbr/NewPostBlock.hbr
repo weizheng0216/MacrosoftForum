@@ -1,0 +1,53 @@
+<div class="new-post-block" id="my-new-post-block">
+    <div class="title-block">
+        Title
+        <textarea class="text-input" id="input-title"
+            placeholder="write your title here"></textarea>
+    </div>
+
+    <br/><br/>
+
+    <div class="content-block">
+        Content
+        <textarea class="text-input" id="input-content"
+            placeholder="write your content here (500 characters limit)"></textarea>
+    </div>
+
+    <br/><br/>
+
+    <div class="file-block">
+        File
+        <div id="post-fileupload">
+            <input style="display:none;" type="file" id="post-fileupload-input" accept="image/*, application/pdf"/>
+            <label for="post-fileupload-input" class="mybtn" id="post-fileupload-label">Upload File</label>
+            <button id="post-fileupload-remove" class="mybtn">
+                <span class="glyphicon glyphicon-trash"></span>
+            </button>
+            <nobr id="post-fileupload-name">No file selected</nobr>
+        </div>
+        <img id="post-fileupload-imgpreview" src=""/>
+    </div>
+
+    <br/>
+
+    <div class="yt-block">
+        Youtube Link
+        <textarea class="text-input" id="input-yt"
+            placeholder="write your youtube link here(at most one link)"></textarea>
+    </div>
+
+    <br/><br/>
+
+    <div class="links-block">
+        Other Links
+        <textarea class="text-input" id="input-links"
+            placeholder="optional links (separate by space or newline)"></textarea>
+    </div>
+
+    <br/>
+
+    <button class="send-post mybtn" id="my-send-new-post-button">
+        <span class="glyphicon glyphicon-send"></span>
+        Send
+    </button>
+</div>
